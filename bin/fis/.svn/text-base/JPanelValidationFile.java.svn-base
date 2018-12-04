@@ -1,0 +1,170 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+
+//
+//
+//                              JPanelValidationFile.java
+//
+//
+// Author(s) : Jean-Luc LABLEE
+// FISPRO Version : 2.1
+// Contact : fispro@ensam.inra.fr
+// Last modification date:  September 15, 2004
+// File :
+
+//**********************************************************************
+package fis;
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import kbct.LocaleKBCT;
+import kbct.MainKBCT;
+import kbctAux.JOpenFileChooser;
+
+/**
+ * fis.JPanelValidationFile.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+
+/**
+ * Classe de choix du fichier de validation:
+ *   - tous les exemples
+ *   - exemples actifs
+ *   - exemples inactif
+ *   - autre fichier à sélectionner par une boite de dialogue
+ */
+public class JPanelValidationFile extends JPanel {
+  static final long serialVersionUID=0;	
+  protected ButtonGroup jbgFile = new ButtonGroup();
+  protected JRadioButton jrbAllItems= new JRadioButton();
+  protected JRadioButton jrbActiveItems= new JRadioButton();
+  protected JRadioButton jrbInactiveItems= new JRadioButton();
+  protected JRadioButton jrbOther= new JRadioButton();
+  protected TitledBorder jBorder = new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(134, 134, 134)),"");
+  protected JTextField jtfValidationFile = new JTextField();
+  protected JButton jbSelectValidationFile = new JButton("...");
+  protected JExtendedDataFile data;
+//------------------------------------------------------------------------------
+  public JPanelValidationFile(JExtendedDataFile data) {
+    super(new GridBagLayout());
+    this.data = data;
+    this.setBorder(this.jBorder);
+    this.jbgFile.add(this.jrbAllItems);
+    this.jbgFile.add(this.jrbActiveItems);
+    this.jbgFile.add(this.jrbInactiveItems);
+    this.jbgFile.add(this.jrbOther);
+    this.add(this.jrbAllItems, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    this.add(this.jrbActiveItems, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    this.add(this.jrbInactiveItems, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    this.jrbOther.addChangeListener(new ChangeListener() {
+    public void stateChanged(ChangeEvent e) {
+      JPanelValidationFile.this.jtfValidationFile.setEnabled(JPanelValidationFile.this.jrbOther.isSelected());
+      JPanelValidationFile.this.jbSelectValidationFile.setEnabled(JPanelValidationFile.this.jrbOther.isSelected());
+    }});
+    this.add(this.jrbOther, new GridBagConstraints(0, 3, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    this.jtfValidationFile.setEditable(false);
+    this.add(this.jtfValidationFile, new GridBagConstraints(0, 4, 1, 1, 1.0, 0.0
+             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+    this.jbSelectValidationFile.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jbSelectValidationFile_actionPerformed(e); } });
+    this.add(this.jbSelectValidationFile, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0
+             ,GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 5), 0, -10));
+    this.Translate();
+    this.setEnabled(true);
+    if( this.jrbActiveItems.isEnabled() == true )
+      this.jrbActiveItems.setSelected(true);
+    else
+      this.jrbAllItems.setSelected(true);
+  }
+//------------------------------------------------------------------------------
+  public void Translate() {
+    this.jBorder.setTitle(LocaleKBCT.GetString("Validation"));
+    this.jrbAllItems.setText(LocaleKBCT.GetString("AllData"));
+    this.jrbActiveItems.setText(LocaleKBCT.GetString("ActiveData"));
+    this.jrbInactiveItems.setText(LocaleKBCT.GetString("InactiveData"));
+    this.jrbOther.setText(LocaleKBCT.GetString("OtherFile"));
+  }
+//------------------------------------------------------------------------------
+  void jbSelectValidationFile_actionPerformed(ActionEvent e) {
+    JOpenFileChooser file_chooser = new JOpenFileChooser(MainKBCT.getConfig().GetKBCTFilePath());
+    if( !this.jtfValidationFile.getText().equals("") )
+      file_chooser.setSelectedFile(new File(this.jtfValidationFile.getText()));
+
+    file_chooser.setAcceptAllFileFilterUsed(true);
+    if( file_chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION )
+      this.jtfValidationFile.setText(file_chooser.getSelectedFile().getAbsolutePath());
+  }
+//------------------------------------------------------------------------------
+  public String GetValidationFile() throws Exception {
+    if( this.jrbAllItems.isSelected() == true )
+      return this.data.GetFileName();
+
+    if( this.jrbActiveItems.isSelected() == true )
+      return this.data.ActiveFileName();
+
+    if( this.jrbInactiveItems.isSelected() == true )
+      return this.data.InactiveFileName();
+
+    if( this.jrbOther.isSelected() == true )
+      if( this.jtfValidationFile.getText().equals("") == true )
+        throw new Exception(LocaleKBCT.GetString("SelectAValidationFile"));
+      else
+        return this.jtfValidationFile.getText();
+
+    return null;
+  }
+//------------------------------------------------------------------------------
+  public void setEnabled(boolean enabled) {
+    super.setEnabled(enabled);
+    this.jrbAllItems.setEnabled(enabled );
+    this.jrbActiveItems.setEnabled(enabled && (this.data.GetActiveCount() != this.data.DataLength()));
+    this.jrbInactiveItems.setEnabled(enabled && (this.data.GetActiveCount() != this.data.DataLength()));
+    this.jrbOther.setEnabled(enabled);
+    this.jtfValidationFile.setEnabled(enabled && this.jrbOther.isSelected());
+    this.jbSelectValidationFile.setEnabled(enabled && this.jrbOther.isSelected());
+  }
+}

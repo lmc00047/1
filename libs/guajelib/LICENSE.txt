@@ -1,0 +1,132 @@
+************************************************************
+************************************************************
+        USER CONTRACT FOR GUAJE DISTRIBUTION
+************************************************************
+************************************************************
+
+GUAJE was conceived and produced by Jose Maria Alonso Moral as an updated and enhanced version of KBCT.
+GUAJE stands for Generating Understandable and Accurate Fuzzy Models in a Java Environment.
+
+1-Preamble
+
+The authors wish free circulation within the scientific community and professional applications in a cooperative spirit. 
+To this end they have decided to distribute GUAJE as open source software under GPL-v3 license. 
+
+GUAJE is freely available at:
+http://sourceforge.net/p/guajefuzzy/
+
+For further details about GPL-v3 license, go to:
+http://www.gnu.org/copyleft/gpl.html
+
+Notice that, GUAJE copyrights remain the property of Jose Maria Alonso Moral.
+The signing of the present document commits the respect of the GPL license.
+
+GUAJE makes calls to several auxiliar free software tools whose libraries are released
+with GUAJE (respecting their related licenses, of course):
+
+* It calls to jnifis.dll (jnifis.so), a c++ library of FisPro for treating fuzzy logic.
+It is used in order to do inferences, to induce partitions and rules from data.
+You can obtain FisPro at:
+	http://www7.inra.fr/mia/M/fispro/
+	fispro@supagro.inra.fr 
+It is distributed under CeCILL and GSL license. FisPro copyrights remain the property of INRA.
+
+* FingramsGenerator (Stand-alone software tool able to generate and visualize fingrams)
+GUAJE makes use of the library provided by FingramsGenerator to generate and visualize fuzzy inference-grams (fingrams).
+This software is licensed under GNU General Public License version 3.0 (GPLv3)
+http://sourceforge.net/p/fingrams/wiki/Home/
+
+* Batik (SVG Toolkit)
+GUAJE calls to Batik libraries for visualizing the SVG files previously generated with Graphviz.
+Batik is freely available and licensed according to the Apache License, Version 2.0.
+http://xmlgraphics.apache.org/batik/
+
+* Jama (Java Matrix Package)
+GUAJE makes use of Jama-1.0.2.jar for computing metrics related to Fingrams. Namely for computing PageRank.
+Jama is a cooperative product of the MathWorks and the National Institute of Standards and Technology (NIST)
+which has been released freely to the public domain:
+http://math.nist.gov/javanumerics/jama/
+
+* ORE (Ontology Rule Editor)
+GUAJE makes use of ORE libraries for browsing domain ontologies with the aim of making easier 
+expert knowledge extraction tasks. ORE is free software distributed under GPL-v3 license:
+http://sourceforge.net/projects/ore/
+
+* Espresso (Logic Minimization Software)
+GUAJE calls to Espresso as part of the Logical View analysis.
+A free software for heuristic boolean minimization. The original algorithm was developed at IBM by Robert Brayton.
+We have used the implementation freely available at:
+http://www.cs.columbia.edu/~cs4861/s07-sis/
+
+* Weka (Data Mining)
+GUAJE makes use of some of the algorithms (SimpleKmeans and J48) provided with Weka.
+It is freely available under GPL-v3 license:
+http://www.cs.waikato.ac.nz/ml/weka/
+
+* KEEL (Knowledge Extraction based on Evolutionary Learning)
+GUAJE calls to one of the SMOTE algorithms provided with KEEL.
+KEEL is freely available under GPL-v3 license:
+http://sci2s.ugr.es/keel/
+
+* XFUZZY (Fuzzy Logic Design Tool)
+GUAJE calls to one of the packages provided by Xfuzzy, the one responsible for synthesis of Java source code.
+XFUZZY is available under GPL license:
+https://forja.rediris.es/projects/xfuzzy/
+
+* IzPack and PackJacket have been used for building the GUAJE installer. 
+They are freely available at:
+	http://izpack.org 
+	http://packjacket.sf.net
+
+IzPack is published under the terms of Apache License Version 2.0.
+PackJacket is published under GPL-v3 license.
+
+2-The scope of rights granted by GUAJE users
+
+Jose Maria Alonso Moral grants free patrimony rights to use, modify or integrate GUAJE in any other software (as the users see fit) on condition that:
+* Any new copy of GUAJE mentions Jose Maria Alonso Moral's copyright
+* The user must acknowledge reception (and use) of GUAJE by signing the present document (see paragraph 5)
+Any modification in GUAJE itself should be signalled as such and made available to all subsequent users
+* The user respects this license along with the licenses related to all those auxiliar tools called by GUAJE
+
+3- Copying GUAJE
+Jose Maria Alonso Moral grants by this document the right to copy GUAJE in order to facilitate its distribution, in accordance with paragraph 2 above. Any and all copies of GUAJE or related documents must refer to Jose Maria Alonso Moral's copyright and include the present document.
+
+4- Citing GUAJE
+The user agrees to cite GUAJE in any document or published paper using results obtained with GUAJE.
+Please, cite the following references:
+
+* D. P. Pancho, J. M. Alonso, and L. Magdalena, Quest for interpretability-accuracy trade-off supported by Fingrams into the fuzzy modeling tool GUAJE, International Journal of Computational Intelligence Systems, 6(sup1):46-60, 2013.
+
+* J. M. Alonso and L. Magdalena, Generating understandable and accurate fuzzy rule-based systems in a java environment, Lecture Notes in Artificial Intelligence - 9th International Workshop on Fuzzy Logic and Applications, LNAI6857, 212–219, 2011.
+
+* J. M. Alonso and L. Magdalena, HILK++: an interpretability-guided fuzzy modeling methodology for learning readable and comprehensible fuzzy rule-based classifiers, Soft Computing, 15(10):1959–1980, 2011.
+
+5- Agreement
+GUAJE grants to:
+
+User name:
+Address:
+
+A license to use, copy and modify GUAJE, on the terms expressed above. GUAJE is provided as is, without any warranty what so ever.
+Jose Maria Alonso Moral is not to be held responsible in the case of any damage, direct or indirect, caused by the use, the copying or the modifying of GUAJE.
+
+Document to be signed and returned to:
+
+Jose Maria Alonso Moral
+European Centre for Soft Computing
+Research Unit on "Cognitive Computing: Computing with Perceptions"
+Edificio de Investigación
+C/Gonzalo Gutiérrez Quirós, s/n
+33600 Mieres (Asturias)
+Tel. 985.45.65.45 - Fax 985.45.66.99
+
+6- E-mail address
+
+email :  guajefuzzy@gmail.com
+
+Date :
+
+
+
+User signature                   Author signature

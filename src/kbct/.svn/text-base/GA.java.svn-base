@@ -1,0 +1,450 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                           GA.java
+//
+//
+//**********************************************************************
+
+package kbct;
+
+import java.io.File;
+import java.util.Vector;
+
+import kbctAux.MessageKBCT;
+import kbctAux.PerformanceFile;
+import kbctFrames.JKBCTFrame;
+import fis.JExtendedDataFile;
+import fis.JRule;
+import fis.jnifis;
+
+/**
+ * Define a genetic procedure.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+public class GA {
+  protected String kbname;
+  protected long kbptr;
+  protected JKBCT kbct;
+  protected JKBCT kbctTuning;
+  private JExtendedDataFile DataFile;
+  protected double[] OLDevaluation;
+  protected double[] NEWevaluation;
+  protected int[] OLDevalIndex;
+  protected int[] NEWevalIndex;
+  protected int[] Torneo;
+  protected int[] sample;
+  protected int NbGenes;
+  private static double[] ranking;
+  protected int Mu_next;
+  protected double CrossoverProb;
+  protected int PopLength;
+  protected int TournamentSize;
+  protected int NbGenerations;
+  protected boolean firstflag=false;
+  protected int BestGuy= 0;
+  protected boolean goOn= false;
+  protected int initialGeneration;
+  protected int milestoneGeneration;
+  protected String fileLog;
+  protected long[] exc;
+  
+//------------------------------------------------------------------------------
+  public GA(JKBCT kbct, JExtendedDataFile DataFile, long[] exc, String LogName, boolean goOn) {
+	  this.kbct= kbct;
+	  this.exc= exc;
+	  this.DataFile= DataFile;
+	  this.initialGeneration= MainKBCT.getConfig().GetInitialGeneration();
+	  this.milestoneGeneration= MainKBCT.getConfig().GetMilestoneGeneration();
+      //System.out.println("milestoneGeneration="+this.milestoneGeneration);
+      this.goOn= goOn;
+      System.out.println("GO ON -> "+this.goOn);
+
+      //boolean warning= false;
+      this.kbname= this.kbct.GetKBCTFile();
+      //System.out.println("kbname= "+this.kbname);
+      this.kbptr= this.kbct.GetPtr();
+      //System.out.println("kbptr= "+this.kbptr);
+      //System.out.println("LogName="+LogName);
+      this.fileLog= (JKBCTFrame.BuildFile(LogName)).getAbsolutePath();
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Selection based on Universal Stochastic Sampling Baker.
+   * It is ready for maximizing.
+   */
+  /*private void SelectBaker(double[] eval) {
+	  // La seleccion se hara siguiendo el modelo de ranking lineal r_min=0.75
+	  double rank_min=0.75;
+	  // Asignamos a cada elemento su ranking en la poblacion:
+      // rank = long_poblacion-1 para el mejor y ranking = 0 para el peor.
+      this.setRanking(eval);
+      //for (int n=0; n<this.PopLength; n++) {
+    	//  System.out.println("... n="+n+" -> "+this.ranking[n]);
+      //}
+      // Se normaliza para crear las probabilidades
+      double rank_max=2.0-rank_min;
+      double factor=(rank_max-rank_min)/(float)(this.PopLength-1);
+      // Se asigna el numero de copias esperadas a cada cromosoma en funcion de
+      // la probabilidad de seleccion que tenga asociada. Se procede a la seleccion
+      // de los cromosomas segun el metodo de Baker
+      int k=0;
+      double ptr=Rand();
+      double sum=0;
+      int[] sample= new int[this.PopLength];
+      for (int n=0; n<this.PopLength; n++) {
+        double expected=rank_min + this.ranking[n]*factor;
+        sum=sum+expected;
+        while ( (sum>=ptr) && (k<this.PopLength) ) {
+            sample[k++]=n;
+        	ptr++;
+        }
+      }
+      if (k<this.PopLength) {
+         // Aseguro que se seleccione toda la poblacion si falta algun miembro
+         for (int m=k; m<this.PopLength; m++)
+              sample[k]=Randint (0,this.PopLength);
+      }
+      // Se procede a barajar los cromosomas seleccionados para aplicar posterior-
+      // mente los operadores geneticos
+      for (int n=0; n<this.PopLength; n++) {
+  	     int j=Randint (n,this.PopLength-1);
+  	     int temp=sample[j];
+  	     sample[j]=sample[n];
+  	     sample[n]=temp;
+  	  }
+      // Se crea la nueva poblacion a partir de ese baraje
+      for (int n=0; n<this.PopLength; n++) {
+        int kk=sample[n];
+        for (int m=0; m<this.NbGenes; m++) {
+             this.NEWpopulation[n][m]= this.OLDpopulation[kk][m];
+        }
+        this.NEWevaluation[n]= this.OLDevaluation[kk];
+        this.NEWevalIndex[n]= this.OLDevalIndex[kk];
+      }
+  }*/
+//------------------------------------------------------------------------------
+  /**
+   * Rand computes a psuedo-random	float value between 0 and 1, excluding 1.
+   */
+  protected double Rand() {
+	  return Math.random();
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Randint gives an integer value between low and high inclusive.
+   */
+  /*private int Randint() {
+  double aux= this.Rand();
+  if (aux <=0.5)
+      return 0;
+  else
+	  return 1;
+  }*/
+  protected int Randint(int low, int high) {
+	  return (int) (low + (high-low+1)*this.Rand());
+  }
+//------------------------------------------------------------------------------
+  protected int BestGuy() {
+    return (int)ranking[0];
+  }
+//------------------------------------------------------------------------------
+  protected void setRanking() {
+    ranking= new double[this.PopLength];
+    for (int n=0; n<this.PopLength; n++) {
+	  	  ranking[n]=0;
+    }
+    int[] order= this.order();
+    for (int n=0; n<this.PopLength; n++) {
+        ranking[n]=order[n];
+    }
+  }
+//------------------------------------------------------------------------------
+  private int[] order() {
+	    int lim= OLDevaluation.length;
+	    int[] cont= new int[lim];
+	    for (int n=0; n<lim; n++) {
+	  	  cont[n]=0;
+	    }
+	    for (int n=0; n<lim-1;n++) {
+	        // Ordenar segun error
+	  	    double err1= OLDevaluation[n];
+	  	    for (int k=n+1; k<lim; k++) {
+	  		   double err2= OLDevaluation[k];
+	             if (err2 < err1) {
+	          	     cont[k]++; 
+	             } else {
+	          	     cont[n]++;
+	             }
+	  	    }
+	     }
+	    int[] order= new int[lim];
+	    for (int n=0; n<lim; n++) {
+		    order[n]= n+1;
+	    }
+	    for (int n=1; n<lim; n++) {
+	            for (int k=0; k<n; k++) {
+	            	if (cont[order[n]-1]>cont[order[k]-1]) {
+	            		for (int m=n; m>k; m--) {
+	            			order[m]=order[m-1];
+	            		}
+	            		order[k]=n+1;
+	                  break;
+	            	}
+	            }
+	    }
+        return order;
+  }
+//------------------------------------------------------------------------------
+  public JKBCT GetKBCT() {
+	  return this.kbctTuning;
+  }
+//------------------------------------------------------------------------------
+  /**
+   * <p align="left">
+   * Evaluate quality of knowledge base contained in "kbctaux" after merging rules "r1" and "r2".
+   * Return an array with next information:
+   * <ul>
+   *   <li> Performance. </li>
+   *   <li> Coverage. </li>
+   *   <li> Number of error cases. </li>
+   *   <li> Number of ambiguity cases. </li>
+   * </ul>
+   * </p>
+   * @return quality indices [number of output] [ [performance], [coverage], [error cases], [ambiguity cases] ]
+   */
+  public double FISerr(JFIS fiskb, JKBCT kbctaux) {
+    double[] result= null;
+    double err=1;
+    File RF= JKBCTFrame.BuildFile("result");
+    String ResultFile=RF.getAbsolutePath();
+    double BlankThreshold= 0.1;
+    JKBCTOutput jout= kbctaux.GetOutput(1);
+    if (jout.GetType().equals("numerical")) {
+    	// Regression
+	    try {
+	    	result= fiskb.Infer(0, this.DataFile.FileName(), ResultFile, BlankThreshold, false );
+	        double[] resulti= fiskb.InferErrorRegression();
+	        /*
+	        result= fiskb.Infer(0, this.DataFile.FileName(), ResultFile, BlankThreshold, false );
+	        jdfPI.setValue(resulti[0]);
+	        jdfRMSE.setValue(resulti[1]);
+	        jdfMSE.setValue((Math.pow(resulti[1],2))/2);
+	        jdfMAE.setValue(resulti[2]);
+	        jdfCoverage.setValue(result[1]*100);
+	        jdfMaxError.setValue(result[2]);*/
+ 	        //err= resulti[0]; // PI
+ 	        err= resulti[1]; // RMSE
+ 	        //err= resulti[2]; // MAE
+	  } catch( Throwable t ) {
+	      t.printStackTrace();
+          MessageKBCT.Error(null, t);
+	  }
+	  File f = new File("infer.out");
+	  f.delete();
+    } else {
+    	// Classification
+    	try {
+   	      int NbLabels= jout.GetLabelsNumber();
+          int NbTEC=0;
+          int NbACerror=0;
+          int NbUCerror=0;
+          double lim= BlankThreshold;
+          int NbLabOut= jout.GetLabelsNumber();
+          int[] labelsUsed= new int[NbLabOut];
+          for (int n=0; n<NbLabOut; n++)
+      	     labelsUsed[n]=0;
+
+          boolean warnCheck= false;
+          if ( (jout.GetScaleName().equals("user")) && 
+             ( (jout.GetInputInterestRange()[0]!=1) ||
+         	   (jout.GetInputInterestRange()[1]!=jout.GetLabelsNumber()) ) &&
+         	   (jout.isOutput()) &&
+         	   ( (jout.GetType().equals("logical")) || (jout.GetType().equals("categorical")) ) ) {
+                 warnCheck= true;
+          } 
+          jnifis.setUserHomeFisproPath(MainKBCT.getConfig().GetKbctPath());
+          int nbRules= fiskb.NbRules();
+          for (int n = 0; n < nbRules; n++) {
+      	   JRule jr= fiskb.GetRule(n);
+      	   double[] act= jr.Actions();
+      	   if (warnCheck) {
+      		   String[] labNames= jout.GetUserLabelsName();
+                 //System.out.println("act[output_number]="+act[output_number]);
+ 			       for (int k=0; k<labNames.length; k++) {
+      			    if (labNames[k].equals(""+act[0])) {
+     	        	        labelsUsed[k]=1;
+      			    }
+      		   }
+      	   } else {
+      	       labelsUsed[(int)act[0]-1]=1;
+      	   }
+          }  
+          int rem[]= new int[NbLabOut];
+          int cont=1;
+          for (int n=0; n<NbLabOut; n++) {
+             //System.out.println("labelsUsed["+n+"]="+labelsUsed[n]);
+      	     if (labelsUsed[n]==0)
+      		     cont++;
+
+      	     rem[n]=cont;
+          }
+          result= new double[2];
+          double[] inf_result= fiskb.Infer(0, DataFile.ActiveFileName(), ResultFile, 0.1, false);
+          // performance (Fispro)
+          result[0]=inf_result[0];
+          // coverage (Fispro)
+          result[1]=inf_result[1]*100;
+  	      Vector ErrorCases= new Vector();
+          Vector NoClassifErrorCases= new Vector();
+          Vector AmbiguityErrorCases= new Vector();
+          PerformanceFile PerfFile= new PerformanceFile(ResultFile);
+          double[][] data= PerfFile.GetData();
+          int NbData= PerfFile.DataLength();
+          double[] observed= new double[NbData];
+          double[] infered= new double[NbData];
+          double[] output_agg= new double[NbData];
+          double[] warning= new double[NbData];
+          boolean[] warningtie= new boolean[NbData];
+          double[] error= new double[NbData];
+          for (int n = 0; n < NbData; n++) {
+     	    warningtie[n]= false;
+            observed[n] = data[n][0];
+            infered[n] = data[n][1];
+            warning[n] = data[n][2];
+            //System.out.println("n="+n+"  obs="+observed[n]+"  inf="+infered[n]+"  warn="+warning[n]);          
+            fiskb.Infer(this.DataFile.GetData()[n]);
+            double output_infer= fiskb.SortiesObtenues()[0];
+            //System.out.println("out_infer="+output_infer);          
+            if (warnCheck) {
+     		      String[] labNames= jout.GetUserLabelsName();
+                boolean wo= false;
+                boolean wi= false;
+     		      for (int k=0; k<labNames.length; k++) {
+  		        //System.out.println("  labNames["+k+"]="+labNames[k]);          
+  			    if ( (!wi) && (labNames[k].equals(""+output_infer)) ) {
+  	        	    output_infer= k+1;
+  			        //System.out.println("  -> "+String.valueOf(k+1));  
+  	        	    infered[n]= k+1;
+  	        	    wi= true;
+  			    }
+  			    if ( (!wo) && (labNames[k].equals(""+observed[n])) ) {
+  	        	    observed[n]= k+1;
+  	        	    wo= true;
+  			    }
+  			    if (wi && wo)
+  			    	break;
+  		      }
+     	          //System.out.println("--> n="+n+"  obs="+observed[n]+"  inf="+infered[n]);          
+            } 
+            //System.out.println("out_infer_mod="+output_infer);          
+            double[][] d= fiskb.AgregationResult(0);
+            if (output_infer > 0) {
+          	  int ind=(int)output_infer - rem[(int)output_infer-1];
+                double auxfd= d[1][ind];
+                //System.out.println("d.length="+d.length);
+                //System.out.println("d[0].length="+d[0].length);
+                for (int k=0; k<d[0].length; k++) {
+                     //System.out.println("d[0]["+k+"]="+d[0][k]);
+                     //System.out.println("d[1]["+k+"]="+d[1][k]);
+          	       if ( (k!=ind) && (d[1][k]==auxfd) ) {
+          	    	     warningtie[n]= true;
+          	    	     //System.out.println("k="+k+"  ind="+ind+"  d[1][k]="+d[1][k]);
+          	    	     //System.out.println("warningtie[n="+String.valueOf(n+1)+"]");
+          	             break;
+          	       }
+                }
+                output_agg[n]= auxfd;
+            } else
+                output_agg[n]= 0;
+            
+            if ( (observed[n] != infered[n]) || (output_agg[n] <= lim) )
+              error[n] = 1;
+            else {
+              error[n] = 0;
+            }
+          }
+          for (int n = 0; n < NbData; n++) {
+            for (int m = 0; m < NbLabels; m++) {
+              if (observed[n] == m + 1) {
+                if (error[n] != 0) {
+              	  if ( (infered[n]<0) || (output_agg[n]<=lim) ) {
+                        if ( ( ((int)observed[n]-1)!=((int)infered[n]-1) ) || (warningtie[n]) ) {
+                            NoClassifErrorCases.add(new Integer(n + 1));
+                        }
+              	  } else {
+              		  if (warning[n] == 2) {
+                            if ( (infered[n]>0) && (output_agg[n]>lim) ) {
+                              if ( ( ((int)observed[n]-1)!=((int)infered[n]-1) ) || (warningtie[n]) ) {
+                                  AmbiguityErrorCases.add(new Integer(n + 1));
+                              }
+                            }
+              		  } else {
+                            if ( (infered[n]>0) && (output_agg[n]>lim) ) {
+                                ErrorCases.add(new Integer(n + 1));
+                             } 
+              			  
+              		  }
+              	  }
+                } else {
+                    if (warningtie[n]) {
+                        AmbiguityErrorCases.add(new Integer(n + 1));
+                    }
+                }
+              }
+            }
+          }
+          if (!ErrorCases.isEmpty()) {
+              Object[] eca= ErrorCases.toArray();
+              NbTEC=eca.length;
+          }
+          if (!AmbiguityErrorCases.isEmpty()) {
+              Object[] aeca= AmbiguityErrorCases.toArray();
+              NbACerror=aeca.length;
+          }
+          if (!NoClassifErrorCases.isEmpty()) {
+              Object[] nceca= NoClassifErrorCases.toArray();
+              NbUCerror=nceca.length;
+          }
+          err= ((double)(NbTEC + NbACerror + NbUCerror))/((double)NbData);
+        } catch (Throwable t) {
+        	if (!MainKBCT.getConfig().GetTESTautomatic()) {
+        	    t.printStackTrace();
+                MessageKBCT.Error(null, t);
+            }
+        	err= 1;
+            return err;
+    	}
+    }
+    //Performance= result[0];
+    //double aux=(1-result[1]/100)*NbData;
+    //NbUnclassifiedCases= (int)aux;
+    //err= ((double)(Performance + NbUnclassifiedCases))/((double)NbData);
+    return err;
+  }
+}

@@ -1,0 +1,678 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                         JConsistencyFrame.java
+//
+//
+//**********************************************************************
+
+package kbctFrames;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import kbct.InfoConsistency;
+import kbct.JConsistency;
+import kbct.JKBCT;
+import kbct.JSolveProblem;
+import kbct.LocaleKBCT;
+import kbct.MainKBCT;
+import kbctAux.MessageKBCT;
+import kbctAux.Translatable;
+
+import org.freehep.util.export.ExportDialog;
+
+import print.JPrintPreview;
+
+/**
+ * Check consistency of the Knowledge Base (display a window with messages of warnings or errors).
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+
+public class JConsistencyFrame extends JFrame implements Translatable {
+  static final long serialVersionUID=0;	
+  private ImageIcon icon_kbct= LocaleKBCT.getIconGUAJE();
+  private JKBCT kbct;
+  private Enumeration CONSISTENCY_ERRORS;
+  private Enumeration REDUNDANCY_OR_SPECIFICITY_WARNINGS;
+  private Enumeration UNUSUED_INPUTS_WARNINGS;
+  private Enumeration UNUSUED_INPUT_LABELS_WARNINGS;
+  private Enumeration UNUSUED_OUTPUTS_WARNINGS;
+  private Enumeration UNUSUED_OUTPUT_LABELS_WARNINGS;
+  private Vector V_CONSISTENCY_ERRORS;
+  private Vector V_REDUNDANCY_OR_SPECIFICITY_WARNINGS;
+  private Vector V_UNUSUED_INPUTS_WARNINGS;
+  private Vector V_UNUSUED_INPUT_LABELS_WARNINGS;
+  private Vector V_UNUSUED_OUTPUTS_WARNINGS;
+  private Vector V_UNUSUED_OUTPUT_LABELS_WARNINGS;
+  //create the tree
+  DefaultMutableTreeNode node1=  new DefaultMutableTreeNode(LocaleKBCT.GetString("CONSISTENCY_ERRORS"));
+  DefaultMutableTreeNode child1= new DefaultMutableTreeNode(LocaleKBCT.GetString("NO_ERRORS"));
+  JTree jTree1= new JTree(node1);
+  JScrollPane treeView= new JScrollPane(jTree1);
+  DefaultTreeCellRenderer treeRenderer= new DefaultTreeCellRenderer();
+  //create the items in the tree
+  DefaultMutableTreeNode node2= new DefaultMutableTreeNode(LocaleKBCT.GetString("REDUNDANCY_OR_SPECIFICITY_WARNINGS"));
+  DefaultMutableTreeNode child2= new DefaultMutableTreeNode(LocaleKBCT.GetString("NO_ERRORS"));
+  DefaultMutableTreeNode node31= new DefaultMutableTreeNode(LocaleKBCT.GetString("INPUT_WARNINGS"));
+  DefaultMutableTreeNode node3i= new DefaultMutableTreeNode(LocaleKBCT.GetString("UNUSUED_VARIABLES_WARNINGS"));;
+  DefaultMutableTreeNode child3i= new DefaultMutableTreeNode(LocaleKBCT.GetString("NO_ERRORS"));
+  DefaultMutableTreeNode node4i= new DefaultMutableTreeNode(LocaleKBCT.GetString("UNUSUED_LABELS_WARNINGS"));;
+  DefaultMutableTreeNode child4i= new DefaultMutableTreeNode(LocaleKBCT.GetString("NO_ERRORS"));
+  DefaultMutableTreeNode node32= new DefaultMutableTreeNode(LocaleKBCT.GetString("OUTPUT_WARNINGS"));
+  DefaultMutableTreeNode node3o= new DefaultMutableTreeNode(LocaleKBCT.GetString("UNUSUED_VARIABLES_WARNINGS"));;
+  DefaultMutableTreeNode child3o= new DefaultMutableTreeNode(LocaleKBCT.GetString("NO_ERRORS"));
+  DefaultMutableTreeNode node4o= new DefaultMutableTreeNode(LocaleKBCT.GetString("UNUSUED_LABELS_WARNINGS"));;
+  DefaultMutableTreeNode child4o= new DefaultMutableTreeNode(LocaleKBCT.GetString("NO_ERRORS"));
+
+  private Hashtable<String,DefaultMutableTreeNode> nodes;
+  private int ProblemToSolveIndex= -1;
+  private int GroupProblems= 0;
+  private JButton jButtonSolveProblems = new JButton();
+  private JExpertFrame jef;
+  private JMenuItem jMenuPrint = new JMenuItem();
+  private JMenuItem jMenuExport = new JMenuItem();
+  private JMenuItem jMenuHelp = new JMenuItem();
+  private JMenuItem jMenuClose = new JMenuItem();
+  private boolean Node1Expand= false;
+  private boolean Node2Expand= false;
+  private boolean Node31Expand= false;
+  private boolean Node3iExpand= false;
+  private boolean Node4iExpand= false;
+  private boolean Node32Expand= false;
+  private boolean Node3oExpand= false;
+  private boolean Node4oExpand= false;
+
+  private JSolveProblem jsp;
+  private JConsistency jc;
+  //------------------------------------------------------------------------------
+  //Build the frame
+  public JConsistencyFrame(JExpertFrame jef, JKBCT kbct) {
+    this.jef= jef;
+    this.kbct= kbct;
+    JKBCTFrame.AddTranslatable(this);
+  }
+  //------------------------------------------------------------------------------
+  public JConsistencyFrame(JExpertFrame jef, JKBCT kbct, JConsistency jc, boolean Window, boolean[] Expand) {
+    this.jef= jef;
+    nodes= new Hashtable<String,DefaultMutableTreeNode>();
+    this.kbct= kbct;
+    JKBCTFrame.AddTranslatable(this);
+    this.jc= jc;
+    this.jsp= new JSolveProblem(this.kbct, this.jef, this);
+    if (Expand != null) {
+      this.Node1Expand= Expand[0];
+      this.Node2Expand= Expand[1];
+      this.Node31Expand= Expand[2];
+      this.Node3iExpand= Expand[3];
+      this.Node4iExpand= Expand[4];
+      this.Node32Expand= Expand[5];
+      this.Node3oExpand= Expand[6];
+      this.Node4oExpand= Expand[7];
+    }
+    try {
+      this.jc.TranslateVectorsToEnumeration();
+      Vector[] vv= this.jc.generateErrorMessages();
+      this.V_CONSISTENCY_ERRORS= vv[0];
+      this.V_REDUNDANCY_OR_SPECIFICITY_WARNINGS= vv[1];
+      this.V_UNUSUED_INPUTS_WARNINGS= vv[2];
+      this.V_UNUSUED_INPUT_LABELS_WARNINGS= vv[3];
+      this.V_UNUSUED_OUTPUTS_WARNINGS= vv[4];
+      this.V_UNUSUED_OUTPUT_LABELS_WARNINGS= vv[5];
+
+      this.jsp.setJConsistency(jc);
+      this.jsp.TranslateVectorsToEnumeration();
+      this.jsp.generateSolutionMessages();
+      if (Window) {
+        MouseListener ml = new MouseAdapter() {
+           public void mousePressed(MouseEvent e) {
+               boolean input= false;
+               int selRow= jTree1.getRowForLocation(e.getX(), e.getY());
+               TreePath selPath= jTree1.getPathForLocation(e.getX(), e.getY());
+               if(selRow != -1) {
+                   int PathCount= selPath.getPathCount();
+                   DefaultMutableTreeNode dmtn= (DefaultMutableTreeNode)selPath.getLastPathComponent();
+                   if (dmtn.isLeaf()) {
+                     int c=0, d=0;
+                     String UserObject= (String)dmtn.getUserObject();
+                     if (UserObject.equals(LocaleKBCT.GetString("NO_ERRORS")))
+                       PathCount= 7;
+                     else {
+                       TreePath tp= selPath.getParentPath();
+                       c= jTree1.getRowForPath(tp);
+                       if (c>0) {
+                         TreePath tpn= tp.getParentPath();
+                         DefaultMutableTreeNode dmtnAux= (DefaultMutableTreeNode)tpn.getLastPathComponent();
+                         UserObject= (String)dmtnAux.getUserObject();
+                         if (UserObject.equals(LocaleKBCT.GetString("INPUT_WARNINGS"))) {
+                             input= true;
+                         } else if (UserObject.equals(LocaleKBCT.GetString("OUTPUT_WARNINGS"))) {
+                             input= false;
+                         } else if (UserObject.equals(LocaleKBCT.GetString("UNUSUED_VARIABLES_WARNINGS"))) {
+                             d= jTree1.getRowForPath(tpn);
+                             TreePath tpnAux= jTree1.getPathForRow(d-1);
+                             dmtnAux= (DefaultMutableTreeNode)tpnAux.getLastPathComponent();
+                             UserObject= (String)dmtnAux.getUserObject();
+                             if (UserObject.equals(LocaleKBCT.GetString("INPUT_WARNINGS")))
+                                 input= true;
+                             else if (UserObject.equals(LocaleKBCT.GetString("OUTPUT_WARNINGS")))
+                                 input= false;
+                         }
+                         d= jTree1.getRowForPath(tpn);
+                         tpn= jTree1.getPathForRow(d+1);
+                         dmtnAux= (DefaultMutableTreeNode)tpn.getLastPathComponent();
+                         UserObject= (String)dmtnAux.getUserObject();
+                         if (UserObject.equals(LocaleKBCT.GetString("NO_ERRORS")))
+                           d= d+1;
+                       }
+                     }
+                     switch (PathCount) {
+                       case 2: ProblemToSolveIndex=selRow-1;
+                               GroupProblems= 1;
+                               break;
+                       case 3: ProblemToSolveIndex=selRow-c-1;
+                               GroupProblems= 2;
+                               break;
+                       case 5: ProblemToSolveIndex=selRow-d-2;
+                               if (input)
+                                 GroupProblems= 3;
+                               else
+                                 GroupProblems= 4;
+                               break;
+                       case 6: ProblemToSolveIndex=selRow-d-2;
+                               if (input)
+                                 GroupProblems= 3;
+                               else
+                                 GroupProblems= 4;
+                               break;
+                       default: ProblemToSolveIndex=-1;
+                                GroupProblems= 0;
+                                break;
+                     }
+                   }
+                   if(e.getClickCount() == 2) {
+                       SolveProblem();
+                   }
+               }
+           }
+        };
+        jTree1.addMouseListener(ml);
+        jbInit();
+        this.addWindowListener(new WindowAdapter() { public void windowClosing(WindowEvent e) { this_windowClosing(); } });
+        jMenuPrint.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jMenuPrint_actionPerformed(); } });
+        jMenuExport.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jMenuExport_actionPerformed(); } });
+        jMenuHelp.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jMenuHelp_actionPerformed(); } });
+        jMenuClose.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { JConsistencyFrame.this.dispose(); } });
+        jButtonSolveProblems.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jButtonSolveProblems_actionPerformed(); }} );
+      }
+    } catch(Exception e) {
+    	e.printStackTrace();
+        MessageKBCT.Error(this, LocaleKBCT.GetString("Error"), "Error en constructor en JConsistencyFrame: "+e);
+    }
+  }
+  //------------------------------------------------------------------------------
+  public void TranslateVectorsToEnumeration() {
+    this.CONSISTENCY_ERRORS= this.V_CONSISTENCY_ERRORS.elements();
+    this.REDUNDANCY_OR_SPECIFICITY_WARNINGS= this.V_REDUNDANCY_OR_SPECIFICITY_WARNINGS.elements();
+    this.UNUSUED_INPUTS_WARNINGS= this.V_UNUSUED_INPUTS_WARNINGS.elements();
+    this.UNUSUED_INPUT_LABELS_WARNINGS= this.V_UNUSUED_INPUT_LABELS_WARNINGS.elements();
+    this.UNUSUED_OUTPUTS_WARNINGS= this.V_UNUSUED_OUTPUTS_WARNINGS.elements();
+    this.UNUSUED_OUTPUT_LABELS_WARNINGS= this.V_UNUSUED_OUTPUT_LABELS_WARNINGS.elements();
+  }
+  //------------------------------------------------------------------------------
+  //Component initialization
+  private void jbInit() {
+    this.setIconImage(icon_kbct.getImage());
+    this.setState(JConsistencyFrame.NORMAL);
+    JMenuBar jmb= new JMenuBar();
+    jmb.add(this.jMenuPrint);
+    jmb.add(this.jMenuExport);
+    jmb.add(this.jMenuHelp);
+    jmb.add(this.jMenuClose);
+    this.setJMenuBar(jmb);
+    this.getContentPane().setLayout(new GridBagLayout());
+    int n=1;
+    this.TranslateVectorsToEnumeration();
+    //initializes tree and creates tree selection event listener
+    if (!this.CONSISTENCY_ERRORS.hasMoreElements())
+        node1.add(child1);
+    else {
+      while (this.CONSISTENCY_ERRORS.hasMoreElements()) {
+        this.CONSISTENCY_ERRORS.nextElement();
+        DefaultMutableTreeNode dmtn= new DefaultMutableTreeNode("");
+        node1.add(dmtn);
+        nodes.put("CONSISTENCY_ERRORS_"+n, dmtn);
+        n++;
+      }
+    }
+    node1.add(node2);
+    if (!this.REDUNDANCY_OR_SPECIFICITY_WARNINGS.hasMoreElements())
+        node2.add(child2);
+    else {
+      n=1;
+      while (this.REDUNDANCY_OR_SPECIFICITY_WARNINGS.hasMoreElements()) {
+        this.REDUNDANCY_OR_SPECIFICITY_WARNINGS.nextElement();
+        DefaultMutableTreeNode dmtn= new DefaultMutableTreeNode("");
+        node2.add(dmtn);
+        nodes.put("REDUNDANCY_OR_SPECIFICITY_WARNINGS_"+n, dmtn);
+        n++;
+      }
+    }
+    node2.add(node31);
+    node31.add(node3i);
+    if (!this.UNUSUED_INPUTS_WARNINGS.hasMoreElements())
+        node3i.add(child3i);
+    else {
+      n=1;
+      while (this.UNUSUED_INPUTS_WARNINGS.hasMoreElements()) {
+        this.UNUSUED_INPUTS_WARNINGS.nextElement();
+        DefaultMutableTreeNode dmtn= new DefaultMutableTreeNode("");
+        node3i.add(dmtn);
+        nodes.put("UNUSUED_INPUTS_WARNINGS_"+n, dmtn);
+        n++;
+      }
+    }
+    node3i.add(node4i);
+    if (!this.UNUSUED_INPUT_LABELS_WARNINGS.hasMoreElements())
+        node4i.add(child4i);
+    else {
+      n=1;
+      while (this.UNUSUED_INPUT_LABELS_WARNINGS.hasMoreElements()) {
+        this.UNUSUED_INPUT_LABELS_WARNINGS.nextElement();
+        DefaultMutableTreeNode dmtn= new DefaultMutableTreeNode("");
+        node4i.add(dmtn);
+        nodes.put("UNUSUED_INPUT_LABELS_WARNINGS_"+n, dmtn);
+        n++;
+      }
+    }
+    node2.add(node32);
+    node32.add(node3o);
+    if (!this.UNUSUED_OUTPUTS_WARNINGS.hasMoreElements())
+        node3o.add(child3o);
+    else {
+      n=1;
+      while (this.UNUSUED_OUTPUTS_WARNINGS.hasMoreElements()) {
+        this.UNUSUED_OUTPUTS_WARNINGS.nextElement();
+        DefaultMutableTreeNode dmtn= new DefaultMutableTreeNode("");
+        node3o.add(dmtn);
+        nodes.put("UNUSUED_OUTPUTS_WARNINGS_"+n, dmtn);
+        n++;
+      }
+    }
+    node3o.add(node4o);
+    if (!this.UNUSUED_OUTPUT_LABELS_WARNINGS.hasMoreElements())
+        node4o.add(child4o);
+    else {
+      n=1;
+      while (this.UNUSUED_OUTPUT_LABELS_WARNINGS.hasMoreElements()) {
+        this.UNUSUED_OUTPUT_LABELS_WARNINGS.nextElement();
+        DefaultMutableTreeNode dmtn= new DefaultMutableTreeNode("");
+        node4o.add(dmtn);
+        nodes.put("UNUSUED_OUTPUT_LABELS_WARNINGS_"+n, dmtn);
+        n++;
+      }
+    }
+    jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    jTree1.setShowsRootHandles(true);
+    treeView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    treeView.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    treeView.setViewportBorder(BorderFactory.createEtchedBorder());
+    treeView.setBounds(new Rectangle(7, 14, 330, 139));
+    this.getContentPane().add(treeView, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+                    ,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(4, 4, 4, 4), 0, 0));
+    this.getContentPane().add(jButtonSolveProblems, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+                    ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(4, 4, 4, 4), 0, 0));
+    jButtonSolveProblems.setEnabled(true);
+    this.setSize(350, 220);
+    this.setLocation(JChildFrame.ChildPosition(this.jef, this.getSize()));
+    this.Translate();
+    if (this.Node1Expand) {
+      TreeNode[] tn1= this.node1.getPath();
+      TreePath tp1= new TreePath(tn1);
+      this.jTree1.expandPath(tp1);
+    }
+    if (this.Node2Expand) {
+      TreeNode[] tn2= this.node2.getPath();
+      TreePath tp2= new TreePath(tn2);
+      this.jTree1.expandPath(tp2);
+    }
+    if (this.Node31Expand) {
+      TreeNode[] tn31= this.node31.getPath();
+      TreePath tp31= new TreePath(tn31);
+      this.jTree1.expandPath(tp31);
+    }
+    if (this.Node3iExpand) {
+      TreeNode[] tn3i= this.node3i.getPath();
+      TreePath tp3i= new TreePath(tn3i);
+      this.jTree1.expandPath(tp3i);
+    }
+    if (this.Node4iExpand) {
+      TreeNode[] tn4i= this.node4i.getPath();
+      TreePath tp4i= new TreePath(tn4i);
+      this.jTree1.expandPath(tp4i);
+    }
+    if (this.Node32Expand) {
+      TreeNode[] tn32= this.node32.getPath();
+      TreePath tp32= new TreePath(tn32);
+      this.jTree1.expandPath(tp32);
+    }
+    if (this.Node3oExpand) {
+      TreeNode[] tn3o= this.node3o.getPath();
+      TreePath tp3o= new TreePath(tn3o);
+      this.jTree1.expandPath(tp3o);
+    }
+    if (this.Node4oExpand) {
+      TreeNode[] tn4o= this.node4o.getPath();
+      TreePath tp4o= new TreePath(tn4o);
+      this.jTree1.expandPath(tp4o);
+    }
+  }
+  //----------------------------------------------------------------------------
+  public void ReLoad() {
+    //System.out.println("ReLoadData 1");
+	JConsistency jc= new JConsistency(this.jef.Temp_kbct);
+    //System.out.println("ReLoadData 2");
+    jc.AnalysisOfConsistency(false);
+    TreeNode[] tn1= this.node1.getPath();
+    TreePath tp1= new TreePath(tn1);
+    if (this.jTree1.isExpanded(tp1))
+      this.Node1Expand= true;
+
+    TreeNode[] tn2= this.node2.getPath();
+    TreePath tp2= new TreePath(tn2);
+    if (this.jTree1.isExpanded(tp2))
+      this.Node2Expand= true;
+
+    TreeNode[] tn31= this.node31.getPath();
+    TreePath tp31= new TreePath(tn31);
+    if (this.jTree1.isExpanded(tp31))
+      this.Node31Expand= true;
+
+    TreeNode[] tn3i= this.node3i.getPath();
+    TreePath tp3i= new TreePath(tn3i);
+    if (this.jTree1.isExpanded(tp3i))
+      this.Node3iExpand= true;
+
+    TreeNode[] tn4i= this.node4i.getPath();
+    TreePath tp4i= new TreePath(tn4i);
+    if (this.jTree1.isExpanded(tp4i))
+      this.Node4iExpand= true;
+
+    TreeNode[] tn32= this.node32.getPath();
+    TreePath tp32= new TreePath(tn32);
+    if (this.jTree1.isExpanded(tp32))
+      this.Node32Expand= true;
+
+    TreeNode[] tn3o= this.node3o.getPath();
+    TreePath tp3o= new TreePath(tn3o);
+    if (this.jTree1.isExpanded(tp3o))
+      this.Node3oExpand= true;
+
+    TreeNode[] tn4o= this.node4o.getPath();
+    TreePath tp4o= new TreePath(tn4o);
+    if (this.jTree1.isExpanded(tp4o))
+      this.Node4oExpand= true;
+
+    boolean[] Expand= { this.Node1Expand, this.Node2Expand,
+                        this.Node31Expand, this.Node3iExpand, this.Node4iExpand,
+                        this.Node32Expand, this.Node3oExpand, this.Node4oExpand };
+    //System.out.println("ReLoadData 3");
+    JExpertFrame.jcf= new JConsistencyFrame(this.jef, this.jef.Temp_kbct, jc, true, Expand);
+    if (jc.getWARNING())
+        JExpertFrame.jcf.setVisible(true);
+    else
+        MessageKBCT.Information(this, LocaleKBCT.GetString("ConsistencyCheckingGood"));
+    //System.out.println("ReLoadData 4");
+  }
+  //----------------------------------------------------------------------------
+  public void Translate() {
+    this.setTitle(LocaleKBCT.GetString("Consistency"));
+    this.jMenuPrint.setText(LocaleKBCT.GetString("Print"));
+    this.jMenuExport.setText(LocaleKBCT.GetString("Export"));
+    this.jMenuHelp.setText(LocaleKBCT.GetString("Help"));
+    this.jMenuClose.setText(LocaleKBCT.GetString("Close"));
+    this.jButtonSolveProblems.setText(LocaleKBCT.GetString("SolveProblems"));
+    this.node1.setUserObject(LocaleKBCT.GetString("CONSISTENCY_ERRORS"));
+    this.child1.setUserObject(LocaleKBCT.GetString("NO_ERRORS"));
+    this.node2.setUserObject(LocaleKBCT.GetString("REDUNDANCY_OR_SPECIFICITY_WARNINGS"));
+    this.child2.setUserObject(LocaleKBCT.GetString("NO_ERRORS"));
+    this.node31.setUserObject(LocaleKBCT.GetString("INPUT_WARNINGS"));
+    this.node3i.setUserObject(LocaleKBCT.GetString("UNUSUED_VARIABLES_WARNINGS"));
+    this.child3i.setUserObject(LocaleKBCT.GetString("NO_ERRORS"));
+    this.node4i.setUserObject(LocaleKBCT.GetString("UNUSUED_LABELS_WARNINGS"));
+    this.child4i.setUserObject(LocaleKBCT.GetString("NO_ERRORS"));
+    this.node32.setUserObject(LocaleKBCT.GetString("OUTPUT_WARNINGS"));
+    this.node3o.setUserObject(LocaleKBCT.GetString("UNUSUED_VARIABLES_WARNINGS"));
+    this.child3o.setUserObject(LocaleKBCT.GetString("NO_ERRORS"));
+    this.node4o.setUserObject(LocaleKBCT.GetString("UNUSUED_LABELS_WARNINGS"));
+    this.child4o.setUserObject(LocaleKBCT.GetString("NO_ERRORS"));
+    this.jc.TranslateVectorsToEnumeration();
+    Vector[] vv= this.jc.generateErrorMessages();
+    this.V_CONSISTENCY_ERRORS= vv[0];
+    this.V_REDUNDANCY_OR_SPECIFICITY_WARNINGS= vv[1];
+    this.V_UNUSUED_INPUTS_WARNINGS= vv[2];
+    this.V_UNUSUED_INPUT_LABELS_WARNINGS= vv[3];
+    this.V_UNUSUED_OUTPUTS_WARNINGS= vv[4];
+    this.V_UNUSUED_OUTPUT_LABELS_WARNINGS= vv[5];
+
+    this.TranslateVectorsToEnumeration();
+    int n=1;
+    while (this.CONSISTENCY_ERRORS.hasMoreElements()) {
+      InfoConsistency ic= (InfoConsistency)this.CONSISTENCY_ERRORS.nextElement();
+      String error= ic.getError();
+      DefaultMutableTreeNode dmtn= (DefaultMutableTreeNode)nodes.get("CONSISTENCY_ERRORS_"+n);
+      if (error.startsWith("DC")) {
+          error= error.toUpperCase();
+          dmtn.setUserObject(error.substring(2));
+      } else {
+    	  dmtn.setUserObject(error);
+      }
+      n++;
+    }
+    n=1;
+    while (this.REDUNDANCY_OR_SPECIFICITY_WARNINGS.hasMoreElements()) {
+      InfoConsistency ic= (InfoConsistency)this.REDUNDANCY_OR_SPECIFICITY_WARNINGS.nextElement();
+      String warning= ic.getError();
+      DefaultMutableTreeNode dmtn= (DefaultMutableTreeNode)nodes.get("REDUNDANCY_OR_SPECIFICITY_WARNINGS_"+n);
+      if (warning.startsWith("DC")) {
+        warning= warning.toUpperCase();
+        dmtn.setUserObject(warning.substring(2));
+      } else if (warning.startsWith("SC")) {
+          dmtn.setUserObject(warning.substring(2));
+      } else {
+          dmtn.setUserObject(warning);
+      }
+      n++;
+    }
+    n=1;
+    while (this.UNUSUED_INPUTS_WARNINGS.hasMoreElements()) {
+      InfoConsistency ic= (InfoConsistency)this.UNUSUED_INPUTS_WARNINGS.nextElement();
+      String warning= ic.getError();
+      DefaultMutableTreeNode dmtn= (DefaultMutableTreeNode)nodes.get("UNUSUED_INPUTS_WARNINGS_"+n);
+      dmtn.setUserObject(warning);
+      n++;
+    }
+    n=1;
+    while (this.UNUSUED_INPUT_LABELS_WARNINGS.hasMoreElements()) {
+      InfoConsistency ic= (InfoConsistency)this.UNUSUED_INPUT_LABELS_WARNINGS.nextElement();
+      String warning= ic.getError();
+      DefaultMutableTreeNode dmtn= (DefaultMutableTreeNode)nodes.get("UNUSUED_INPUT_LABELS_WARNINGS_"+n);
+      dmtn.setUserObject(warning);
+      n++;
+    }
+    n=1;
+    while (this.UNUSUED_OUTPUTS_WARNINGS.hasMoreElements()) {
+      InfoConsistency ic= (InfoConsistency)this.UNUSUED_OUTPUTS_WARNINGS.nextElement();
+      String warning= ic.getError();
+      DefaultMutableTreeNode dmtn= (DefaultMutableTreeNode)nodes.get("UNUSUED_OUTPUTS_WARNINGS_"+n);
+      dmtn.setUserObject(warning);
+      n++;
+    }
+    n=1;
+    while (this.UNUSUED_OUTPUT_LABELS_WARNINGS.hasMoreElements()) {
+      InfoConsistency ic= (InfoConsistency)this.UNUSUED_OUTPUT_LABELS_WARNINGS.nextElement();
+      String warning= ic.getError();
+      DefaultMutableTreeNode dmtn= (DefaultMutableTreeNode)nodes.get("UNUSUED_OUTPUT_LABELS_WARNINGS_"+n);
+      dmtn.setUserObject(warning);
+      n++;
+    }
+    this.repaint();
+  }
+  //------------------------------------------------------------------------------
+  void jButtonSolveProblems_actionPerformed() { this.SolveProblem(); }
+  //------------------------------------------------------------------------------
+  void SolveProblem() {
+    if (this.ProblemToSolveIndex == -1)
+      MessageKBCT.Information(this, LocaleKBCT.GetString("SelectOneProblemToSolveAndClickTheButton"));
+    else
+      switch (this.GroupProblems) {
+        case 1: this.SolveProblem1((InfoConsistency)this.jsp.getSolutions(1).get(this.ProblemToSolveIndex));
+                break;
+        case 2: this.SolveProblem2((InfoConsistency)this.jsp.getSolutions(2).get(this.ProblemToSolveIndex));
+                break;
+        case 3: this.SolveProblem3and4((InfoConsistency)this.jsp.getSolutions(3).get(this.ProblemToSolveIndex));
+                break;
+        case 4: this.SolveProblem3and4((InfoConsistency)this.jsp.getSolutions(4).get(this.ProblemToSolveIndex));
+                break;
+      }
+  }
+  //------------------------------------------------------------------------------
+  void SolveProblem1(InfoConsistency ic) {
+     this.jsp.SolveProblem1(ic);
+  }
+  //------------------------------------------------------------------------------
+  void SolveProblem2(InfoConsistency ic) {
+     this.jsp.SolveProblem2(ic);
+  }
+  //------------------------------------------------------------------------------
+  void SolveProblem3and4(InfoConsistency ic) {
+     this.jsp.SolveProblem3and4(ic);
+  }
+  //------------------------------------------------------------------------------
+  public void this_windowClosing() {
+    JExpertFrame.jcf= null;
+    this.dispose();
+    JKBCTFrame.RemoveTranslatable(this);
+  }
+//------------------------------------------------------------------------------
+  void jMenuPrint_actionPerformed() {
+    try {
+      Printable p= new Printable() {
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+          if (pageIndex >= 1)
+              return Printable.NO_SUCH_PAGE;
+          else
+              return JConsistencyFrame.this.print(graphics, pageFormat);
+        }
+      };
+      new JPrintPreview(this.jef, p);
+    } catch (Exception ex) {
+    	ex.printStackTrace();
+    	MessageKBCT.Error(null, ex); 
+    }
+  }
+//------------------------------------------------------------------------------
+  void jMenuExport_actionPerformed() {
+    try {
+      ExportDialog export= new ExportDialog();
+      JPanel panel = new JPanel() {
+   	    static final long serialVersionUID=0;	
+        public void paint(Graphics g) {
+          JConsistencyFrame.this.treeView.paint(g);
+          g.translate(0, JConsistencyFrame.this.treeView.getHeight());
+          JConsistencyFrame.this.treeView.paint(g);
+          g.setColor(Color.gray);
+          g.drawLine(0,0,0, JConsistencyFrame.this.treeView.getHeight()-1);
+        }
+      };
+      panel.setSize(new Dimension(this.treeView.getWidth(), this.treeView.getHeight()));
+      export.showExportDialog( panel, "Export view as ...", panel, "export" );
+    } catch (Exception ex) {
+    	ex.printStackTrace();
+    	MessageKBCT.Error(null, ex);
+    }
+  }
+//------------------------------------------------------------------------------
+  public int print(java.awt.Graphics g, PageFormat pageFormat) throws PrinterException {
+    java.awt.Graphics2D g2 = (java.awt.Graphics2D) g;
+    double scalew = 1;
+    double scaleh = 1;
+    double pageHeight = pageFormat.getImageableHeight();
+    double pageWidth = pageFormat.getImageableWidth();
+    if (getWidth() >= pageWidth)
+      scalew = pageWidth / getWidth();
+
+    if (getHeight() >= pageHeight)
+      scaleh = pageWidth / getHeight();
+
+    g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+    g2.scale(scalew, scaleh);
+    this.treeView.print(g2);
+    return Printable.PAGE_EXISTS;
+  }
+//------------------------------------------------------------------------------
+  void jMenuHelp_actionPerformed() {
+    MainKBCT.setJB(new JBeginnerFrame("expert/ExpertButtonConsistency.html"));
+	MainKBCT.getJB().setVisible(true);
+	SwingUtilities.updateComponentTreeUI(this);
+  }
+}

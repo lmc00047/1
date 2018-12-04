@@ -1,0 +1,7 @@
+graph "" {
+	name=FINGRAM; ratio=auto; size="10,10"; overlap="scale"; nodesep=0.3; center=true; truecolor=true;
+
+	Rule7 [shape=circle,height=3.932,width=3.932,fixedsize=true,peripheries=3,color="#d3d3d3ff",fillcolor="#d3d3d3;0.8270000219345093:white",fontsize=15.399999618530273,fontcolor=black,style=wedged,label="R7\n (cov=0.293) \n (G= 0.693) \n (C1.0=0.841)",tooltip="Rule7:  IF AlcalinityOfAsh is more or less (more or less (more or less (high))) AND flavanoids is high AND Proline is high THEN Class is 1.0 (cov=0.293 ; G= 0.693 ; C1.0=0.841)"];
+	Rule8 [shape=circle,height=3.406,width=3.406,fixedsize=true,peripheries=2,color="#d3d3d3ff",fillcolor="#d3d3d3;0.16699999570846558:white",fontsize=15.399999618530273,fontcolor=black,style=wedged,label="R8\n (cov=0.241) \n (G= 0.484) \n (C1.0=0.705)",tooltip="Rule8:  IF flavanoids is high OR very high AND Proline is very high THEN Class is 1.0 (cov=0.241 ; G= 0.484 ; C1.0=0.705)"];
+	  
+	Rule7 -- Rule8 [penwidth=8.478,weight=25.224,color=green,fontsize=15,labelfontcolor=green,label="0.748",tooltip="R7 -- R8 (0.748)",title="R7 -- R8 (0.748)"];}

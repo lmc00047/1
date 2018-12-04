@@ -1,0 +1,52 @@
+[Interface]
+DataSep=,
+
+[System]
+Name='New Knowledge Base'
+Ninputs=2
+Noutputs=1
+Nrules=3
+Nexceptions=0
+Conjunction='prod'
+MissingValues='random'
+
+
+[Input1]
+Active='yes'
+Name='Total number of labels defined in the knowledge base'
+Range=[   2.000,   117.000]
+NMFs=4
+MF1='low','SemiTrapezoidalInf',[   2.000,   2.000,   59.500]
+MF2='average','triangular',[   2.000,   59.500,   117.000]
+MF3='high','SemiTrapezoidalSup',[   59.500,   117.000,   117.000]
+MF4='NOT(low)','SemiTrapezoidalSup',[   2.000,   59.500,   117.000]
+
+
+[Input2]
+Active='yes'
+Name='Partition Interpretability'
+Range=[   0.000,   1.000]
+NMFs=2
+MF1='low','SemiTrapezoidalInf',[   0.000,   0.000,   1.000]
+MF2='high','SemiTrapezoidalSup',[   0.000,   1.000,   1.000]
+
+[Output1]
+Nature='fuzzy'
+Defuzzification='sugeno'
+Disjunction='sum'
+DefaultValue=     -1.000
+Classif='yes'
+Active='yes'
+Name='Data base interpretability'
+Range=[   0.000,   1.000]
+NMFs=2
+MF1='low','SemiTrapezoidalInf',[   0.000,   0.000,   1.000]
+MF2='high','SemiTrapezoidalSup',[   0.000,   1.000,   1.000]
+
+[Rules]
+1, 0,    2.000, 
+0, 2,    2.000, 
+4, 1,    1.000, 
+
+[Exceptions]
+

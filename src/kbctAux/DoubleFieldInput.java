@@ -1,0 +1,100 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                          DoubleFieldInput.java
+//
+//
+//**********************************************************************
+package kbctAux;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+
+import kbct.JVariable;
+
+/**
+ * Define a particular case of DoubleField.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+
+//------------------------------------------------------------------------------
+public class DoubleFieldInput extends DoubleField {
+  static final long serialVersionUID=0;	
+  private JVariable Input;
+  private fis.JInput JInput;
+  private boolean JInputFLAG= false;
+  private double [] Range;
+//------------------------------------------------------------------------------
+  public JVariable Input() { return this.Input; }
+//------------------------------------------------------------------------------
+  public void SetInput( JVariable input ) throws Throwable {
+    this.Input = input;
+    Range = this.Input.GetInputInterestRange();
+    this.JInputFLAG= false;
+  }
+//------------------------------------------------------------------------------
+  public void SetInput( fis.JInput input ) throws Throwable {
+    this.JInput = input;
+    Range = this.JInput.GetRange();
+    this.JInputFLAG= true;
+  }
+//------------------------------------------------------------------------------
+  public DoubleFieldInput( JVariable input ) throws Throwable { this.SetInput(input); }
+//------------------------------------------------------------------------------
+  public DoubleFieldInput( fis.JInput input ) throws Throwable { this.SetInput(input); }
+//------------------------------------------------------------------------------
+  protected void ColorizeValue( double value ) {
+    try {
+      if (this.JInputFLAG)
+        Range = JInput.GetRange();
+      else
+        Range = Input.GetInputInterestRange();
+    } catch( Throwable t ) {}
+    if( (value < Range[0]) || (value > Range[1]) )
+      this.setForeground(Color.red);
+    else
+      this.setForeground(Color.black);
+  }
+//------------------------------------------------------------------------------
+  public void setValue(double value) {
+    super.setValue(value);
+    ColorizeValue( value );
+  }
+//------------------------------------------------------------------------------
+  public void actionPerformed(ActionEvent e) {
+    this.setValue(this.getValue());
+    super.actionPerformed(e);
+  }
+//------------------------------------------------------------------------------
+  public void FocusLost() {
+    if( this.isEditable() == true ) {
+      this.setValue(this.getValue());
+      super.FocusLost();
+    }
+  }
+}

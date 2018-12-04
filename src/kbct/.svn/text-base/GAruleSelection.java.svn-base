@@ -1,0 +1,725 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                           GeneticTuning.java
+//
+//
+//**********************************************************************
+
+package kbct;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.PrintStream;
+
+import kbctAux.MessageKBCT;
+import kbctFrames.JKBCTFrame;
+import kbctFrames.JKBInterpretabilityFrame;
+import KB.Rule;
+import fis.JExtendedDataFile;
+
+/**
+ * Make a GA rule selection of the Rule Base.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+public class GAruleSelection extends GA {
+  private double w1;
+  private double w2;
+  private double MutProb0;
+  private double MutProb1;
+  private int[][] OLDpopulation;
+  private int[][] NEWpopulation;
+  private int[][] Hijos;
+
+//------------------------------------------------------------------------------
+  public GAruleSelection(JKBCT kbct, JExtendedDataFile DataFile, long[] exc, String LogName, boolean goOn) {
+	  super(kbct,DataFile,exc,LogName,goOn);
+      boolean warning= false;
+      if (this.goOn) {
+    	  File f= new File(this.fileLog);
+    	  if (!f.exists()) {
+    		  warning= true;
+    	  } else
+    	      this.readSavedConfiguration();
+    	  
+    	  f=null;
+      }
+      if (!warning)
+	      this.begin();
+      else
+    	  MessageKBCT.Error("fileLog does not exist", null);
+  }
+//------------------------------------------------------------------------------
+  private void begin() {
+	  this.init();
+	  boolean classifFlag= true;
+      if (this.kbct.GetOutput(1).GetType().equals("numerical")) { 
+          classifFlag= false;
+      }
+      if (!this.goOn) {
+	    MessageKBCT.WriteLogFile("----------------------------------", "Optimization");
+   	    //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+        OLDevaluation= this.evaluatePopulation("OLD",0);
+   	    //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+        //jnikbct.cleanHashtable(this.kbptr);
+        jnikbct.cleanHashtable(this.kbptr,this.exc);
+       	    //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+            //this.kbct= new JKBCT(this.kbname);
+            //this.kbptr= this.kbct.GetPtr();
+       	    //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+    	String intIndex="";
+        int iindex= MainKBCT.getConfig().GetRuleSelectionInterpretabilityIndex();
+    	if (iindex==0) {
+    		// NR
+    		intIndex= "NR/max"; 
+    	} else if (iindex==1) {
+    		// TRL
+    		intIndex= "TRL/max"; 
+    	} else if (iindex==2) {
+            // Max SFR
+    		intIndex= "MaxSFR/max";
+    	} else if (iindex==3) {
+            // Average SFR
+    		intIndex= "AvSFR/max";
+    	} else if (iindex==4) {
+            // Min SFR
+    		intIndex= "MinSFR/max";
+    	} else if (iindex==5) {
+            // AccRuleComp
+    		intIndex= "AccRuleComp/max";
+    	} else if (iindex==6) {
+            // HILKintIndex
+    		intIndex= "HILKintIndex";
+    	} else if (iindex==7) {
+            // LogView
+    		intIndex= "LogView";
+    	}
+        if (classifFlag) {
+            MessageKBCT.WriteLogFile("    "+LocaleKBCT.GetString("OldError")+" (w1*(1-ACCBT0)+w2*"+intIndex+") = "+OLDevaluation[0], "Optimization");
+        } else {
+            MessageKBCT.WriteLogFile("    "+LocaleKBCT.GetString("OldError")+" (w1*(1-RMSE)+w2*"+intIndex+") = "+OLDevaluation[0], "Optimization");
+        }
+      } else {
+    	  this.exchange();
+      }
+      boolean end= false;
+      //long index=this.kbptr;
+      int n=0;
+      int lim= 6*this.NbGenes;
+      if (this.milestoneGeneration > 0)
+    	  lim= this.milestoneGeneration;
+      else if (this.goOn)
+    	  lim= 4*lim;
+
+      System.out.println("init="+String.valueOf(this.initialGeneration+1));
+      if (this.initialGeneration+lim > this.NbGenerations) {
+          System.out.println("milestone="+this.NbGenerations);
+          MessageKBCT.WriteLogFile("    "+LocaleKBCT.GetString("MilestoneGeneration")+"= "+this.NbGenerations, "Optimization");
+      } else {
+          System.out.println("milestone="+String.valueOf(this.initialGeneration+lim));
+          MessageKBCT.WriteLogFile("    "+LocaleKBCT.GetString("MilestoneGeneration")+"= "+String.valueOf(this.initialGeneration+lim), "Optimization");
+      }  
+      for (n=this.initialGeneration; n<this.NbGenerations; n++) {
+           //System.out.println("n="+n);
+    	   long TM=Runtime.getRuntime().totalMemory();
+	       long MM=Runtime.getRuntime().maxMemory();
+	       if ( (TM>=MM) || (n > this.initialGeneration+lim-1) ) {
+	    	   if (TM >=MM) {
+	        	   System.out.println("TM="+TM);
+	        	   System.out.println("MM="+MM);
+	    	       System.out.println("Out of Memory");
+                   if (!MainKBCT.getConfig().GetTESTautomatic()) {
+	    	           String message= LocaleKBCT.GetString("WarningGAruleSelectionHalted")+"\n"+
+                       LocaleKBCT.GetString("WarningJVMOutOfMemory")+"\n"+
+                       LocaleKBCT.GetString("WarningGAruleSelectionSaveCurrentPopulation")+" "+this.fileLog+"."+"\n"+
+                       LocaleKBCT.GetString("WarningReleaseMemory")+"\n"+
+                       LocaleKBCT.GetString("WarningGAruleSelectionJavaOutOfMemory1")+"\n"+
+                       LocaleKBCT.GetString("WarningGAruleSelectionJavaOutOfMemory2");
+                       if (!MainKBCT.flagHalt) {
+	    	               MessageKBCT.Information(null, message);
+	    	               MainKBCT.flagHalt= true;
+                       }
+                   }
+	    	   }
+	    	   MainKBCT.getConfig().SetRuleSelectionInitialGeneration(n);
+               this.saveCurrentConfiguration(n);
+	    	   MainKBCT.getConfig().SetRuleSelectionInitialGeneration(0);
+               break;
+	       } else {
+	           System.out.println("Generation: "+String.valueOf(n+1));
+    	       MessageKBCT.WriteLogFile("    "+LocaleKBCT.GetString("Generation")+"= "+String.valueOf(n+1), "Optimization");
+          	   //System.out.println(" -> id="+jnikbct.getId());
+          	   //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+    	       /* Seleccion mediante el metodo de Torneo Binario */
+	           this.SelectTournament();
+	           /* Cruce */
+	           this.UniformCrossover(n);
+	           /* Mutacion */
+	           this.MutationFlipFlopRandom();
+	           /* Seleccion elitista */
+	           this.setRanking();
+	           this.Elitist();
+	           /* Evaluacion de los individuos de la poblacion actual */
+	           NEWevaluation= this.evaluatePopulation("NEW",n);
+	           this.exchange();
+	           MessageKBCT.WriteLogFile("----------------------------------", "Optimization");
+	           this.setRanking();
+	           int bg=this.BestGuy();
+	           if (NEWevaluation[bg-1]==1) {
+                   end= true;
+                   break;
+	           }
+          	   //System.out.println(" -> index="+index+"  ptr2="+ptr2);
+          	   //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+               //jnikbct.cleanHashtable(this.kbptr);
+	           jnikbct.cleanHashtable(this.kbptr,this.exc);
+	               //this.kbct= new JKBCT(this.kbname);
+	               //this.kbptr= this.kbct.GetPtr();
+        	   //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+	       }
+      }
+      if ( (end) || (n==this.NbGenerations) ) {
+     	MainKBCT.getConfig().SetRuleSelectionInitialGeneration(LocaleKBCT.DefaultRuleSelectionInitialGeneration());
+        int bg= this.BestGuy();
+    	String intIndex="";
+        int iindex= MainKBCT.getConfig().GetRuleSelectionInterpretabilityIndex();
+    	if (iindex==0) {
+    		// NR
+    		intIndex= "NR/max"; 
+    	} else if (iindex==1) {
+    		// TRL
+    		intIndex= "TRL/max"; 
+    	} else if (iindex==2) {
+            // Max SFR
+    		intIndex= "MaxSFR/max";
+    	} else if (iindex==3) {
+            // Average SFR
+    		intIndex= "AvSFR/max";
+    	} else if (iindex==4) {
+            // Min SFR
+    		intIndex= "MinSFR/max";
+    	} else if (iindex==5) {
+            // AccRuleComp
+    		intIndex= "AccRuleComp/max";
+    	} else if (iindex==6) {
+            // HILKintIndex
+    		intIndex= "HILKintIndex";
+    	} else if (iindex==7) {
+            // LogView
+    		intIndex= "LogView";
+    	}
+        if (classifFlag) {
+            MessageKBCT.WriteLogFile("    "+LocaleKBCT.GetString("BestError")+" (w1*(1-ACCBT0)+w2*"+intIndex+") = "+NEWevaluation[bg-1], "Optimization");
+        } else {
+            MessageKBCT.WriteLogFile("    "+LocaleKBCT.GetString("BestError")+" (w1*(RMSE)+w2*"+intIndex+") = "+NEWevaluation[bg-1], "Optimization");
+        }
+	    File tempkb= JKBCTFrame.BuildFile("temprboptGT.kb.xml");
+        String kb_name= tempkb.getAbsolutePath();
+        //System.out.println("Update final KB: "+this.kbct.GetNbRules());
+        this.kbctTuning= new JKBCT(this.kbct);
+        this.kbctTuning.SetKBCTFile(kb_name);
+        try {
+          //System.out.println("Update final KB");
+          this.kbctTuning=this.UpdateKBCT(this.kbctTuning,"NEW",bg-1);
+          this.kbctTuning.Save();
+        } catch (Throwable t) {
+    	    t.printStackTrace();
+    	    MessageKBCT.Error(null, t);
+        }
+      }
+  }
+//------------------------------------------------------------------------------
+  private void init() {
+      this.NbGenes= this.kbct.GetNbActiveRules();
+	  
+	  this.NbGenerations= MainKBCT.getConfig().GetRuleSelectionNbGenerations();
+      if (!this.goOn) {
+        MessageKBCT.WriteLogFile(LocaleKBCT.GetString("NbGenerations")+"= "+this.NbGenerations, "Optimization");
+      }
+	  this.PopLength= MainKBCT.getConfig().GetRuleSelectionPopulationLength();
+      if (!this.goOn) {
+        MessageKBCT.WriteLogFile(LocaleKBCT.GetString("PopLength")+"= "+this.PopLength, "Optimization");
+      }
+	  this.TournamentSize= MainKBCT.getConfig().GetRuleSelectionTournamentSize();
+      if (!this.goOn) {
+        MessageKBCT.WriteLogFile(LocaleKBCT.GetString("TournamentSize")+"= "+this.TournamentSize, "Optimization");
+      }
+      this.MutProb0= MainKBCT.getConfig().GetRuleSelectionMutationProb();
+      if (!this.goOn) {
+	    MessageKBCT.WriteLogFile(LocaleKBCT.GetString("MutProb")+"(1 -> 0)= "+this.MutProb0, "Optimization");
+      }
+      this.MutProb1= MainKBCT.getConfig().GetRuleSelectionMutationProb()/this.NbGenes;
+      if (!this.goOn) {
+	    MessageKBCT.WriteLogFile(LocaleKBCT.GetString("MutProb")+"(0 -> 1)= "+this.MutProb1, "Optimization");
+      }
+	  this.CrossoverProb= MainKBCT.getConfig().GetRuleSelectionCrossoverProb();
+      if (!this.goOn) {
+        MessageKBCT.WriteLogFile(LocaleKBCT.GetString("CrossoverProb")+"= "+this.CrossoverProb, "Optimization");
+      }
+      this.w1= MainKBCT.getConfig().GetRuleSelectionW1();
+      if (!this.goOn) {
+	    MessageKBCT.WriteLogFile("w1= "+this.w1, "Optimization");
+      }
+      this.w2= MainKBCT.getConfig().GetRuleSelectionW2();
+      if (!this.goOn) {
+	    MessageKBCT.WriteLogFile("w2= "+this.w2, "Optimization");
+      }
+
+      int[] initPob= new int[this.NbGenes];
+      for (int n=0; n<this.NbGenes; n++) {
+    	  initPob[n]= 1;
+      }
+      if (!this.goOn) {
+        MessageKBCT.WriteLogFile(LocaleKBCT.GetString("NbGenes")+"= "+this.NbGenes, "Optimization");
+      }
+      if (!this.goOn) {
+        OLDpopulation= new int[this.PopLength][this.NbGenes];
+	    for (int n=0; n<this.PopLength; n++) {
+		  for (int k=0; k<this.NbGenes; k++) {
+			  if (n==0) {
+				  OLDpopulation[n][k]= initPob[k];
+			  } else {
+				  OLDpopulation[n][k]= this.Randint(0,1);
+     		  }
+		  }
+	    }
+	    NEWpopulation= new int[this.PopLength][this.NbGenes];
+	    for (int n=0; n<this.PopLength; n++) {
+		  for (int k=0; k<this.NbGenes; k++) {
+			  NEWpopulation[n][k]=OLDpopulation[n][k];
+		  }
+	    }
+	    NEWevalIndex= new int[this.PopLength];
+	    OLDevalIndex= new int[this.PopLength];
+	    NEWevaluation= new double[this.PopLength];
+	    OLDevaluation= new double[this.PopLength];
+	    for (int n=0; n<this.PopLength; n++) {
+		  NEWevalIndex[n]=0;
+		  OLDevalIndex[n]=0;
+		  NEWevaluation[n]=0;
+		  OLDevaluation[n]=0;
+	    }
+    }
+	Torneo= new int[this.TournamentSize];
+	sample= new int[this.PopLength];
+	this.Hijos= new int[2][this.NbGenes];
+  }
+//------------------------------------------------------------------------------
+  protected void exchange() {
+      for (int n=0; n<this.PopLength; n++) {
+    	  OLDevaluation[n]= NEWevaluation[n];
+    	  OLDevalIndex[n]= NEWevalIndex[n];
+          for (int m=0; m<this.NbGenes; m++) {
+        	  OLDpopulation[n][m]= NEWpopulation[n][m];
+          }
+      }
+  }
+//------------------------------------------------------------------------------
+  private double[] evaluatePopulation(String pop, int ngen) {
+	  int lim;
+	  if (pop.equals("NEW"))
+	      lim= NEWpopulation.length;
+	  else if (pop.equals("OLD"))
+	      lim= OLDpopulation.length;
+	  else
+		  lim= this.Hijos.length;
+
+	  double[] result= new double[lim];
+	  for (int n=0; n<result.length; n++) {
+		  if ( ( (pop.equals("NEW")) && ( (NEWevalIndex==null) || ( (NEWevalIndex != null) && (NEWevalIndex[n]==0) ) ) ) ||
+			   ( (pop.equals("OLD")) && ( (OLDevalIndex==null) || ( (OLDevalIndex != null) && (OLDevalIndex[n]==0) ) ) ) ||
+			   (pop.equals("CROSSOVER")) ) {
+       	    //System.out.println("n="+n);
+       	    //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+	        File tempkb= JKBCTFrame.BuildFile("temprboptGARS"+ngen+"."+n+".kb.xml");
+	        String kb_name= tempkb.getAbsolutePath();
+            JKBCT kbctaux= new JKBCT(this.kbct);
+            kbctaux.SetKBCTFile(kb_name);
+       	    long ptr1= kbctaux.GetPtr();
+            try {
+          	    if (pop.equals("NEW"))
+          	      kbctaux= this.UpdateKBCT(kbctaux,"NEW",n);
+          	    else if (pop.equals("OLD"))
+            	  kbctaux= this.UpdateKBCT(kbctaux,"OLD",n);
+        	    else
+            	  kbctaux= this.UpdateKBCT(kbctaux,"CROSSOVER",n);
+          	    
+           	    long ptr2= kbctaux.GetPtr();
+        	    //System.out.println(" -> ptr1="+ptr1+"  ptr2="+ptr2);
+        	    for (long i=ptr1; i<ptr2; i++) {
+        		     jnikbct.DeleteKBCT(i);
+        	    }
+        	    //System.out.println(" -> htsize="+jnikbct.getHashtableSize());
+                kbctaux.Save();
+		        File tempfis= JKBCTFrame.BuildFile("temprboptGARS.fis");
+	            String fis_name= tempfis.getAbsolutePath();
+	            kbctaux.SaveFIS(fis_name);
+	            JFIS jfis= new JFIS(fis_name);
+	            //result[n]= this.w1*this.FISaccuracy(jfis, kbctaux)+this.w2*this.KBCTinterpretability(kbctaux);
+	            result[n]= this.w1*this.FISerr(jfis, kbctaux)+this.w2*this.KBCTinterpretability(kbctaux);
+	            if (pop.equals("NEW"))
+	                NEWevalIndex[n]=1;
+	            else if (pop.equals("OLD"))
+	                OLDevalIndex[n]=1;
+
+	            jfis.Close();
+	            jfis=null;
+	            kbctaux.Close();
+	            kbctaux=null;
+	            tempkb=null;
+	            tempfis=null;
+            } catch (Throwable t) {
+        	    t.printStackTrace();
+        	    MessageKBCT.Error(null, t);
+            }
+	    } else {
+	    	result[n]=NEWevaluation[n];
+	    }
+	  }
+	  return result;
+  }
+//------------------------------------------------------------------------------
+  private JKBCT UpdateKBCT(JKBCT kbctnew, String popul, int m) {
+      int NbRules= kbctnew.GetNbRules();
+      int NbActRules= kbctnew.GetNbActiveRules(); 
+      //System.out.println("NbRules -> "+NbRules);
+      //System.out.println("NbActRules -> "+NbActRules);
+      //System.out.println("NbRules to remove="+NbRules);
+      for (int n=NbRules-1; n>=0; n--) {
+    	   if (kbctnew.GetRule(n+1).GetActive()) {
+               //System.out.println("Remove Rules: n="+n);
+    	       kbctnew.RemoveRule(n);
+    	   }
+      }
+      //System.out.println("NbRules (original rules)="+this.kbct.GetNbRules());
+      for (int n=0; n<NbActRules; n++) {
+          int warning= 0;
+    	  if (popul.equals("NEW"))
+		      warning= NEWpopulation[m][n];
+          else if (popul.equals("OLD"))
+        	  warning= OLDpopulation[m][n];
+          else
+        	  warning= this.Hijos[m][n];
+          
+    	  if (warning==1)
+    		  kbctnew.AddRule(this.kbct.GetRule(n+1));
+      }
+      if (kbctnew.GetNbActiveRules()==0) {
+          int NbOutLabs= this.kbct.GetOutput(1).GetLabelsNumber();
+          int[] cont= new int[NbOutLabs];
+          for (int n=0; n<NbOutLabs; n++) {
+        	   cont[n]=0;
+          }
+    	  for (int n=0; n<NbRules; n++) {
+               Rule r= this.kbct.GetRule(n+1);
+               int out= r.Get_out_labels_number()[0];
+               if (cont[out-1]==0) {
+            	   cont[out-1]=1;
+         		   kbctnew.AddRule(r);
+               }
+          }    	  
+      }
+      return kbctnew;
+  }
+//------------------------------------------------------------------------------
+  private void UniformCrossover(int ngen) {
+	   int mom, dad, ultimo;
+	   int last = 1;
+	   if (firstflag) {
+	     last= (int) (this.PopLength * this.CrossoverProb);
+	  	 firstflag=false;
+	   }
+       for (mom=ultimo=0; mom<last; mom+=2) {
+	     dad=mom+1;
+	  	 ultimo++;
+	     // Se obtienen dos hijos
+  	     int[] Padre= NEWpopulation[dad];
+	     int[] Madre= NEWpopulation[mom];
+	  	 for (int n=0; n<this.NbGenes; n++) {
+           this.Hijos[0][n]= Madre[n]; 
+           this.Hijos[1][n]= Padre[n];
+	  	 }
+         if (this.Rand() > this.CrossoverProb) {
+	  	   for (int n=0; n<this.NbGenes; n++) {
+	  	      if (this.Randint(0,1)==1) {
+	              this.Hijos[0][n]= Padre[n]; 
+	              this.Hijos[1][n]= Madre[n];
+              }
+	      	  NEWpopulation[mom][n]=this.Hijos[0][n];
+	      	  NEWpopulation[dad][n]=this.Hijos[1][n];
+	  	   }
+         }
+	  	 // Se evaluan los dos descendientes 
+	  	 double[] eval= this.evaluatePopulation("CROSSOVER",ngen);/////////////
+	     // Se actualiza el fitness de los descendientes
+	     NEWevaluation[mom]= eval[0];
+	     NEWevaluation[dad]= eval[1];
+	     NEWevalIndex[mom]=1;
+	     NEWevalIndex[dad]=1;
+	   }
+  }
+//------------------------------------------------------------------------------
+  private void MutationFlipFlopRandom() {
+	  this.Mu_next=0;
+	  int posiciones=this.NbGenes*this.PopLength;
+
+	  if (this.MutProb0>0)
+	   while (Mu_next<posiciones) {
+	     /* Se determina el cromosoma y el gen que corresponden a la posicion que
+	        se va a mutar */
+	     int i=Mu_next/this.NbGenes;
+	 	 int j=Mu_next%this.NbGenes;
+
+	     /* Se efectua la mutacion sobre ese gen */
+         // Mutacion flip-flop
+         if ( (NEWpopulation[i][j]==0) && (this.Rand() > this.MutProb1) )
+        	 NEWpopulation[i][j]=1;
+         
+         if ( (NEWpopulation[i][j]==1) && (this.Rand() > this.MutProb0) )
+        	 NEWpopulation[i][j]=0;
+        	 
+		 NEWevalIndex[i]=0;
+
+	     /* Se calcula la siguiente posicion a mutar */
+	 	 if (this.MutProb0<1) {
+	         double m=Rand();
+	         Mu_next+= Math.ceil(Math.log(m)/Math.log(1.0-this.MutProb0));
+	     } else {
+	 	     Mu_next+=1;
+	     }
+	  }
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Evaluate interpretability of the knowledge base contained in "kbctaux".
+   */
+  public double KBCTinterpretability(JKBCT kbctaux) {
+      // LLamar a JInterpretability y calcular la interpretabilidad para el operador seleccionado
+      int iindex= MainKBCT.getConfig().GetRuleSelectionInterpretabilityIndex();
+      double result=1;
+      if (iindex==0) {
+    	  // NR
+	      int max= this.NbGenes/2;
+          int nr= kbctaux.GetNbActiveRules();
+	      result=nr/max;
+      } else {
+	      JKBInterpretabilityFrame jkbif= new JKBInterpretabilityFrame(MainKBCT.getJMF().jef, kbctaux, true);
+	      double[] ind= jkbif.getInterpretabilityIndicators();
+	      //  intind[0]= this.getTotalRuleLength();
+	      //  intind[1]= this.getMaxSFR();
+	      //  intind[2]= this.getAvSFR();
+	      //  intind[3]= this.getMinSFR();
+	      //  intind[4]= this.getAccumulatedRuleComplexity();
+	      //  intind[5]= this.getIntIndex();
+	      //  intind[6]= this.getLogViewIndex();
+    	  if (iindex==1) {
+        	  // TRL
+    		  // System.out.println("  -> TRL");
+    	      int max= kbctaux.GetNbInputs()*this.NbGenes/2;
+              int trl= (int)ind[0];
+    	      result=trl/max;
+    	  } else if (iindex==2) {
+    		  // Max SFR
+    	      int max= this.NbGenes/2;
+              int nr= (int)ind[1];
+    	      result=nr/max;
+    	  } else if (iindex==3) {
+    		  // Average SFR
+    	      int max= this.NbGenes/2;
+              int nr= (int)ind[2];
+    	      result=nr/max;
+    	  } else if (iindex==4) {
+    		  // Min SFR
+    	      int max= this.NbGenes/2;
+              int nr= (int)ind[3];
+    	      result=nr/max;
+    	  } else if (iindex==5) {
+    		  // AccRuleComp
+    	      int max= kbctaux.GetNbInputs()*this.NbGenes/2;
+    	      //System.out.println(" -> "+ind[4]);
+    	      //System.out.println(" -> "+max);
+    		  result= ind[4]/max;
+    	  } else if (iindex==6) {
+    		  // HILK interpretbility index
+    		  result= ind[5];
+    	  } else if (iindex==7) {
+    		  // LogView
+    		  result= ind[6];
+    	  }
+    	  jkbif.dispose();
+    	  jkbif=null;
+      }
+	  if (result > 1)
+		  result= 1;
+	  
+	  return result;
+  }
+//------------------------------------------------------------------------------
+  protected void saveCurrentConfiguration(int NbGen) {
+    try {
+      FileOutputStream fos= new FileOutputStream(this.fileLog, false);
+	  PrintStream out= new PrintStream(fos);
+	  out.println("Generation="+NbGen);
+	  out.println("NbGenes="+this.NbGenes);
+	  out.println("PopLength="+this.PopLength);
+	  for (int n=0; n<this.PopLength; n++) {
+		  out.println("Population "+n);
+		  out.println("eval="+this.NEWevaluation[n]);
+		  out.println("evalIndex="+this.NEWevalIndex[n]);
+		  for (int m=0; m<this.NbGenes; m++) {
+			  out.println(this.NEWpopulation[n][m]);
+		  }		  
+	  }
+	  out.println("Best="+this.NEWevaluation[this.BestGuy()-1]);
+      out.flush();
+	  out.close();
+	  fos.close();
+	  out=null;
+	  fos=null;
+    } catch (Throwable t) {
+    	t.printStackTrace();
+    	MessageKBCT.Error(null, t);
+    }
+  }
+//------------------------------------------------------------------------------
+  private void readSavedConfiguration() {
+    try {
+        LineNumberReader lnr= new LineNumberReader(new InputStreamReader(new FileInputStream(this.fileLog)));
+        String l, aux;
+        l=lnr.readLine();
+        aux= l.substring(11);
+        this.initialGeneration= (new Integer(aux)).intValue();
+        l=lnr.readLine();
+        aux= l.substring(8);
+        this.NbGenes= (new Integer(aux)).intValue();
+        l=lnr.readLine();
+        aux= l.substring(10);
+        this.PopLength= (new Integer(aux)).intValue();
+        NEWpopulation= new int[this.PopLength][this.NbGenes];
+	    OLDpopulation= new int[this.PopLength][this.NbGenes];
+	    NEWevaluation= new double[this.PopLength];
+	    OLDevaluation= new double[this.PopLength];
+        NEWevalIndex= new int[this.PopLength];
+	    OLDevalIndex= new int[this.PopLength];
+	    for (int n=0; n<this.PopLength; n++) {
+	        lnr.readLine();
+	        l=lnr.readLine();
+	        aux= l.substring(5);
+	        double ev= (new Double(aux)).doubleValue();
+	        NEWevaluation[n]= ev;
+	        l=lnr.readLine();
+	        aux= l.substring(10);
+	        int evi= (new Integer(aux)).intValue();
+	        NEWevalIndex[n]= evi;
+		    for (int m=0; m<this.NbGenes; m++) {
+		        l=lnr.readLine();
+		        int gen= (new Integer(l)).intValue();
+		    	this.NEWpopulation[n][m]=gen;
+		    }		  
+	    }
+	    lnr.close();
+	    lnr= null;
+    } catch (Throwable t) {
+    	t.printStackTrace();
+    	MessageKBCT.Error(null, t);
+    }
+  }
+//------------------------------------------------------------------------------
+  protected void Elitist() {
+	  // Se estudia a ver si el mejor cromosoma de la poblacion anterior ha sido
+	  //   seleccionado para formar parte de la nueva
+      this.BestGuy= this.BestGuy();
+      boolean warning=false;
+	  for (int i=0; i<this.PopLength; i++) {
+		 boolean found=true;
+	     for (int k=0; k<this.NbGenes; k++) {
+	    	 if (NEWpopulation[i][k]!=OLDpopulation[BestGuy-1][k]) {
+	    		 found= false;
+	    		 break;
+	    	 }		 
+	     }
+	     if (found) {
+             warning=true;
+	    	 break;
+	     } 
+	  }
+	  // Si el mejor cromosoma no ha perdurado, se sustituye el ultimo de la
+	  //   poblacion por este.
+	  if (!warning) {
+        for (int m=0; m<this.NbGenes; m++) {
+		  NEWpopulation[this.PopLength-1][m]=OLDpopulation[BestGuy-1][m];
+        }
+        NEWevaluation[this.PopLength-1]=OLDevaluation[BestGuy-1];
+        NEWevalIndex[this.PopLength-1]=1;
+	  }
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Selection based on tournament.
+   */
+  protected void SelectTournament() {
+	  // Torneo.length -> tournament size
+	  // if (tournament size == 2) then BinaryTournament
+       this.setRanking();
+	   
+	   for (int i=0; i<this.PopLength; i++) {
+	     Torneo[0] = Randint(0,this.PopLength-1);
+	     int mejor_torneo=Torneo[0];
+	     
+	     for (int j=1; j<Torneo.length; j++) {
+	       boolean repetido= false;
+	       do {
+	         Torneo[j] = Randint(0,this.PopLength-1);
+	         repetido=false;
+	         int k=0;
+	         while ((k<j) && (!repetido))
+	          if (Torneo[j]==Torneo[k])
+	           repetido=true;
+	          else
+	           k++;
+	       } while (repetido);
+	       
+	       if (OLDevaluation[Torneo[j]] < OLDevaluation[mejor_torneo])
+	           mejor_torneo=Torneo[j];
+	     }
+	     sample[i] = mejor_torneo;
+	   }
+	   // Se crea la nueva poblacion
+	   for (int n=0; n<this.PopLength; n++) {
+	          int kk=sample[n];
+	          for (int m=0; m<this.NbGenes; m++) {
+	               NEWpopulation[n][m]= OLDpopulation[kk][m];
+	          }
+	          NEWevaluation[n]= OLDevaluation[kk];
+	          NEWevalIndex[n]= OLDevalIndex[kk];
+	   }
+  }
+}

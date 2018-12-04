@@ -1,0 +1,166 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                              JChangeNameFrame.java
+//
+//
+//**********************************************************************
+
+package kbctFrames;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import kbct.JVariable;
+import kbct.LocaleKBCT;
+import kbctAux.MessageKBCT;
+
+/**
+ * kbctFrames.JChangeNameFrame display a window
+ * which let user to define a new scale of labels or change names of one defined previously.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+//------------------------------------------------------------------------------
+public class JChangeNameFrame extends JDialog {
+  static final long serialVersionUID=0;	
+  private JPanel jPanelChangeName = new JPanel();
+  private GridBagLayout gridChangeName = new GridBagLayout();
+  private JPanel jPanelNames = new JPanel();
+  private JPanel jPanelValidation = new JPanel();
+  private GridBagLayout gridBagLayoutValidation = new GridBagLayout();
+  private JButton jButtonCancel = new JButton();
+  private JButton jButtonApply = new JButton();
+  private GridBagLayout gridNames = new GridBagLayout();
+  private JLabel[] jLabelNames;
+  private JTextField[] jTFName;
+  private int NOL;
+  private JVariable input;
+  private String[] Label_Names;
+//------------------------------------------------------------------------------
+  public JChangeNameFrame( JVariableFrame parent, JVariable input, String title, int NOL ) {
+    super(parent);
+    try {
+      this.input= input;
+      this.NOL= NOL;
+      this.setTitle(LocaleKBCT.GetString(title));
+      this.jLabelNames= new JLabel[NOL];
+      this.jTFName= new JTextField[NOL];
+      this.Label_Names= null;
+      jbInit();
+    } catch( Throwable t) {
+      MessageKBCT.Error(this, LocaleKBCT.GetString("Error"), "Error en constructor en JChangeNameFrame: "+t);
+    }
+  }
+//------------------------------------------------------------------------------
+  private void jbInit() throws Throwable {
+	this.setIconImage(LocaleKBCT.getIconGUAJE().getImage());
+    jPanelChangeName.setLayout(gridChangeName);
+    jPanelValidation.setLayout(gridBagLayoutValidation);
+    jButtonCancel.setText(LocaleKBCT.GetString("Cancel"));
+    jButtonCancel.addActionListener(new java.awt.event.ActionListener() { public void actionPerformed(ActionEvent e) { jButtonCancel_actionPerformed(); } });
+    jButtonApply.setText(LocaleKBCT.GetString("Apply"));
+    jButtonApply.addActionListener(new java.awt.event.ActionListener() { public void actionPerformed(ActionEvent e) { jButtonApply_actionPerformed(); } });
+    jPanelNames.setLayout(gridNames);
+    for (int n=0; n < NOL; n++) {
+       int Number_Label= n+1;
+       this.jLabelNames[n]= new JLabel();
+       this.jLabelNames[n].setText(LocaleKBCT.GetString("Label")+Number_Label);
+       this.jTFName[n]= new JTextField("",10);
+         jTFName[n].setText(this.input.GetUserLabelsName(n));
+    }
+    this.getContentPane().add(jPanelChangeName);
+    jPanelChangeName.add(jPanelNames, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+    jPanelChangeName.add(jPanelValidation, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+    jPanelValidation.add(jButtonApply, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
+    jPanelValidation.add(jButtonCancel, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 5, 0, 0), 0, 0));
+    for (int n=0; n < NOL; n++) {
+      jPanelNames.add(jLabelNames[n], new GridBagConstraints(0, n, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
+      jPanelNames.add(jTFName[n], new GridBagConstraints(1, n, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 50, 0));
+    }
+    this.setModal(true);
+    this.pack();
+    this.setResizable(false);
+  }
+//------------------------------------------------------------------------------
+  private void jButtonCancel_actionPerformed() {
+    this.Label_Names = null;
+    this.dispose();
+  }
+//------------------------------------------------------------------------------
+  private String[] ReadMP() {
+    String[] result = new String[NOL];
+    try {
+      for (int n=0; n<NOL; n++) {
+        result[n] = jTFName[n].getText();
+        if  ( ((n>=1) && (result[n].equals(result[n-1]))) ||
+              ((n>=2) && (result[n].equals(result[n-2]))) ||
+              ((n>=3) && (result[n].equals(result[n-3]))) ||
+              ((n>=4) && (result[n].equals(result[n-4]))) ||
+              ((n>=5) && (result[n].equals(result[n-5]))) ||
+              ((n>=6) && (result[n].equals(result[n-6]))) )
+             throw new Throwable("T");
+      }
+    } catch (Throwable t) {
+      if (t.getMessage().equals("T"))
+        MessageKBCT.Error(this,LocaleKBCT.GetString("IncorrectChangeName"), LocaleKBCT.GetString("InfoChangeName"));
+      else
+        MessageKBCT.Error(LocaleKBCT.GetString("IncorrectChangeName"), t);
+      result= null;
+    }
+    return result;
+  }
+//------------------------------------------------------------------------------
+  private void jButtonApply_actionPerformed() {
+    try {
+      this.Label_Names = this.ReadMP();
+      if (Label_Names != null)
+       this.dispose();
+    } catch( Exception ex ) {
+      MessageKBCT.Error(this, LocaleKBCT.GetString("Error"), "Error en JChangeNameFrame en jButtonApply_actionPerformed: "+ex);
+    }
+  }
+//------------------------------------------------------------------------------
+  public String[] Show() {
+    this.setVisible(true);
+    return this.Label_Names;
+  }
+}

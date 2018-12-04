@@ -1,0 +1,10 @@
+++++++++++++++++++++++++++++++++++
+23-oct-2018 9:46:11
+Archivo de configuración= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.ikb.xml
+filtro KB= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.kb.xml
+El archivo de datos= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.aux
+----------------------------------
+ANALIZANDO Y RESOLVIENDO CONFLICTOS LINGÜÍSTICOS ENTRE REGLAS
+Iteración 1
+  time begin -> 9:46:11
+  Las reglas 9 y 23 tienen las mismas premisas y diferentes conclusiones.

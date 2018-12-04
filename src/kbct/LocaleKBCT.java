@@ -1,0 +1,970 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                              LocaleKBCT.java
+//
+//
+//**********************************************************************
+
+package kbct;
+
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
+
+import kbctAux.MessageKBCT;
+import kbctFrames.JKBCTFrame;
+
+/**
+ * kbct.LocaleKBCT generate icons and default configuration
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+//------------------------------------------------------------------------------
+public class LocaleKBCT {
+  private static Locale locale;
+  private static ResourceBundle captions;
+  private static ImageIcon icon_guaje;
+  private static ImageIcon icon_guaje2;
+  private static ImageIcon icon_all;
+  private static ImageIcon icon_SF;
+  private static ImageIcon icon_zin;
+  private static ImageIcon icon_zout;
+  private static ImageIcon icon_zres;
+  private static ImageIcon icon_sup;
+  private static ImageIcon icon_sdown;
+  private static ImageIcon icon_sleft;
+  private static ImageIcon icon_sright;
+//------------------------------------------------------------------------------
+  public LocaleKBCT( String language, String country ) {
+	LocaleKBCT.locale= new Locale( language, country );
+    Locale.setDefault(LocaleKBCT.locale);
+    captions= ResourceBundle.getBundle( "kbct.resources.Messages", locale );
+    UIManager.put("OptionPane.yesButtonText", LocaleKBCT.GetString("Yes"));
+    UIManager.put("OptionPane.noButtonText", LocaleKBCT.GetString("No"));
+    UIManager.put("OptionPane.cancelButtonText", LocaleKBCT.GetString("Cancel"));
+    UIManager.put("OptionPane.applyButtonText", LocaleKBCT.GetString("Apply"));
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Precision (number of decimal in numbers)
+   */
+  public static int DefaultNumberOfDecimals() {
+    return 3;
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Look and Feel:<br>
+   * <li> javax.swing.plaf.metal.MetalLookAndFeel </li>
+   */
+  public static String DefaultLookAndFeel() {
+    return "javax.swing.plaf.metal.MetalLookAndFeel";
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Return default user: Beginner
+   */
+  public static String DefaultUser() { return LocaleKBCT.GetString("Beginner"); }
+//------------------------------------------------------------------------------
+  /**
+   * Auxiliar method used in order to detect the change of user between Beginner and Expert.
+   */
+  public static String DefaultUserChange() { return "No"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default language: English ("en").
+   */
+  public static String DefaultLanguage() { return "en"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default country: England ("GB").
+   */
+  public static String DefaultCountry() { return "GB"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return locale properties.
+   */
+  public static Locale Locale() { return LocaleKBCT.locale; }
+//------------------------------------------------------------------------------
+  /**
+   * Return current language.
+   */
+  public String Language() { return LocaleKBCT.captions.getLocale().getLanguage(); }
+//------------------------------------------------------------------------------
+  /**
+   * Return string s from resources archive.
+   */
+  public static String GetString( String s ) {
+    if( (locale == null) || (captions == null ) )
+      return s;
+    try { return captions.getString( s ); }
+    catch( MissingResourceException e ) {
+      System.out.println("LocaleKBCT.GetString() -> s="+s);
+      e.printStackTrace();
+      String title;
+      String message;
+      try { title = captions.getString( "Error" ); }
+      catch( MissingResourceException e1 ) {
+        e1.printStackTrace();
+        title = "Error";
+      }
+      try { message = s + " " + captions.getString( "NotFoundInResourceFile" ) + " " + locale.getDisplayName(); }
+      catch( MissingResourceException e2 ) {
+    	e2.printStackTrace();
+        message = s + " not found in resource file " + locale.getDisplayName();
+      }
+        MessageKBCT.Error( null, title, message );
+      return s;
+    }
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Return string s from resources archive. (It is suposed that there is no exception)
+   */
+  public static String GetStringNoException( String s ) {
+    if( (locale == null) || (captions == null ) )
+      return s;
+    try { return captions.getString( s ); }
+    catch( MissingResourceException e ) { }
+    return s;
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Generate icons to use in frames
+   */
+  public void SetIconImages() {
+    String kbctpath= MainKBCT.getConfig().GetKbctPath();
+    String icons= kbctpath+System.getProperty("file.separator")+"icons";
+  	LocaleKBCT.icon_guaje = new ImageIcon(icons+System.getProperty("file.separator")+"guaje-fuzzy.gif");
+  	LocaleKBCT.icon_guaje2 = new ImageIcon(icons+System.getProperty("file.separator")+"guajeweb2.jpg");
+  	LocaleKBCT.icon_all = new ImageIcon(icons+System.getProperty("file.separator")+"all.gif");
+    LocaleKBCT.icon_SF = new ImageIcon(icons+System.getProperty("file.separator")+"scaleFunction.jpg");
+    LocaleKBCT.icon_zin = new ImageIcon(icons+System.getProperty("file.separator")+"zoomIN.png");
+    LocaleKBCT.icon_zout = new ImageIcon(icons+System.getProperty("file.separator")+"zoomOUT.png");
+    LocaleKBCT.icon_zres = new ImageIcon(icons+System.getProperty("file.separator")+"zoomRES.png");
+    LocaleKBCT.icon_sup = new ImageIcon(icons+System.getProperty("file.separator")+"shiftUP.png");
+    LocaleKBCT.icon_sdown = new ImageIcon(icons+System.getProperty("file.separator")+"shiftDOWN.png");
+    LocaleKBCT.icon_sleft = new ImageIcon(icons+System.getProperty("file.separator")+"shiftLEFT.png");
+    LocaleKBCT.icon_sright = new ImageIcon(icons+System.getProperty("file.separator")+"shiftRIGHT.png");
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of GUAJE.
+   */
+  public static ImageIcon getIconGUAJE() { return icon_guaje; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of GUAJE (including descriptive text).
+   */
+  public static ImageIcon getIconGUAJE2() { return icon_guaje2; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of ZIN.
+   */
+  public static ImageIcon getIconZIN() { return icon_zin; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of ZOUT.
+   */
+  public static ImageIcon getIconZOUT() { return icon_zout; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of ZRES.
+   */
+  public static ImageIcon getIconZRES() { return icon_zres; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of SUP.
+   */
+  public static ImageIcon getIconSUP() { return icon_sup; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of SDOWN.
+   */
+  public static ImageIcon getIconSDOWN() { return icon_sdown; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of SLEFT.
+   */
+  public static ImageIcon getIconSLEFT() { return icon_sleft; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of SRIGHT.
+   */
+  public static ImageIcon getIconSRIGHT() { return icon_sright; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of ALL.
+   */
+  public static ImageIcon getIconALL() { return icon_all; }
+//------------------------------------------------------------------------------
+  /**
+   * Return icon of ALL.
+   */
+  public static ImageIcon getIconSF() { return icon_SF; }
+//------------------------------------------------------------------------------
+  /**
+   * Detect the platform (Windows/Linux)
+   */
+  public static boolean isWindowsPlatform() {
+    String os = System.getProperty("os.name");
+    if ( os != null && os.startsWith("Windows"))
+        return true;
+    else
+        return false;
+  }
+//------------------------------------------------------------------------------
+// SMOTE
+//------------------------------------------------------------------------------
+  /**
+   * Return default SMOTE flag.
+   */
+  public static boolean DefaultSMOTE() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Number of Neighbors for k-NN in SMOTE.
+   */
+  public static int DefaultSMOTEnumberOfNeighbors() { return 5; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Type of SMOTE.
+   */
+  public static String DefaultSMOTEtype() { return "minority"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Balancing for SMOTE.
+   */
+  public static boolean DefaultSMOTEbalancing() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Balancing ALL for SMOTE.
+   */
+  public static boolean DefaultSMOTEbalancingALL() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Quantity of generated examples for SMOTE.
+   */
+  public static double DefaultSMOTEquantity() { return 1.0; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Distance for SMOTE.
+   */
+  public static String DefaultSMOTEdistance() { return "Euclidean"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Interpolation for SMOTE.
+   */
+  public static String DefaultSMOTEinterpolation() { return "standard"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Alpha for SMOTE.
+   */
+  public static double DefaultSMOTEalpha() { return 0.5; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Mu for SMOTE.
+   */
+  public static double DefaultSMOTEmu() { return 0.5; }
+//------------------------------------------------------------------------------
+// Induce partitions options
+//------------------------------------------------------------------------------
+  /**
+   * Return default InducePartitions flag.
+   */
+  public static boolean DefaultInducePartitions() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default InductionType flag.
+   */
+  public static String DefaultInductionType() { return "regular"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default InductionNbLabels flag.
+   */
+  public static int DefaultInductionNbLabels() { return 5; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default partition selection flag.
+   */
+  public static boolean DefaultPartitionSelection() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default feature selection flag.
+   */
+  public static boolean DefaultFeatureSelection() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default C45 parameters (weka), P1.
+   */
+  public static String DefaultFeatureSelectionC45P1() { return "-C"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default C45 parameters (weka), P2.
+   */
+  public static String DefaultFeatureSelectionC45P2() { return "0.25"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default C45 parameters (weka), P3.
+   */
+  public static String DefaultFeatureSelectionC45P3() { return "-M"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default C45 parameters (weka), P4.
+   */
+  public static String DefaultFeatureSelectionC45P4() { return "2"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Distance.
+   */
+  public static String DefaultDistance() { return "numerical"; }
+//------------------------------------------------------------------------------
+// Data selection options (previous to induce rules)
+//------------------------------------------------------------------------------
+  /**
+   * Return default DataSelection flag.
+   */
+  public static boolean DefaultDataSelection() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default TolThresDataSelection.
+   */
+  public static double DefaultTolThresDataSelection() { return 0.6; }
+//------------------------------------------------------------------------------
+//Clustering selection options (for building expert rules)
+//------------------------------------------------------------------------------
+ /**
+  * Return default ClusteringSelection flag.
+  */
+ public static boolean DefaultClusteringSelection() { return false; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default ClustersNumber.
+  */
+ public static int DefaultClustersNumber() { return 2; }
+//------------------------------------------------------------------------------
+// Induce rules options
+//------------------------------------------------------------------------------
+  /**
+   * Return default rule induction flag.
+   */
+  public static boolean DefaultRuleInduction() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default induction rules algorithm.
+   */
+  public static String DefaultInductionRulesAlgorithm() { return "Wang and Mendel"; }
+//------------------------------------------------------------------------------
+  // FPA
+  /**
+   * Return default Strategy.
+   */
+  public static String DefaultStrategy() { return "decrease"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default MinCard.
+   */
+  public static int DefaultMinCard() { return 3; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default MinDeg.
+   */
+  public static double DefaultMinDeg() { return 0.3; }
+//------------------------------------------------------------------------------
+  // FDT
+  /**
+   * Return default TreeFile.
+   */
+  public static String DefaultTreeFile() { return JKBCTFrame.BuildFile("temp1fdt.kb").getAbsolutePath()+".tree"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default MaxTreeDepth.
+   * It should be the number of inputs
+   */
+  public static int DefaultMaxTreeDepth() { return 5; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default MinSignificantLevel.
+   */
+  public static double DefaultMinSignificantLevel() { return 0.2; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default LeafMinCard.
+   */
+  public static int DefaultLeafMinCard() { return 10; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default ToleranceThreshold.
+   */
+  public static double DefaultToleranceThreshold() { return 0.1; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default MinEDGain.
+   */
+  public static double DefaultMinEDGain() { return 0.001; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default DFPerfLoss.
+   */
+  public static double DefaultPerfLoss() { return 0.1; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default DFPerfLoss.
+   */
+  public static double DefaultCovThresh() { return 0.9; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Prune.
+   */
+  public static boolean DefaultPrune() { return true; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Split.
+   */
+  public static boolean DefaultSplit() { return true; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Display.
+   */
+  public static boolean DefaultDisplay() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Relgain.
+   */
+  public static boolean DefaultRelgain() { return false; }
+//------------------------------------------------------------------------------
+// Rule ranking options
+//------------------------------------------------------------------------------
+  /**
+   * Return default rule ranking flag.
+   */
+  public static boolean DefaultRuleRanking() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default orderRulesByOutputClass flag.
+   */
+  public static boolean DefaultOrderRulesByOutputClass() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default orderRulesByLocalWeight flag.
+   */
+  public static boolean DefaultOrderRulesByLocalWeight() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default orderRulesByGlobalWeight flag.
+   */
+  public static boolean DefaultOrderRulesByGlobalWeight() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default orderRulesByWeight flag.
+   */
+  public static boolean DefaultOrderRulesByWeight() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default orderRulesByLocalIntWeight flag.
+   */
+  public static boolean DefaultOrderRulesByLocalIntWeight() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default orderRulesByGlobalIntWeight flag.
+   */
+  public static boolean DefaultOrderRulesByGlobalIntWeight() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default orderRulesByIntWeight flag.
+   */
+  public static boolean DefaultOrderRulesByIntWeight() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default orderRulesByNumberPremises flag.
+   */
+  public static boolean DefaultOrderRulesByNumberPremises() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default reverseOrderRules flag.
+   */
+  public static boolean DefaultReverseOrderRules() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default outputClassSelected flag.
+   */
+  public static String DefaultOutputClassSelected() { return "0"; }
+//------------------------------------------------------------------------------
+// Simplification options
+//------------------------------------------------------------------------------
+  /**
+   * Return default LVreduction.
+   */
+  public static boolean DefaultLVreduction() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Simplify.
+   */
+  public static boolean DefaultSimplify() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default FirstReduceRuleBase.
+   */
+  public static boolean DefaultFirstReduceRuleBase() { return true; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default selected output.
+   */
+  public static int DefaultSelectedOutput() { return 1; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Maximum Loss Of Coverage.
+   */
+  public static double DefaultMaximumLossOfCoverage() { return 0.0; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Maximum Loss Of Performance.
+   */
+  public static double DefaultMaximumLossOfPerformance() { return 0.0; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Maximum Number New Error Cases.
+   */
+  public static int DefaultMaximumNumberNewErrorCases() { return 0; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Maximum Number New Ambiguity Cases.
+   */
+  public static int DefaultMaximumNumberNewAmbiguityCases() { return 0; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default Maximum Number New Unclassified Cases.
+   */
+  public static int DefaultMaximumNumberNewUnclassifiedCases() { return 0; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default ruleRemoval flag.
+   */
+  public static boolean DefaultRuleRemoval() { return true; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default variableRemoval flag.
+   */
+  public static boolean DefaultVariableRemoval() { return true; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default premiseRemoval flag.
+   */
+  public static boolean DefaultPremiseRemoval() { return true; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default RuleSimpRanking flag.
+   */
+  public static String DefaultSimpRuleRanking() { return "false"; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default solveLingConflicts flag.
+   */
+  public static boolean DefaultSolveLingConflicts() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default selectedPerformance flag.
+   */
+  public static boolean DefaultSelectedPerformance() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default OnlyRBsimp flag.
+   */
+  public static boolean DefaultOnlyRBsimplification() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default OnlyDBsimp flag.
+   */
+  public static boolean DefaultOnlyDBsimplification() { return false; }
+//------------------------------------------------------------------------------
+//Optimization options
+//------------------------------------------------------------------------------
+ /**
+  * Return default Optimization.
+  */
+ public static boolean DefaultOptimization() { return false; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Optimization option: Partition Tuning (0) or Rule Selection (1).
+  */
+ public static int DefaultOptOptimization() { return 0; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Optimization Algorithm: Genetic Tuning (0) or Solis Wetts (1).
+  */
+ public static int DefaultOptAlgorithm() { return 1; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default BoundedOptimization.
+  */
+ public static boolean DefaultBoundedOptimization() { return true; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default option (1: variable by variable / 2: label by label) in the optimization process.
+  */
+ public static int DefaultSWoption() { return 1; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Number of iterations (by label or by variable to optimize) in the optimization process.
+  */
+ public static int DefaultNbIterations() { return 10; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Number of generations in the genetic tuning.
+  */
+ public static int DefaultNbGenerations() { return 1000; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default initial generation.
+  */
+ public static int DefaultInitialGeneration() { return 0; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default milestone generation.
+  */
+ public static int DefaultMilestoneGeneration() { return 0; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Population length.
+  */
+ public static int DefaultPopulationLength() { return 60; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Crossover Operator: Max-Min (0) or Dubois (1).
+  */
+ public static int DefaultCrossoverOperator() { return 0; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Crossover Probability.
+  */
+ public static double DefaultCrossoverProb() { return 0.6; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Mutation Probability.
+  */
+ public static double DefaultMutationProb() { return 0.1; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default TournamentSize.
+  */
+ public static int DefaultTournamentSize() { return 2; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Seed.
+  */
+ public static int DefaultSeed() { return 12345678; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Parameter A.
+  */
+ public static double DefaultParAlfa() { return 0.3; }
+//------------------------------------------------------------------------------
+//Default GA Rule Selection
+//------------------------------------------------------------------------------
+ /**
+  * Return default Number of generations in the genetic tuning.
+  */
+ public static int DefaultRuleSelectionNbGenerations() { return 1000; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default initial generation.
+  */
+ public static int DefaultRuleSelectionInitialGeneration() { return 0; }
+ /**
+  * Return default milestone generation.
+  */
+ public static int DefaultRuleSelectionMilestoneGeneration() { return 0; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Population length.
+  */
+ public static int DefaultRuleSelectionPopulationLength() { return 10; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Crossover Operator: Max-Min (0) or Dubois (1).
+  */
+ public static int DefaultRuleSelectionCrossoverOperator() { return 0; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Crossover Probability.
+  */
+ public static double DefaultRuleSelectionCrossoverProb() { return 0.8; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Mutation Probability.
+  */
+ public static double DefaultRuleSelectionMutationProb() { return 0.1; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default W1.
+  */
+ public static double DefaultRuleSelectionW1() { return 0.5; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default W2.
+  */
+ public static double DefaultRuleSelectionW2() { return 0.5; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default interpretability index: HILK (0), Nauck (1), Number of rules (2), Number of premises (3), average rule length (4).
+  */
+ public static int DefaultRuleSelectionInterpretabilityIndex() { return 0; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default TournamentSize.
+  */
+ public static int DefaultRuleSelectionTournamentSize() { return 2; }
+//------------------------------------------------------------------------------
+// Default Comp for interpretability
+//------------------------------------------------------------------------------
+///**
+// * Return default CompInterpretability.
+// */
+ //public static double DefaultCompInterpretability() { return 2.0;}
+//------------------------------------------------------------------------------
+// Accuracy thresholds
+//------------------------------------------------------------------------------
+/**
+* Return default BlankThres.
+*/
+public static double DefaultBlankThres() { return 0.1;}
+//------------------------------------------------------------------------------
+/**
+* Return default AmbThres.
+*/
+ public static double DefaultAmbThres() { return 0.1;}
+//------------------------------------------------------------------------------
+// Completeness options
+//------------------------------------------------------------------------------
+/**
+ * Return default Completeness.
+ */
+public static boolean DefaultCompleteness() { return false; }
+//------------------------------------------------------------------------------
+/**
+* Return default CompletenessThres.
+*/
+ public static double DefaultCompletenessThres() { return 0.1;}
+//------------------------------------------------------------------------------
+//Default user scale names
+//------------------------------------------------------------------------------
+/**
+ * Return default TESTautomatic flag.
+ */
+ public static boolean DefaultTESTautomatic() { return false; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default INFERautomatic flag.
+  */
+  public static boolean DefaultINFERautomatic() { return false; }
+//------------------------------------------------------------------------------
+  /**
+   * Return default FINGRAMSautomatic flag.
+   */
+   public static boolean DefaultFINGRAMSautomatic() { return false; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Problem description.
+  */
+ public static String DefaultProblem() { return "New Problem"; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Number of Inputs.
+  */
+ public static int DefaultNumberOfInputs() { return 0; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Classification Flag.
+  */
+ public static boolean DefaultClassificationFlag() { return true; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Number of output Labels.
+  */
+ public static int DefaultNumberOfOutputLabels() { return 2; }
+//------------------------------------------------------------------------------
+ /**
+  * Return default conjunction operators for KBCT interpretability files.
+  */
+ public static String[] DefaultKBCTintPath() { 
+     String[] res= new String[10];
+     for (int n=0; n<res.length; n++) {
+         switch (n) {
+           case 0: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint1.kb";
+ 	               break;
+           case 1: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint211.kb";
+                   break;
+           case 2: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint212.kb";
+                   break;
+           case 3: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint213.kb";
+                   break;
+           case 4: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint221.kb";
+                   break;
+           case 5: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint222.kb";
+                   break;
+           case 6: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint223.kb";
+                   break;
+           case 7: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint2.kb";
+                   break;
+           case 8: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint3.kb";
+                   break;
+           case 9: res[n]=System.getProperty("user.dir")+System.getProperty("file.separator")+"KBint4.kb";
+                   break;
+         }
+     }
+	 return res; 
+ }
+//------------------------------------------------------------------------------
+ /**
+  * Return default conjunction operators for KBCT interpretability files.
+  */
+ public static String[] DefaultKBCTintConjunction() { 
+     String[] res= new String[10];
+     for (int n=0; n<res.length; n++) {
+    	 res[n]="prod";
+     }
+	 return res; 
+ }
+//------------------------------------------------------------------------------
+ /**
+  * Return default disjunction operators for KBCT interpretability files.
+  */
+ public static String[] DefaultKBCTintDisjunction() { 
+     String[] res= new String[10];
+     for (int n=0; n<res.length; n++) {
+    	 res[n]="sum";
+     }
+	 return res; 
+ }
+//------------------------------------------------------------------------------
+ /**
+  * Return default defuzzification operators for KBCT interpretability files.
+  */
+ public static String[] DefaultKBCTintDefuzzification() { 
+     String[] res= new String[10];
+     for (int n=0; n<res.length; n++) {
+    	 res[n]="sugeno";
+     }
+	 return res; 
+ }
+//------------------------------------------------------------------------------
+ /**
+  * Return default L parameter.
+  */
+ public static double DefaultParameterL() { 
+	 //return 25; // 25% 
+	 return 10; // 10% 
+ }
+//------------------------------------------------------------------------------
+ /**
+  * Return default M parameter.
+  */
+ public static double DefaultParameterM() { 
+	 //return 50; // 50% 
+	 return 30; // 30% 
+ }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Max NbRules.
+  */
+ public static int DefaultMaxNbRules() { 
+	 return 50*DefaultNumberOfOutputLabels(); 
+ }
+//------------------------------------------------------------------------------
+ /**
+  * Return default Max NbPremises.
+  */
+ public static int DefaultMaxNbPremises() { 
+	 return 100*DefaultNumberOfOutputLabels(); 
+ }
+//------------------------------------------------------------------------------
+// Fingram options
+//------------------------------------------------------------------------------
+ /**
+ * Return default Fingram.
+ */
+ public static boolean DefaultFingram() { return false; }
+//------------------------------------------------------------------------------
+ /**
+ * Return default FingramWS.
+ */
+ public static boolean DefaultFingramWS() { return false; }
+//------------------------------------------------------------------------------
+ /**
+ * Return default FingramWOS.
+ */
+ public static boolean DefaultFingramWOS() { return true; }
+//------------------------------------------------------------------------------
+/**
+* Return default LimMax parameter (interpretability index).
+*/
+ public static int DefaultLimMaxIntIndex() { return 1000; }
+//------------------------------------------------------------------------------
+/**
+* Return default slectedSampleFingrams.
+*/
+ public static int DefaultFingramsSelectedSample() { return -1; }
+//------------------------------------------------------------------------------
+ /**
+ * Return default FingramsMetric.
+ */
+ public static String DefaultFingramsMetric() { return "MS"; }
+//------------------------------------------------------------------------------
+ /**
+ * Return default FingramsLayout.
+ */
+ public static String DefaultFingramsLayout() { return "neato"; }
+//------------------------------------------------------------------------------
+/**
+* Return default GoodnessHigh Threshold.
+*/
+public static double DefaultGoodnessHighThreshold() { return 0.5; }
+//------------------------------------------------------------------------------
+ /**
+ * Return default GoodnessLow Threshold.
+ */
+public static double DefaultGoodnessLowThreshold() { return 0.1; }
+//------------------------------------------------------------------------------
+/**
+* Return default PathFinder Threshold.
+*/
+public static double DefaultPathFinderThreshold() { return 0; }
+//------------------------------------------------------------------------------
+/**
+* Return default PathFinder Q parameter.
+*/
+public static int DefaultPathFinderParQ() { return 1; }
+//------------------------------------------------------------------------------
+// Tutorial option
+//------------------------------------------------------------------------------
+/**
+* Return default Tutorial flag.
+*/
+ public static boolean DefaultTutorialFlag() { return false; }
+}

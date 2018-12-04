@@ -1,0 +1,46 @@
+<ConfigurationFile>
+<Expert>
+<ExpertFile value="D:\GUAJE-vb3.0\quickstart\EXPERT\newexpertkb.kb.xml">
+</ExpertFile>
+<Conjunction value="min">
+</Conjunction>
+</Expert>
+<Data>
+<OrigDataFile value="">
+</OrigDataFile>
+<VariableNames value="no">
+</VariableNames>
+<SelectedVariables value="0, 1, 2">
+</SelectedVariables>
+<DataFile value="">
+</DataFile>
+<DataVariableCount value="0">
+</DataVariableCount>
+</Data>
+<Context Problem="EXPERT" Inputs="0" Classification="yes" OutputLabels="0">
+</Context>
+<Interpretability>
+<KB1 path="D:\GUAJE-vb3.0\examples\ele1\KBint1.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB1>
+<KB2 path="D:\GUAJE-vb3.0\examples\ele1\KBint211.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB2>
+<KB3 path="D:\GUAJE-vb3.0\examples\ele1\KBint212.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB3>
+<KB4 path="D:\GUAJE-vb3.0\examples\ele1\KBint213.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB4>
+<KB5 path="D:\GUAJE-vb3.0\examples\ele1\KBint221.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB5>
+<KB6 path="D:\GUAJE-vb3.0\examples\ele1\KBint222.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB6>
+<KB7 path="D:\GUAJE-vb3.0\examples\ele1\KBint223.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB7>
+<KB8 path="D:\GUAJE-vb3.0\examples\ele1\KBint2.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB8>
+<KB9 path="D:\GUAJE-vb3.0\examples\ele1\KBint3.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB9>
+<KB10 path="D:\GUAJE-vb3.0\examples\ele1\KBint4.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB10>
+</Interpretability>
+<Ontology OntFile="">
+</Ontology>
+</ConfigurationFile>

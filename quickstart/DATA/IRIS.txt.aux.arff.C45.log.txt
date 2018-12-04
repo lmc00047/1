@@ -1,0 +1,16 @@
+J48 pruned tree
+------------------
+
+Petal Width <= 0.6: 1.0 (50.0)
+Petal Width > 0.6
+|   Petal Width <= 1.7
+|   |   Petal Length <= 4.9: 2.0 (48.0/1.0)
+|   |   Petal Length > 4.9
+|   |   |   Petal Width <= 1.5: 3.0 (3.0)
+|   |   |   Petal Width > 1.5: 2.0 (3.0/1.0)
+|   Petal Width > 1.7: 3.0 (46.0/1.0)
+
+Number of Leaves  : 	5
+
+Size of the tree : 	9
+

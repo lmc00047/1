@@ -1,0 +1,191 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/guaje/!svn/ver/145/trunk/src/kbct
+END
+Graph.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/guaje/!svn/ver/220/trunk/src/kbct/Graph.java
+END
+FuzzyTree.java
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/guaje/!svn/ver/220/trunk/src/kbct/FuzzyTree.java
+END
+ConfigKBCT.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/guaje/!svn/ver/229/trunk/src/kbct/ConfigKBCT.java
+END
+JConsistency.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JConsistency.java
+END
+JFISFPA.java
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JFISFPA.java
+END
+JSolveProblem.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JSolveProblem.java
+END
+jnikbct.java
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/guaje/!svn/ver/220/trunk/src/kbct/jnikbct.java
+END
+JGENFIS.java
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JGENFIS.java
+END
+PageRank.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/guaje/!svn/ver/220/trunk/src/kbct/PageRank.java
+END
+MainKBCT.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/guaje/!svn/ver/229/trunk/src/kbct/MainKBCT.java
+END
+KBCTListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/guaje/!svn/ver/220/trunk/src/kbct/KBCTListener.java
+END
+JFIS.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JFIS.java
+END
+JVariable.java
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JVariable.java
+END
+FuzzyTreeTableModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/guaje/!svn/ver/220/trunk/src/kbct/FuzzyTreeTableModel.java
+END
+LocaleKBCT.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/guaje/!svn/ver/229/trunk/src/kbct/LocaleKBCT.java
+END
+GeneticTuning.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/guaje/!svn/ver/220/trunk/src/kbct/GeneticTuning.java
+END
+Edge.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/guaje/!svn/ver/220/trunk/src/kbct/Edge.java
+END
+JInputHFP.java
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JInputHFP.java
+END
+Vertex.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/guaje/!svn/ver/220/trunk/src/kbct/Vertex.java
+END
+InfoConsistency.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/guaje/!svn/ver/220/trunk/src/kbct/InfoConsistency.java
+END
+JKBCTInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JKBCTInput.java
+END
+JKBCTOutput.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JKBCTOutput.java
+END
+JLogicalView.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JLogicalView.java
+END
+DijkstraAlgorithm.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/220/trunk/src/kbct/DijkstraAlgorithm.java
+END
+JEvaluationFuzzyPartition.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JEvaluationFuzzyPartition.java
+END
+GAruleSelection.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/guaje/!svn/ver/220/trunk/src/kbct/GAruleSelection.java
+END
+GA.java
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/guaje/!svn/ver/220/trunk/src/kbct/GA.java
+END
+DisplayVariableGroup.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/guaje/!svn/ver/220/trunk/src/kbct/DisplayVariableGroup.java
+END
+JFISHFP.java
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JFISHFP.java
+END
+JConvert.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JConvert.java
+END
+JKBCT.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/guaje/!svn/ver/220/trunk/src/kbct/JKBCT.java
+END

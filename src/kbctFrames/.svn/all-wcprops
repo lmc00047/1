@@ -1,0 +1,257 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/guaje/!svn/ver/145/trunk/src/kbctFrames
+END
+JTreeGenerateFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JTreeGenerateFrame.java
+END
+DataHistogramFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/DataHistogramFrame.java
+END
+JConvertFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JConvertFrame.java
+END
+JLinksFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/234/trunk/src/kbctFrames/JLinksFrame.java
+END
+JDataTableFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JDataTableFrame.java
+END
+DataChooserFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/DataChooserFrame.java
+END
+JMainFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/guaje/!svn/ver/229/trunk/src/kbctFrames/JMainFrame.java
+END
+JVariableFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JVariableFrame.java
+END
+JChangeNameFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JChangeNameFrame.java
+END
+JScalingMFsFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JScalingMFsFrame.java
+END
+JModalPointsFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JModalPointsFrame.java
+END
+JFISConsole.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JFISConsole.java
+END
+JMFsPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JMFsPanel.java
+END
+JRuleFrameInfer.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JRuleFrameInfer.java
+END
+JOutputFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JOutputFrame.java
+END
+JHFPParametersFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JHFPParametersFrame.java
+END
+JFingramsFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/guaje/!svn/ver/234/trunk/src/kbctFrames/JFingramsFrame.java
+END
+JExpertFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/guaje/!svn/ver/229/trunk/src/kbctFrames/JExpertFrame.java
+END
+JRuleFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JRuleFrame.java
+END
+JViewVertexFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/guaje/!svn/ver/222/trunk/src/kbctFrames/JViewVertexFrame.java
+END
+JEvaluationFuzzyPartitionFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JEvaluationFuzzyPartitionFrame.java
+END
+JAboutFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JAboutFrame.java
+END
+JOntologyFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JOntologyFrame.java
+END
+DataXYFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/DataXYFrame.java
+END
+JChildFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JChildFrame.java
+END
+JKBCTFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/guaje/!svn/ver/234/trunk/src/kbctFrames/JKBCTFrame.java
+END
+VariableDrop.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/VariableDrop.java
+END
+JSimpleFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JSimpleFrame.java
+END
+JBeginnerFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/guaje/!svn/ver/221/trunk/src/kbctFrames/JBeginnerFrame.java
+END
+JRangeFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JRangeFrame.java
+END
+JAdvOptFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JAdvOptFrame.java
+END
+JInferenceFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/guaje/!svn/ver/231/trunk/src/kbctFrames/JInferenceFrame.java
+END
+JRulesBaseQualityFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/guaje/!svn/ver/232/trunk/src/kbctFrames/JRulesBaseQualityFrame.java
+END
+JInputFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JInputFrame.java
+END
+JConsistencyFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JConsistencyFrame.java
+END
+JOptFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JOptFrame.java
+END
+JVertexFile.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JVertexFile.java
+END
+JDataBaseForKBInterpretabilityFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JDataBaseForKBInterpretabilityFrame.java
+END
+JTutorialFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JTutorialFrame.java
+END
+JKBInterpretabilityFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/guaje/!svn/ver/227/trunk/src/kbctFrames/JKBInterpretabilityFrame.java
+END
+JFuzzyTreeFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/guaje/!svn/ver/220/trunk/src/kbctFrames/JFuzzyTreeFrame.java
+END
+JPanelSetToolsPathFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/guaje/!svn/ver/221/trunk/src/kbctFrames/JPanelSetToolsPathFrame.java
+END

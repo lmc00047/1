@@ -1,0 +1,50 @@
+++++++++++++++++++++++++++++++++++
+24-Oct-2018 08:51:30
+The KB file= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.ikb.xml
+KB file= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.kb.xml
+The data file= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.aux
+INTERPRETABILITY
+----------------------------------
+time begin -> 08:51:30
+	Total number of labels defined in the knowledge base= 12.0
+	Partition Interpretability= 1.0
+	Data base interpretability= 1.0
+	Total number of rules= 29.0
+	Total number of premises= 116.0
+	Rule base structural dimension= 0.697
+	Percentage of rules which use less than L% of inputs= 0.0
+	Percentage of rules which use between L% and M% of inputs= 0.0
+	Percentage of rules which use more than M% of inputs= 100.0
+	Rule base structural complexity= 1.0
+	Rule base structural assessment= 1.0
+	Total number of inputs= 4.0
+	Total number of labels used in the rule base= 12.0
+	Rule base conceptual dimension= 0.335
+	Percentage of elementary labels used in the rule base= 100.0
+	Percentage of OR composite labels used in the rule base= 0.0
+	Percentage of NOT composite labels used in the rule base= 0.0
+	Rule base conceptual complexity= 0.0
+	Rule base conceptual assessment= 0.335
+	Rule base interpretability= 0.082
+	Interpretability Index= 0.082
+	Label= very low
+	**********************************************
+	Interpretability Index(HILK)= 0.082
+	Interpretability Index(Nauck)= 0.013
+	Interpretability Index(Rules)= 29.000
+	Interpretability Index(Total rule length)= 116.000
+	Interpretability Index(Average rule length)= 4.000
+	Interpretability Index(Accumulated rule complexity)= 29.159
+	Interpretability Index(Accumulated Rule Complexity) (SC2011)= 223.765
+	Interpretability Index(Theoretical Average fired rules)= 19.759
+	Interpretability Index(Theoretical Min fired rules)= 8.000
+	Interpretability Index(Theoretical Max fired rules)= 29.000
+	Interpretability Index(Average inferential fired rules - training data)= 9.940
+	Interpretability Index(Minimum inferential fired rules - training data)= 0.0
+	Interpretability Index(Maximum inferential fired rules - training data)= 20.0
+	Interpretability Index(Logical View index - training data)= 0.0
+	**********************************************
+	EXCEL
+	12,0	1,0	1,0	29,0	116,0	0,697	0,0	0,0	100,0	1,0	1,0	4,0	12,0	0,335	100,0	0,0	0,0	0,0	0,335	0,082	0,082	very low	0,082	0,013	29,000	116,000	4,000	29,159	223,765	19,759	8,000	29,000	9,940	0,000	20,000	0,000	
+	**********************************************
+time end -> 08:51:32

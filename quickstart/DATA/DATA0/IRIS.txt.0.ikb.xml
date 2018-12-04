@@ -1,0 +1,60 @@
+<ConfigurationFile>
+<Expert>
+<ExpertFile value="C:\GUAJE-vb3.0\quickstart\DATA\DATA0\IRIS.txt.kb.xml">
+</ExpertFile>
+<Conjunction value="min">
+</Conjunction>
+<Outputs>
+<Output1 Disjunction="max" Defuzzification="MaxCrisp">
+</Output1>
+</Outputs>
+</Expert>
+<Data>
+<OrigDataFile value="C:\GUAJE-vb3.0\quickstart\DATA\DATA0\IRIS.txt.aux.lrn.sample.0">
+</OrigDataFile>
+<VariableNames value="yes">
+</VariableNames>
+<SelectedVariables value="0, 1, 2, 3, 4">
+</SelectedVariables>
+<DataFile value="C:\GUAJE-vb3.0\quickstart\DATA\DATA0\IRIS.txt.aux.lrn.sample.0">
+</DataFile>
+<DataVariableCount value="5">
+</DataVariableCount>
+<Variable1 Name="Sepal Length" Type="numerical" LowerRange="4.300" UpperRange="7.900" Labels="3" Output="false">
+</Variable1>
+<Variable2 Name="Sepal Width" Type="numerical" LowerRange="2.000" UpperRange="4.400" Labels="3" Output="false">
+</Variable2>
+<Variable3 Name="Petal Length" Type="numerical" LowerRange="1.000" UpperRange="6.900" Labels="3" Output="false">
+</Variable3>
+<Variable4 Name="Petal Width" Type="numerical" LowerRange="0.100" UpperRange="2.500" Labels="3" Output="false">
+</Variable4>
+<Variable5 Name="Class" Type="categorical" LowerRange="1.000" UpperRange="3.000" Labels="3" Output="true">
+</Variable5>
+</Data>
+<Context Problem="prueba" Inputs="4" Classification="yes" OutputLabels="3">
+</Context>
+<Interpretability>
+<KB1 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint1.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB1>
+<KB2 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint211.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB2>
+<KB3 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint212.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB3>
+<KB4 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint213.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB4>
+<KB5 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint221.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB5>
+<KB6 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint222.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB6>
+<KB7 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint223.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB7>
+<KB8 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint2.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB8>
+<KB9 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint3.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB9>
+<KB10 path="C:\GUAJE-vb3.0\quickstart\DATA\iris\KBint4.kb.xml" conjunction="prod" disjunction="sum" defuzzification="sugeno">
+</KB10>
+</Interpretability>
+<Ontology OntFile="">
+</Ontology>
+</ConfigurationFile>

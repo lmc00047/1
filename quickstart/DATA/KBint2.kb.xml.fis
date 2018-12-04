@@ -1,0 +1,61 @@
+[Interface]
+DataSep=,
+
+[System]
+Name='New Knowledge Base'
+Ninputs=2
+Noutputs=1
+Nrules=7
+Nexceptions=0
+Conjunction='prod'
+MissingValues='random'
+
+
+[Input1]
+Active='yes'
+Name='Rule base structural assessment'
+Range=[   0.000,   1.000]
+NMFs=3
+MF1='low','SemiTrapezoidalInf',[   0.000,   0.000,   0.500]
+MF2='average','triangular',[   0.000,   0.500,   1.000]
+MF3='high','SemiTrapezoidalSup',[   0.500,   1.000,   1.000]
+
+
+[Input2]
+Active='yes'
+Name='Rule base conceptual assessment'
+Range=[   0.000,   1.000]
+NMFs=5
+MF1='low','SemiTrapezoidalInf',[   0.000,   0.000,   0.500]
+MF2='average','triangular',[   0.000,   0.500,   1.000]
+MF3='high','SemiTrapezoidalSup',[   0.500,   1.000,   1.000]
+MF4='NOT(high)','SemiTrapezoidalInf',[   0.000,   0.500,   1.000]
+MF5='NOT(low)','SemiTrapezoidalSup',[   0.000,   0.500,   1.000]
+
+[Output1]
+Nature='fuzzy'
+Defuzzification='sugeno'
+Disjunction='sum'
+DefaultValue=     -1.000
+Classif='yes'
+Active='yes'
+Name='Rule base interpretability'
+Range=[   0.000,   1.000]
+NMFs=5
+MF1='very low','SemiTrapezoidalInf',[   0.000,   0.000,   0.250]
+MF2='low','triangular',[   0.000,   0.250,   0.500]
+MF3='average','triangular',[   0.250,   0.500,   0.750]
+MF4='high','triangular',[   0.500,   0.750,   1.000]
+MF5='very high','SemiTrapezoidalSup',[   0.750,   1.000,   1.000]
+
+[Rules]
+1, 4,    5.000, 
+1, 3,    4.000, 
+2, 1,    4.000, 
+2, 2,    3.000, 
+2, 3,    2.000, 
+3, 1,    2.000, 
+3, 5,    1.000, 
+
+[Exceptions]
+

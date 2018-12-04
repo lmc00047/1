@@ -1,0 +1,42 @@
+++++++++++++++++++++++++++++++++++
+23-oct-2018 9:46:07
+Archivo de configuración= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.ikb.xml
+filtro KB= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.kb.xml
+El archivo de datos= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.aux
+----------------------------------
+Ordenación de reglas
+Regla1
+Regla2
+Regla3
+Regla4
+Regla16
+Regla17
+Regla18
+Regla30
+Regla5
+Regla6
+Regla7
+Regla31
+Regla32
+Regla8
+Regla9
+Regla10
+Regla11
+Regla12
+Regla13
+Regla14
+Regla15
+Regla19
+Regla20
+Regla21
+Regla22
+Regla23
+Regla24
+Regla25
+Regla26
+Regla27
+Regla28
+Regla29
+Regla33
+El proceso de ordenación de reglas ha terminado.
+time end -> 9:46:07

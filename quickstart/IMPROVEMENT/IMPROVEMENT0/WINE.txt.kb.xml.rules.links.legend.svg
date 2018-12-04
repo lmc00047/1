@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Title: G Pages: 1 -->
+<svg width="600pt" height="210pt"
+ viewBox="40.00 300.00 600 210" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph1" class="graph" transform="scale(0.840651 0.840651) rotate(0) translate(4 852.479)">
+<polygon fill="white" stroke="white" points="-4,5 -4,-852.479 571.116,-852.479 571.116,5 -4,5"/>
+<text text-anchor="start" x="125" y="-460" font-family="Times New Roman,serif" font-size="28.00" fill="black"></text>
+<g id="node1" class="node"><title></title>
+<ellipse fill="#d3d3d3" stroke="#d3d3d3" cx="125" cy="-405" rx="25" ry="25"/>
+<text text-anchor="start" x="175" y="-395" font-family="Times New Roman,serif" font-size="18.00">1.0 </text>
+</g>
+<g id="node2" class="node"><title></title>
+<ellipse fill="#add8e6" stroke="#add8e6" cx="125" cy="-350" rx="25" ry="25"/>
+<text text-anchor="start" x="175" y="-340" font-family="Times New Roman,serif" font-size="18.00">2.0 </text>
+</g>
+<g id="node3" class="node"><title></title>
+<ellipse fill="#ffa07a" stroke="#ffa07a" cx="125" cy="-295" rx="25" ry="25"/>
+<text text-anchor="start" x="175" y="-285" font-family="Times New Roman,serif" font-size="18.00">3.0 </text>
+</g>
+</g>
+</svg>

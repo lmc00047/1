@@ -1,0 +1,123 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                              JFile.java
+//
+//
+//**********************************************************************
+package kbctAux;
+
+import java.util.Vector;
+
+import kbct.jnikbct;
+import fis.JFileListener;
+
+/**
+ * kbctAux.JFile is the class used to read data files.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+
+//------------------------------------------------------------------------------
+public abstract class JFile {
+  private double [][] Data;
+  private String FileName;
+  protected Vector<JFileListener> Listeners = new Vector<JFileListener>();
+  private static char Separator = ',';
+//------------------------------------------------------------------------------
+  public JFile( String file_name ) { this.FileName= file_name; }
+//------------------------------------------------------------------------------
+  public void InitData(int DataLength) {
+    this.Data= new double [DataLength] [];
+  }
+//------------------------------------------------------------------------------
+  public void InitDataRow(int i, int DataRowLength) {
+    this.Data[i]= new double [DataRowLength];
+  }
+//------------------------------------------------------------------------------
+  public void setData() throws Throwable {
+    Data= jnikbct.DataFile(this.FileName);
+  }
+//------------------------------------------------------------------------------
+  public void setDataElement(int i, int j, double Element) {
+    this.Data[i][j]= Element;
+  }
+//------------------------------------------------------------------------------
+  public int DataLength() { return this.Data.length; }
+//------------------------------------------------------------------------------
+  public void Reload( String file_name ) throws Exception {
+    this.FileName= file_name;
+    Object [] listeners = this.Listeners.toArray();
+    for( int i=0 ; i<listeners.length ; i++ )
+      ((JFileListener)listeners[i]).ReLoaded();
+  }
+//------------------------------------------------------------------------------
+  public String FileName() { return this.FileName; }
+//------------------------------------------------------------------------------
+  abstract protected double [][] LoadData() throws Throwable;
+//------------------------------------------------------------------------------
+  /**
+   * Return number of variables (columns) from data file.
+   */
+  public int VariableCount() { return this.Data[0].length; }
+//------------------------------------------------------------------------------
+  /**
+   * Return the column "column" from data file.
+   * It represents data distribution of variable related to "column" .
+   */
+  public double [] VariableData( int column ) {
+    double [] result = new double[this.Data.length];
+    for( int i=0 ; i<result.length ; i++ )
+      result[i]= this.Data[i][column];
+
+    return result;
+  }
+//------------------------------------------------------------------------------
+  public void AddJFileListener( JFileListener listener ) { this.Listeners.add(listener); }
+//------------------------------------------------------------------------------
+  public void RemoveJFileListener( JFileListener listener ) { this.Listeners.remove(listener); }
+//------------------------------------------------------------------------------
+  public int ListenersSize() { return this.Listeners.size(); }
+//------------------------------------------------------------------------------
+  /**
+   * Return character used as separator in data file.
+   */
+  public static char GetSeparator() throws Throwable { return Separator; }
+//------------------------------------------------------------------------------
+  /**
+   * Set character used as separator in data file.
+   */
+  public static void SetSeparator( char separator ) throws Throwable { Separator= separator; }
+//------------------------------------------------------------------------------
+  public void Close() {
+    Object [] listeners = this.Listeners.toArray();
+    for( int i=0 ; i<listeners.length ; i++ )
+      ((JFileListener)listeners[i]).Closed();
+  }
+//------------------------------------------------------------------------------
+  public double [][] GetData() { return this.Data; }
+}

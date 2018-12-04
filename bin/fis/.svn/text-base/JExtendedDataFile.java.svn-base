@@ -1,0 +1,357 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                          JExtendedDataFile.java
+//
+//
+//**********************************************************************
+package fis;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Hashtable;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import kbct.LocaleKBCT;
+import kbct.MainKBCT;
+import kbctAux.JDataFile;
+
+/**
+ * fis.JExtendedDataFile is the class used to work with data files.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+
+//------------------------------------------------------------------------------
+/* class used to create dynamically two extensions of the current datafile, opened
+ in the JFisFrame class and given to the JDataTableFrame constructor. The main purpose is
+ to be able to do the inference only with the activated examples. The inference and the
+ graphical display (Y=X graph...) must be dynamically calculated when the user changes
+ the activation status of the examples. So, each time such action is performed, this
+ JExtendedDataFile class, through the SetActive methods, calls the CreateActiveDataFile method
+ to write a copy of the DataFile containing only the lines of the activated examples (extension : .active).
+ The boolean array ActiveValuesArray is used to store temporary the activation status of the examples.
+ The second extension of the current datafile is a new file containing only one line for
+ each example : each line is just a boolean, true or false depending on the activation status (actually, it's the storage of the ActiveValuesArray).
+ This file (.extend) is used when the datafile is open with JFisFrame, in the main
+ frame : if a .extend file exists for the file opened, the boolean values allows to
+ retrieve the last activation status of the examples (if the file doesn't exist, all
+ the examples are activated). This file is written only when the datafile is closed, to
+ avoid too much overhead. This is done by overriding the close() method of the JDataFile parent class
+ */
+public class JExtendedDataFile extends JDataFile {
+  private int ext_vlenght = GetData().length; // number of examples
+  private File f_act, f_inact, f_ext; //to manipulate the files
+  private StringBuffer tmp_s; //to create the lines of the .active file
+  private boolean[] ActiveValuesArray = new boolean[ext_vlenght]; //array used to store tempporary the activation status of the examples
+  static public Hashtable jhtTableFrames = new Hashtable(); // to create only one time the table, for one .active file
+  static Hashtable<String,JSemaphore> jhtOpenCount = new Hashtable<String,JSemaphore>();  //to store how many time a given .active file is opened. A semaphore do the counting. when count=0, this .active file is erased
+  private static Hashtable<String,JExtendedDataFile> jhtFilesOpen = new Hashtable<String,JExtendedDataFile>(); // to store opened data files to open once
+  static final String ActiveExtension = new String(".active");
+  static final String InactiveExtension = new String(".inactive");
+  private int active_count ;  //counter of the activated examples
+  private int last_activated ;   // flag used to identify the last activated example when it exists
+
+  public JExtendedDataFile(String file_name, boolean active_all) throws Throwable {
+    super(file_name);
+    tmp_s = new StringBuffer(); // temporary StringBufer construction
+    f_ext = new File(this.ExtendedFileName());
+    if ((f_ext.exists() == true) && (active_all == false)) { //in this case we retrieve the previous activation status of the examples, stored in the .extend file
+      BufferedReader br = new BufferedReader(new FileReader(this.ExtendedFileName())); //to read the file
+      String str;
+      String str_test = "true";
+      int i = 0;
+      while ( (str = br.readLine()) != null) {
+        if (str.equals(str_test)) {
+          ActiveValuesArray[i] = true;
+          active_count++ ;
+        }
+        else
+          ActiveValuesArray[i] = false;
+
+        i++;
+      }
+      br.close(); //necessary
+    }
+    else { //if .extend file doesn't exist, all the examples are activated
+      for (int i = 0; i < ext_vlenght; i++)
+        ActiveValuesArray[i] = true;
+
+      active_count = ext_vlenght ;
+    }
+    CreateActiveDataFile();
+    this.IncrementCount();
+  } //end of JExtendedDataFile constructor
+  /**
+   * Open data file
+   * @return new instance of JExtendedDataFile if data file file_name not opened, previous instance else
+   */
+  public static JExtendedDataFile Open( String file_name, boolean active_all ) throws Throwable {
+    JExtendedDataFile jedf = (JExtendedDataFile)JExtendedDataFile.jhtFilesOpen.get(file_name);
+    if( jedf == null ) {
+      jedf = new JExtendedDataFile(file_name, active_all);
+      JExtendedDataFile.jhtFilesOpen.put(file_name, jedf);
+    } else
+      jedf.IncrementCount();
+
+    return jedf;
+  }
+
+  private void IncrementCount() {
+    //A semaphore is used to count how many times this .active file has been created
+    JSemaphore js = (JSemaphore) JExtendedDataFile.jhtOpenCount.get(this.FileName()); //retrieving of the semaphore using the file name as key in the OpenCount hash table
+    if (js == null) {  // if it doen't exist, it is created
+      js = new JSemaphore(0);
+      JExtendedDataFile.jhtOpenCount.put(this.FileName(), js);
+    }
+    js.Release();   //the semaphore count is increased
+  }
+
+  public String GetFileName() { return this.FileName(); }
+
+  public String ActiveFileName() {
+    return this.FileName() + JExtendedDataFile.ActiveExtension;
+  }
+
+  public String InactiveFileName() {
+    return this.FileName() + JExtendedDataFile.InactiveExtension;
+  }
+
+  public String ExtendedFileName() { return this.FileName() + ".extend"; }
+
+  public void Close() { //overriding of the JDataTable Close() method : the .extend file is created to store the activation status of the examples
+    JSemaphore js = (JSemaphore) JExtendedDataFile.jhtOpenCount.get(this.FileName());
+    js.Acquire();
+    if (js.Permits() == 0) {
+      (new File(this.ActiveFileName())).delete();
+      (new File(this.InactiveFileName())).delete();
+      JExtendedDataFile.jhtFilesOpen.remove(this.FileName());
+    }
+    super.Close();
+    try {
+      f_ext.delete(); // no error if the file doesn't exist
+      f_ext.createNewFile();
+      BufferedWriter bw = new BufferedWriter(new FileWriter(this.ExtendedFileName())); //to write in the file
+
+      for (int i = 0; i < ext_vlenght; i++) {
+        if (ActiveValuesArray[i] == true)
+          Writebool(true, bw);
+        else
+          Writebool(false, bw);
+      }
+      bw.close(); //necessary to obtain the file
+    } catch (IOException e) {
+      System.out.println("Problème IO : " + e.getMessage());
+    }
+  }
+
+  private void Writebool(boolean b, BufferedWriter bw) throws IOException {
+    tmp_s.append(b); //String could be used, but .append(boolean) is convenient
+    bw.write(tmp_s.toString());
+    bw.newLine();
+    tmp_s.delete(0, tmp_s.length());
+  }
+
+  protected void CreateActiveDataFile() { // the event is detected by the table listener. Also called when the data file is opened and thus a JExtended file is created (see constructor).
+    boolean inact_written = false;
+    try {
+      f_act = new File(this.ActiveFileName());
+      if (f_act.exists() == true)
+        f_act.delete(); //if clause is not necassary since .delete causes no error if the file doesn't exist
+
+      f_inact = new File(this.InactiveFileName());
+      if (f_inact.exists() == true)
+        f_inact.delete(); //if clause is not necassary since .delete causes no error if the file doesn't exist
+
+      f_act.createNewFile();
+      f_inact.createNewFile();
+      BufferedWriter bw_act = new BufferedWriter(new FileWriter(this.ActiveFileName())); // to write in the file
+      BufferedWriter bw_inact = new BufferedWriter(new FileWriter(this.InactiveFileName())); // to write in the file
+      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.FileName())));
+      String buffer;
+      for (int i = 0; i < ext_vlenght; i++) { // the ActiveValuesArray is used to copy from the parent JDataFile containing the original Double[] Data only the lines corresponding to active examples
+        buffer = br.readLine();
+        if (ActiveValuesArray[i] == true) {
+          bw_act.write(buffer);
+          bw_act.newLine();
+        } else {
+          bw_inact.write(buffer);
+          bw_inact.newLine();
+          inact_written = true;
+        }
+      }
+      bw_act.close(); //necessary to obtain the file
+      bw_inact.close(); //    "         "
+      if (inact_written == false)
+        f_inact.delete();
+    } catch (Throwable e) {
+      System.out.println("IO Problem : " + e.getMessage());
+    }
+  }
+
+  public int GetActiveCount() { return this.active_count ; }
+
+  public boolean GetActive(int item) { return this.ActiveValuesArray[item]; }
+
+  public void SetActive(int item, boolean active) {
+   //used by clicks on the table. THe first part of the code prevent the last activated example to be modified
+    if (active_count == 1 && active==false) {
+        Message_One_Activated() ;
+        for (int j=0 ; j<this.ext_vlenght ; j++) {
+          if (this.GetActive(j)==true)
+                {this.last_activated = j+1 ; break ;}
+        }
+        return ;
+    }
+    this.ActiveValuesArray[item-1] = active;
+    if (active==false)
+       active_count-- ;
+     else
+       active_count++ ;
+
+    this.CreateActiveDataFile();  // the active date file is updated
+    Object[] listeners = this.Listeners.toArray();    //firing of the corresponding event
+    for (int i = 0; i < listeners.length; i++) {
+      if (listeners[i] instanceof JExtendedFileListener)
+        ( (JExtendedFileListener) listeners[i]).ActivationChanged(item, active);
+    }
+  }
+
+  public void SetActive(int[] items, boolean active) {
+   // the items are the selected rows. There is no problem for activating them.
+   // Desactivation needs special handling because at least one example must be activated
+   // when there is only one example remaining, iems array is reduced just before the row containing
+   //the last activated example
+    for (int i = 0; i < items.length; i++) {
+      boolean last_one_flag = false ;
+      if (active_count == 1 && active==false && items[i]==this.last_activated) {
+           int[] tmp = items ;
+           items = new int[i] ;
+           for (int k=0 ; k<(i) ; k++)
+             items[k] = tmp[k] ;
+
+           last_one_flag =true ;
+      }
+      if (last_one_flag==false) {
+        if (this.ActiveValuesArray[items[i]-1] != active) {
+          this.ActiveValuesArray[items[i] - 1] = active;
+          if (active == false)
+            active_count--;
+          else
+            active_count++;
+        }
+        if (active_count > this.ext_vlenght )
+          active_count = this.ext_vlenght ;
+        if (active_count < 1 )
+          active_count = 1 ;
+
+        //last one activated must be identified
+        if (active_count == 1) {
+           for (int j=0 ; j<this.ext_vlenght ; j++)
+              if (this.GetActive(j)==true) {this.last_activated = j+1 ; break ;}
+        }
+      }
+    }
+    this.CreateActiveDataFile();      // the active date file is updated
+    Object[] listeners = this.Listeners.toArray();   //the corresponding event is fired
+    for (int i = 0; i < listeners.length; i++) {
+        if (listeners[i] instanceof JExtendedFileListener)
+          ( (JExtendedFileListener) listeners[i]).ActivationChanged(items, active);
+    }
+  }
+
+  public void GlobalSetActive(boolean active, boolean from_switch_call) {
+    //used by the active all JItem menu and also by switch, for its pre-treatment
+    int[] items = new int[this.ext_vlenght] ;
+    for (int i = 0 ; i < this.ext_vlenght ; i++)
+         {this.ActiveValuesArray[i] = active; items[i] = i+1 ; }
+
+    if (from_switch_call==false) {
+          active_count = this.ext_vlenght;
+          this.CreateActiveDataFile();
+          Object[] listeners = this.Listeners.toArray();
+          for (int i = 0; i < listeners.length; i++) {
+            if (listeners[i] instanceof JExtendedFileListener)
+              ( (JExtendedFileListener) listeners[i]).ActivationChanged(items, active);
+          }
+    } else {
+         //in this case (used by switch), we don't fire an event. Only the count is updated
+         if (active==true)
+             active_count = this.ext_vlenght ;
+         else
+             active_count = 0 ;
+    }
+  }
+
+  public void Save(String DataFile) {
+    try {
+      //System.out.println("Save data file: "+DataFile);
+      DecimalFormat df= new DecimalFormat();
+      df.setMaximumFractionDigits(MainKBCT.getConfig().GetNumberOfDecimals());
+      df.setMinimumFractionDigits(MainKBCT.getConfig().GetNumberOfDecimals());
+      DecimalFormatSymbols dfs= df.getDecimalFormatSymbols();
+      dfs.setDecimalSeparator((new String(".").charAt(0)));
+      df.setDecimalFormatSymbols(dfs);
+      df.setGroupingSize(20);
+      PrintWriter fOut = new PrintWriter(new FileOutputStream(DataFile), true);
+      int NbLines = this.VariableData(0).length;
+      int NbCol= this.VariableCount();
+      for (int k = 0; k < NbLines; k++) {
+        for (int n = 0; n < NbCol; n++) {
+          fOut.print(df.format(this.VariableData(n)[k]));
+          if (n==NbCol-1)
+              fOut.println();
+          else
+              fOut.print(",");
+        }
+      }
+      fOut.flush();
+      fOut.close();
+      this.Reload(DataFile);
+    } catch (Throwable t) {System.out.println("Exception in Save in fis.JExtendedDataFile: "+t);}
+  }
+
+  public void Message_One_Activated() {
+    //a message box appearing when the user clicks on the last activated example, in the table or in the XYpanel
+    JFrame MessageFrame = new JFrame() ;
+    MessageFrame.setVisible(false) ;
+    String Message = LocaleKBCT.GetString("AtLeastOne") ;
+    JOptionPane.showMessageDialog(MessageFrame, Message, "Fispro", JOptionPane.PLAIN_MESSAGE );
+  }
+}

@@ -1,0 +1,152 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//                              JMFsPanel.java
+//
+// Author(s) : Jean-luc LABLEE
+// FISPRO Version : 3.2 - Copyright INRA - Cemagref - 2002 - IDDN.FR.001.030024.000.R.P.2005.003.31235
+// Licence http://www.cecill.info/licences/Licence_CeCILL_V2-en.html/
+// Last modification date:  July 31, 2009 - Contact : fispro@supagro.inra.fr
+//
+//**********************************************************************
+
+package kbctFrames;
+
+import kbct.JVariable; 
+import kbctAux.MessageKBCT;
+
+//import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
+
+import KB.LabelKBCT;
+import fis.FISPlot;
+
+import ptolemy.plot.PlotBox;
+
+/**
+ * fis.JMFsPanel.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+
+//------------------------------------------------------------------------------
+public class JMFsPanel extends FISPlot {
+  static final long serialVersionUID=0;
+  protected JVariable Input;
+  protected ArrayList cursors = new ArrayList();
+//------------------------------------------------------------------------------
+  public JMFsPanel() {
+     super();
+     this.initYAxis();
+     FISPlot.DisableZoom(this);
+  }
+//------------------------------------------------------------------------------
+  public JMFsPanel( JVariable input ) throws Throwable {
+     this.init(input);
+     //FISPlot.DisableZoom(this);
+  }
+//	------------------------------------------------------------------------------
+  public Dimension getPreferredSize() { return new Dimension(400,200); }
+  public Dimension getMinimumSize() { return  new Dimension(100,100); }
+//------------------------------------------------------------------------------
+  private void initYAxis() {
+     this.setYRange(0, 1);
+     this.addYTick("0", 0);
+     this.addYTick("", 0.5);
+     this.addYTick("1", 1);
+  }
+//------------------------------------------------------------------------------
+  public void init( JVariable input ) throws Throwable {
+     this.initYAxis();
+     this.SetInput(input);
+     if( this.Input != null )
+         this.SetXRange(this.Input.GetInputInterestRange());
+  }
+//------------------------------------------------------------------------------
+  public void SetXRange( double [] x_range ) { 
+	 this.setXRange(x_range[0], x_range[1]); this.repaint(); 
+  }
+//------------------------------------------------------------------------------
+  public void SetInput( JVariable input ) throws Throwable {
+     this.cursors.removeAll(this.cursors);
+     this.Input = input;
+     if( this.Input != null )
+         this.SetXRange(this.Input.GetInputInterestRange());
+
+     this.clear(false);
+     this.repaint();
+  }
+//------------------------------------------------------------------------------
+  public JVariable GetInput() throws Throwable { return this.Input; }
+//------------------------------------------------------------------------------
+  public void paintComponent(Graphics g) {
+     try {
+        this.clear(false);
+        if( this.Input != null )
+            for( int i=0 ; i<this.Input.GetLabelsNumber() ; i++ ) {
+    	        LabelKBCT et = this.Input.GetLabel(i + 1);
+    	        et.Draw(this, i);
+            }
+
+        super.paintComponent(g);
+        for( int i=0 ; i<this.cursors.size() ; i++ ) {
+             DrawCursor(g, this, ((Double)this.cursors.get(i)).doubleValue(), this._xMin, this._xMax);
+        }
+        if( this.Input != null )
+            FISPlot.DrawXInputRange(g, this, this.Input.GetInputInterestRange(), this._xMin, this._xMax); 
+     } catch( Throwable t ) {
+    	 t.printStackTrace();
+    	 MessageKBCT.Error( null, t ); 
+     }
+  }
+//------------------------------------------------------------------------------
+  public void addCursor(double value) {
+    this.cursors.add(new Double(value));
+  }
+//------------------------------------------------------------------------------
+  public void setCursor(int cursorIndex, double value) {
+    this.cursors.set(cursorIndex, new Double(value));
+    this.repaint();
+  }
+//------------------------------------------------------------------------------
+  private static void DrawCursor( Graphics g, PlotBox pb, double cursor_value, double x_min, double x_max ) {
+    Graphics2D g2d = (Graphics2D)g;
+    g2d.setColor(Color.black);
+    Rectangle rect = pb.getPlotRectangle();
+    if( rect.height <= 0 ) 
+    	return;
+    if( (cursor_value >= x_min) && (cursor_value <= x_max) ) {
+        int x = FISPlot.XtoPixel(pb, cursor_value, x_min, x_max);
+        g2d.draw(new Line2D.Double(x, rect.y, x, rect.y+rect.height) );
+    }
+  }
+}

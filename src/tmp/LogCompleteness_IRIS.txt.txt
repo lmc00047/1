@@ -1,0 +1,147 @@
+++++++++++++++++++++++++++++++++++
+05-sep-2018 12:14:53
+Archivo de configuración= C:\GUAJE-vb3.0\examples\iris\IRIS.txt.ikb.xml
+filtro KB= C:\GUAJE-vb3.0\examples\iris\IRIS.txt.kb.xml
+El archivo de datos= C:\GUAJE-vb3.0\examples\iris\IRIS.txt.aux
+PROCEDIMIENTO DE COMPLETITUD AUTOMÁTICO
+----------------------------------
+OPCIONES
+  Umbral de completitud= 0.1
+----------------------------------
+ANÁLISIS DE COMPLETITUD DE LA BASE DE REGLAS
+    1.- Si Sepal Length es average Y Sepal Width es low Y Petal Length es low Y Petal Width es low ENTONCES Class es ?
+    2.- Si Sepal Length es high Y Sepal Width es low Y Petal Length es low Y Petal Width es low ENTONCES Class es ?
+    3.- Si Sepal Length es high Y Sepal Width es average Y Petal Length es low Y Petal Width es low ENTONCES Class es ?
+    4.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es low Y Petal Width es low ENTONCES Class es ?
+    5.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es low Y Petal Width es low ENTONCES Class es ?
+    6.- Si Sepal Length es low Y Sepal Width es low Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    7.- Si Sepal Length es average Y Sepal Width es low Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    8.- Si Sepal Length es high Y Sepal Width es low Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    9.- Si Sepal Length es low Y Sepal Width es average Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    10.- Si Sepal Length es average Y Sepal Width es average Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    11.- Si Sepal Length es high Y Sepal Width es average Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    12.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    13.- Si Sepal Length es average Y Sepal Width es high Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    14.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es average Y Petal Width es low ENTONCES Class es ?
+    15.- Si Sepal Length es low Y Sepal Width es low Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    16.- Si Sepal Length es average Y Sepal Width es low Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    17.- Si Sepal Length es high Y Sepal Width es low Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    18.- Si Sepal Length es low Y Sepal Width es average Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    19.- Si Sepal Length es average Y Sepal Width es average Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    20.- Si Sepal Length es high Y Sepal Width es average Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    21.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    22.- Si Sepal Length es average Y Sepal Width es high Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    23.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es high Y Petal Width es low ENTONCES Class es ?
+    24.- Si Sepal Length es low Y Sepal Width es low Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    25.- Si Sepal Length es average Y Sepal Width es low Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    26.- Si Sepal Length es high Y Sepal Width es low Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    27.- Si Sepal Length es low Y Sepal Width es average Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    28.- Si Sepal Length es average Y Sepal Width es average Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    29.- Si Sepal Length es high Y Sepal Width es average Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    30.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    31.- Si Sepal Length es average Y Sepal Width es high Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    32.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es low Y Petal Width es average ENTONCES Class es ?
+    33.- Si Sepal Length es high Y Sepal Width es low Y Petal Length es average Y Petal Width es average ENTONCES Class es ?
+    34.- Si Sepal Length es low Y Sepal Width es average Y Petal Length es average Y Petal Width es average ENTONCES Class es ?
+    35.- Si Sepal Length es high Y Sepal Width es average Y Petal Length es average Y Petal Width es average ENTONCES Class es ?
+    36.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es average Y Petal Width es average ENTONCES Class es ?
+    37.- Si Sepal Length es average Y Sepal Width es high Y Petal Length es average Y Petal Width es average ENTONCES Class es ?
+    38.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es average Y Petal Width es average ENTONCES Class es ?
+    39.- Si Sepal Length es low Y Sepal Width es low Y Petal Length es high Y Petal Width es average ENTONCES Class es ?
+    40.- Si Sepal Length es high Y Sepal Width es low Y Petal Length es high Y Petal Width es average ENTONCES Class es ?
+    41.- Si Sepal Length es low Y Sepal Width es average Y Petal Length es high Y Petal Width es average ENTONCES Class es ?
+    42.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es high Y Petal Width es average ENTONCES Class es ?
+    43.- Si Sepal Length es average Y Sepal Width es high Y Petal Length es high Y Petal Width es average ENTONCES Class es ?
+    44.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es high Y Petal Width es average ENTONCES Class es ?
+    45.- Si Sepal Length es low Y Sepal Width es low Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    46.- Si Sepal Length es average Y Sepal Width es low Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    47.- Si Sepal Length es high Y Sepal Width es low Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    48.- Si Sepal Length es low Y Sepal Width es average Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    49.- Si Sepal Length es average Y Sepal Width es average Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    50.- Si Sepal Length es high Y Sepal Width es average Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    51.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    52.- Si Sepal Length es average Y Sepal Width es high Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    53.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es low Y Petal Width es high ENTONCES Class es ?
+    54.- Si Sepal Length es low Y Sepal Width es low Y Petal Length es average Y Petal Width es high ENTONCES Class es ?
+    55.- Si Sepal Length es high Y Sepal Width es low Y Petal Length es average Y Petal Width es high ENTONCES Class es ?
+    56.- Si Sepal Length es low Y Sepal Width es average Y Petal Length es average Y Petal Width es high ENTONCES Class es ?
+    57.- Si Sepal Length es high Y Sepal Width es average Y Petal Length es average Y Petal Width es high ENTONCES Class es ?
+    58.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es average Y Petal Width es high ENTONCES Class es ?
+    59.- Si Sepal Length es average Y Sepal Width es high Y Petal Length es average Y Petal Width es high ENTONCES Class es ?
+    60.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es average Y Petal Width es high ENTONCES Class es ?
+    61.- Si Sepal Length es low Y Sepal Width es low Y Petal Length es high Y Petal Width es high ENTONCES Class es ?
+    62.- Si Sepal Length es average Y Sepal Width es low Y Petal Length es high Y Petal Width es high ENTONCES Class es ?
+    63.- Si Sepal Length es low Y Sepal Width es average Y Petal Length es high Y Petal Width es high ENTONCES Class es ?
+    64.- Si Sepal Length es low Y Sepal Width es high Y Petal Length es high Y Petal Width es high ENTONCES Class es ?
+    65.- Si Sepal Length es average Y Sepal Width es high Y Petal Length es high Y Petal Width es high ENTONCES Class es ?
+    66.- Si Sepal Length es high Y Sepal Width es high Y Petal Length es high Y Petal Width es high ENTONCES Class es ?
+COMPLETAR LA BASE DE REGLAS
+    Regla 16: Si Sepal Length es high Y Sepal Width es high Y Petal Length es high Y Petal Width es high ENTONCES Class es 3.0
+    Regla 17: Si Sepal Length es average Y Sepal Width es high Y Petal Length es high Y Petal Width es high ENTONCES Class es 3.0
+    Regla 18: Si Sepal Length es low Y Sepal Width es high Y Petal Length es high Y Petal Width es high ENTONCES Class es 3.0
+    Regla 19: Si Sepal Length es low Y Sepal Width es average Y Petal Length es high Y Petal Width es high ENTONCES Class es 3.0
+    Regla 20: Si Sepal Length es average Y Sepal Width es low Y Petal Length es high Y Petal Width es high ENTONCES Class es 3.0
+    Regla 21: Si Sepal Length es low Y Sepal Width es low Y Petal Length es high Y Petal Width es high ENTONCES Class es 3.0
+    Regla 22: Si Sepal Length es high Y Sepal Width es high Y Petal Length es average Y Petal Width es high ENTONCES Class es 3.0
+    Regla 23: Si Sepal Length es average Y Sepal Width es high Y Petal Length es average Y Petal Width es high ENTONCES Class es 3.0
+    Regla 24: Si Sepal Length es low Y Sepal Width es high Y Petal Length es average Y Petal Width es high ENTONCES Class es 3.0
+    Regla 25: Si Sepal Length es high Y Sepal Width es average Y Petal Length es average Y Petal Width es high ENTONCES Class es 3.0
+    Regla 26: Si Sepal Length es low Y Sepal Width es average Y Petal Length es average Y Petal Width es high ENTONCES Class es 3.0
+    Regla 27: Si Sepal Length es high Y Sepal Width es low Y Petal Length es average Y Petal Width es high ENTONCES Class es 3.0
+    Regla 28: Si Sepal Length es low Y Sepal Width es low Y Petal Length es average Y Petal Width es high ENTONCES Class es 3.0
+    Regla 29: Si Sepal Length es high Y Sepal Width es high Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 30: Si Sepal Length es average Y Sepal Width es high Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 31: Si Sepal Length es low Y Sepal Width es high Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 32: Si Sepal Length es high Y Sepal Width es average Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 33: Si Sepal Length es average Y Sepal Width es average Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 34: Si Sepal Length es low Y Sepal Width es average Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 35: Si Sepal Length es high Y Sepal Width es low Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 36: Si Sepal Length es average Y Sepal Width es low Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 37: Si Sepal Length es low Y Sepal Width es low Y Petal Length es low Y Petal Width es high ENTONCES Class es 3.0
+    Regla 38: Si Sepal Length es high Y Sepal Width es high Y Petal Length es high Y Petal Width es average ENTONCES Class es 3.0
+    Regla 39: Si Sepal Length es average Y Sepal Width es high Y Petal Length es high Y Petal Width es average ENTONCES Class es 3.0
+    Regla 40: Si Sepal Length es low Y Sepal Width es high Y Petal Length es high Y Petal Width es average ENTONCES Class es 3.0
+    Regla 41: Si Sepal Length es low Y Sepal Width es average Y Petal Length es high Y Petal Width es average ENTONCES Class es 3.0
+    Regla 42: Si Sepal Length es high Y Sepal Width es low Y Petal Length es high Y Petal Width es average ENTONCES Class es 3.0
+    Regla 43: Si Sepal Length es low Y Sepal Width es low Y Petal Length es high Y Petal Width es average ENTONCES Class es 3.0
+    Regla 44: Si Sepal Length es high Y Sepal Width es high Y Petal Length es average Y Petal Width es average ENTONCES Class es 3.0
+    Regla 45: Si Sepal Length es average Y Sepal Width es high Y Petal Length es average Y Petal Width es average ENTONCES Class es 3.0
+    Regla 46: Si Sepal Length es low Y Sepal Width es high Y Petal Length es average Y Petal Width es average ENTONCES Class es 3.0
+    Regla 47: Si Sepal Length es high Y Sepal Width es average Y Petal Length es average Y Petal Width es average ENTONCES Class es 2.0
+    Regla 48: Si Sepal Length es low Y Sepal Width es average Y Petal Length es average Y Petal Width es average ENTONCES Class es 2.0
+    Regla 49: Si Sepal Length es high Y Sepal Width es low Y Petal Length es average Y Petal Width es average ENTONCES Class es 3.0
+    Regla 50: Si Sepal Length es high Y Sepal Width es high Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 51: Si Sepal Length es average Y Sepal Width es high Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 52: Si Sepal Length es low Y Sepal Width es high Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 53: Si Sepal Length es high Y Sepal Width es average Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 54: Si Sepal Length es average Y Sepal Width es average Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 55: Si Sepal Length es low Y Sepal Width es average Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 56: Si Sepal Length es high Y Sepal Width es low Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 57: Si Sepal Length es average Y Sepal Width es low Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 58: Si Sepal Length es low Y Sepal Width es low Y Petal Length es low Y Petal Width es average ENTONCES Class es 3.0
+    Regla 59: Si Sepal Length es high Y Sepal Width es high Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 60: Si Sepal Length es average Y Sepal Width es high Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 61: Si Sepal Length es low Y Sepal Width es high Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 62: Si Sepal Length es high Y Sepal Width es average Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 63: Si Sepal Length es average Y Sepal Width es average Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 64: Si Sepal Length es low Y Sepal Width es average Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 65: Si Sepal Length es high Y Sepal Width es low Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 66: Si Sepal Length es average Y Sepal Width es low Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 67: Si Sepal Length es low Y Sepal Width es low Y Petal Length es high Y Petal Width es low ENTONCES Class es 3.0
+    Regla 68: Si Sepal Length es high Y Sepal Width es high Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 69: Si Sepal Length es average Y Sepal Width es high Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 70: Si Sepal Length es low Y Sepal Width es high Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 71: Si Sepal Length es high Y Sepal Width es average Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 72: Si Sepal Length es average Y Sepal Width es average Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 73: Si Sepal Length es low Y Sepal Width es average Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 74: Si Sepal Length es high Y Sepal Width es low Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 75: Si Sepal Length es average Y Sepal Width es low Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 76: Si Sepal Length es low Y Sepal Width es low Y Petal Length es average Y Petal Width es low ENTONCES Class es 3.0
+    Regla 77: Si Sepal Length es high Y Sepal Width es high Y Petal Length es low Y Petal Width es low ENTONCES Class es 3.0
+    Regla 78: Si Sepal Length es low Y Sepal Width es high Y Petal Length es low Y Petal Width es low ENTONCES Class es 1.0
+    Regla 79: Si Sepal Length es high Y Sepal Width es average Y Petal Length es low Y Petal Width es low ENTONCES Class es 3.0
+    Regla 80: Si Sepal Length es high Y Sepal Width es low Y Petal Length es low Y Petal Width es low ENTONCES Class es 3.0
+    Regla 81: Si Sepal Length es average Y Sepal Width es low Y Petal Length es low Y Petal Width es low ENTONCES Class es 3.0
+----------------------------------
+El Proceso Automático de Completitud de la base de reglas ha terminado.
+time end -> 12:15:16

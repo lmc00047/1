@@ -1,0 +1,53 @@
+[Interface]
+DataSep=,
+
+[System]
+Name='New Knowledge Base'
+Ninputs=2
+Noutputs=1
+Nrules=4
+Nexceptions=0
+Conjunction='prod'
+MissingValues='random'
+
+
+[Input1]
+Active='yes'
+Name='Total number of inputs'
+Range=[   1.000,   100.000]
+NMFs=2
+MF1='low','SemiTrapezoidalInf',[   1.000,   1.000,   100.000]
+MF2='high','SemiTrapezoidalSup',[   1.000,   100.000,   100.000]
+
+
+[Input2]
+Active='yes'
+Name='Total number of labels used in the rule base'
+Range=[   1.000,   36.000]
+NMFs=3
+MF1='low','SemiTrapezoidalInf',[   1.000,   1.000,   18.500]
+MF2='average','triangular',[   1.000,   18.500,   36.000]
+MF3='high','SemiTrapezoidalSup',[   18.500,   36.000,   36.000]
+
+[Output1]
+Nature='fuzzy'
+Defuzzification='sugeno'
+Disjunction='sum'
+DefaultValue=     -1.000
+Classif='yes'
+Active='yes'
+Name='Rule base conceptual dimension'
+Range=[   0.000,   1.000]
+NMFs=3
+MF1='low','SemiTrapezoidalInf',[   0.000,   0.000,   0.500]
+MF2='average','triangular',[   0.000,   0.500,   1.000]
+MF3='high','SemiTrapezoidalSup',[   0.500,   1.000,   1.000]
+
+[Rules]
+1, 1,    1.000, 
+1, 2,    2.000, 
+0, 3,    3.000, 
+2, 0,    3.000, 
+
+[Exceptions]
+

@@ -1,0 +1,53 @@
+[Interface]
+DataSep=,
+
+[System]
+Name='New Knowledge Base'
+Ninputs=2
+Noutputs=1
+Nrules=4
+Nexceptions=0
+Conjunction='prod'
+MissingValues='random'
+
+
+[Input1]
+Active='yes'
+Name='Total number of rules'
+Range=[   1.000,   100.000]
+NMFs=3
+MF1='low','SemiTrapezoidalInf',[   1.000,   1.000,   50.500]
+MF2='average','triangular',[   1.000,   50.500,   100.000]
+MF3='high','SemiTrapezoidalSup',[   50.500,   100.000,   100.000]
+
+
+[Input2]
+Active='yes'
+Name='Total number of premises'
+Range=[   1.000,   200.000]
+NMFs=2
+MF1='low','SemiTrapezoidalInf',[   1.000,   1.000,   200.000]
+MF2='high','SemiTrapezoidalSup',[   1.000,   200.000,   200.000]
+
+[Output1]
+Nature='fuzzy'
+Defuzzification='sugeno'
+Disjunction='sum'
+DefaultValue=     -1.000
+Classif='yes'
+Active='yes'
+Name='Rule base structural dimension'
+Range=[   0.000,   1.000]
+NMFs=3
+MF1='low','SemiTrapezoidalInf',[   0.000,   0.000,   0.500]
+MF2='average','triangular',[   0.000,   0.500,   1.000]
+MF3='high','SemiTrapezoidalSup',[   0.500,   1.000,   1.000]
+
+[Rules]
+1, 1,    1.000, 
+2, 1,    2.000, 
+3, 0,    3.000, 
+0, 2,    3.000, 
+
+[Exceptions]
+

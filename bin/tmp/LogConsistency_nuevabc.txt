@@ -1,0 +1,17 @@
+++++++++++++++++++++++++++++++++++
+11-sep-2018 11:25:14
+Archivo de configuración= C:\GUAJE-vb3.0\examples\pruebas\nuevo.ikb.xml
+filtro KB= C:\GUAJE-vb3.0\examples\pruebas\nuevabc.kb.xml
+El archivo de datos= 
+----------------------------------
+ANALIZANDO Y RESOLVIENDO CONFLICTOS LINGÜÍSTICOS ENTRE REGLAS
+Iteración 1
+  time begin -> 11:25:16
+  Las reglas 1 y 2 tienen las mismas premisas y conclusiones.
+  time end -> 11:25:16
+Iteración 2
+  time begin -> 11:25:16
+  time end -> 11:25:16
+----------------------------------
+El análiss de coherencia automático ha terminado.
+time end -> 11:25:16

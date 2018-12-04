@@ -1,0 +1,87 @@
+[Interface]
+DataSep=,
+
+[System]
+Name='Nueva Base de Conocimiento'
+Ninputs=4
+Noutputs=1
+Nrules=4
+Nexceptions=0
+Conjunction='min'
+MissingValues='random'
+
+
+[Input1]
+Active='yes'
+Name='Sepal Length'
+Range=[   4.300,   7.900]
+NMFs=7
+MF1='low','SemiTrapezoidalInf',[   4.300,   4.300,   6.100]
+MF2='average','triangular',[   4.300,   6.100,   7.900]
+MF3='high','SemiTrapezoidalSup',[   6.100,   7.900,   7.900]
+MF4='NOT(low)','SemiTrapezoidalSup',[   4.300,   6.100,   7.900]
+MF5='Smaller Than(average)','SemiTrapezoidalInf',[   4.300,   4.300,   6.100]
+MF6='Bigger Than(average)','SemiTrapezoidalSup',[   6.100,   7.900,   7.900]
+MF7='NOT(high)','SemiTrapezoidalInf',[   4.300,   6.100,   7.900]
+
+
+[Input2]
+Active='yes'
+Name='Sepal Width'
+Range=[   2.000,   4.400]
+NMFs=7
+MF1='low','SemiTrapezoidalInf',[   2.000,   2.000,   3.200]
+MF2='average','triangular',[   2.000,   3.200,   4.400]
+MF3='high','SemiTrapezoidalSup',[   3.200,   4.400,   4.400]
+MF4='NOT(low)','SemiTrapezoidalSup',[   2.000,   3.200,   4.400]
+MF5='Smaller Than(average)','SemiTrapezoidalInf',[   2.000,   2.000,   3.200]
+MF6='Bigger Than(average)','SemiTrapezoidalSup',[   3.200,   4.400,   4.400]
+MF7='NOT(high)','SemiTrapezoidalInf',[   2.000,   3.200,   4.400]
+
+
+[Input3]
+Active='yes'
+Name='Petal Length'
+Range=[   1.000,   6.900]
+NMFs=7
+MF1='low','SemiTrapezoidalInf',[   1.000,   1.000,   3.950]
+MF2='average','triangular',[   1.000,   3.950,   6.900]
+MF3='high','SemiTrapezoidalSup',[   3.950,   6.900,   6.900]
+MF4='NOT(low)','SemiTrapezoidalSup',[   1.000,   3.950,   6.900]
+MF5='Smaller Than(average)','SemiTrapezoidalInf',[   1.000,   1.000,   3.950]
+MF6='Bigger Than(average)','SemiTrapezoidalSup',[   3.950,   6.900,   6.900]
+MF7='NOT(high)','SemiTrapezoidalInf',[   1.000,   3.950,   6.900]
+
+
+[Input4]
+Active='yes'
+Name='Petal Width'
+Range=[   0.100,   2.500]
+NMFs=7
+MF1='low','SemiTrapezoidalInf',[   0.100,   0.100,   1.300]
+MF2='average','triangular',[   0.100,   1.300,   2.500]
+MF3='high','SemiTrapezoidalSup',[   1.300,   2.500,   2.500]
+MF4='NOT(low)','SemiTrapezoidalSup',[   0.100,   1.300,   2.500]
+MF5='Smaller Than(average)','SemiTrapezoidalInf',[   0.100,   0.100,   1.300]
+MF6='Bigger Than(average)','SemiTrapezoidalSup',[   1.300,   2.500,   2.500]
+MF7='NOT(high)','SemiTrapezoidalInf',[   0.100,   1.300,   2.500]
+
+[Output1]
+Nature='crisp'
+Defuzzification='MaxCrisp'
+Disjunction='max'
+DefaultValue=     -1.000
+Classif='yes'
+Active='yes'
+Name='Class'
+Range=[   1.000,   3.000]
+NMFs=0
+
+[Rules]
+0, 0, 0, 1,    1.000, 
+0, 0, 2, 2,    2.000, 
+0, 0, 3, 0,    3.000, 
+0, 0, 0, 3,    3.000, 
+
+[Exceptions]
+

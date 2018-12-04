@@ -1,0 +1,505 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                            JLogicalView.java
+//
+//
+//**********************************************************************
+
+package kbct;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.PrintStream;
+import java.text.DateFormat;
+import java.util.Date;
+
+import kbctAux.MessageKBCT;
+import KB.Rule;
+import fis.JExtendedDataFile;
+
+/**
+ * Make logical reduction calling ESPRESSO
+ * Compute the LV index
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+public class JLogicalView {
+  private JKBCT kbct;
+  private double LVindex;
+  private boolean warning;
+  private boolean warningend;
+  private File tempkbini;
+  private File tempkbend;
+  //------------------------------------------------------------------------------
+  public JLogicalView(JKBCT kbct, File tini, File tend) {
+	  //System.out.println("new JLogicalView");
+    this.kbct= kbct;
+    this.tempkbini= tini;
+	this.tempkbend= tend;
+    this.warning= false;
+	this.warningend= false;
+  }
+  //------------------------------------------------------------------------------
+  public double getLVindex() {
+	  //System.out.println("JLogicalView: getLVindex -> "+this.LVindex);
+    return this.LVindex;
+  }
+  //------------------------------------------------------------------------------
+  /**
+   * <p align="left">
+   * Logical Reduction of the Rule Base contained in "kbct".
+   * </p>
+   * @param kbct knowledge base to be simplified
+   * @param jedf JExtendedDataFile object: data file
+   * @return reduced knowledge base
+   */
+  public JKBCT ReduceRuleBase(JKBCT auxini) {
+	  JKBCT auxend= null;
+	  try {
+		  JConvert.GuajeToEspresso(this.kbct.GetKBCTFile(),this.tempkbini.getAbsolutePath()+".pla");
+		  // calling espresso
+		  Process p= this.callEspresso();
+		  int outVal= p.exitValue();
+		  //System.out.println("c4: "+outVal);
+		  if (!this.warningend) {
+			  if (outVal != 0) {
+				  //System.out.println(outVal);
+				  this.warning=true;
+				  InputStream stderr= p.getErrorStream();
+                  this.printEspressoError(stderr);
+				  stderr.close();
+			  } else {
+				  // Build the new reduced KB after espresso minimization
+				  auxend= new JKBCT(this.kbct.GetKBCTFile());
+				  auxend.SetKBCTFile(this.tempkbend.getAbsolutePath());
+				  auxend.Save();
+				  int lim=auxend.GetNbRules();
+				  for (int n=lim; n>0; n--) {
+					   //System.out.println("lim="+n);
+					   Rule raux= auxend.GetRule(n);
+					   if (raux.GetActive())
+					       auxend.RemoveRule(n-1);
+				  }
+				  // Build the new rules (reading from kb_red_results.pla)
+				  LineNumberReader lnr= new LineNumberReader(new InputStreamReader(new FileInputStream(tempkbend.getAbsolutePath()+".pla")));
+				  int ni= (new Integer(lnr.readLine().substring(3))).intValue(); // .i
+				  int[] plains= new int[ni];
+				  int no= (new Integer(lnr.readLine().substring(3))).intValue(); // .o
+				  int[] plaouts= new int[no];
+				  String l;
+				  int nr= (new Integer(lnr.readLine().substring(3))).intValue(); // .p
+				  if (nr > 0) {
+					  int nbIns= auxend.GetNbInputs();
+					  int[] nbInLabs= new int[nbIns];
+					  for (int n=0; n<nbIns; n++) {
+						  int N_variable= n+1;
+						  JKBCTInput in= auxend.GetInput(N_variable);
+						  nbInLabs[n]= in.GetLabelsNumber();
+					  }
+					  int nbOuts= auxend.GetNbOutputs();
+					  int[] nbOutLabs= new int[nbOuts];
+					  for (int n=0; n<nbOuts; n++) {
+						  int N_variable= n+1;
+						  JKBCTOutput out= auxend.GetOutput(N_variable);
+						  nbOutLabs[n]= out.GetLabelsNumber();
+					  }
+					  // start: loop for reading rules
+					  int rule_number= 1;
+					  while( ((l= lnr.readLine())!=null) && (!l.startsWith(".e")) ) {
+						  boolean end= false;
+						  int[][] premises= new int[1][nbIns];
+						  int[] concs= new int[nbOuts];
+						  for (int n=0; n<ni; n++) {
+							  String auxin= l.substring(n,n+1);
+							  if (auxin.equals("0"))
+								  plains[n]=0;
+							  else if (auxin.equals("1"))
+								  plains[n]=1;
+							  else
+								  plains[n]=-1;
+						  }
+						  int cil=0;
+						  for (int n=0; n<nbIns; n++) {
+							  int[] ccc= new int[nbInLabs[n]];
+							  for (int m=0; m<ccc.length; m++)
+								  ccc[m]= plains[cil++];
+
+							  int[] pTmp = this.translatePremise(ccc);
+							  if (pTmp.length > 1) {
+								  int[][] premisesTmp = new int[premises.length*pTmp.length][premises[0].length];
+								  int offsetTmp=0;
+								  for (int k0=0;k0<pTmp.length;k0++)
+									  for (int k1=0;k1<premises.length;k1++) {
+										  for (int k2=0;k2<n;k2++)
+											  premisesTmp[offsetTmp][k2]=premises[k1][k2];
+										  premisesTmp[offsetTmp][n]=pTmp[k0];
+										  offsetTmp++;
+									  }
+								  premises=premisesTmp;
+							  } else {
+								  for (int k1=0;k1<premises.length;k1++)
+									  premises[k1][n] = pTmp[0];
+							  }
+							  if (premises[0][n]==-1)
+								  end= true;
+						  }
+						  if (!end) {
+							  for (int n=0; n<no; n++) {
+								  String auxout= l.substring(ni+n+1,ni+n+2);
+								  if (auxout.equals("0"))
+									  plaouts[n]=0;
+								  else if (auxout.equals("1"))
+									  plaouts[n]=1;
+								  else
+									  plaouts[n]=-1;
+							  }
+							  cil=0;
+							  for (int n=0; n<nbOuts; n++) {
+								  int[] ccc= new int[nbOutLabs[n]];
+								  for (int m=0; m<ccc.length; m++)
+									  ccc[m]= plaouts[cil++];
+								  concs[n]= this.translatePremise(ccc)[0];
+								  if (concs[n]==-1)
+									  end= true;
+							  }
+						  }
+						  if (!end) {
+							  // add rules
+							  for (int k0=0;k0<premises.length;k0++) {
+								  Rule r= new Rule(rule_number,nbIns,nbOuts,premises[k0],concs,"I",true);
+								  auxend.AddRule(r);
+								  rule_number++;                    			   
+							  }
+						  }
+					  }   
+					  lnr.close();
+				  }
+				  p.destroy();
+			  }
+		  }
+		  if (p!=null) {
+			  p.destroy();
+			  p=null;
+		  }
+	  } catch (Throwable t) {
+		  t.printStackTrace();
+		  MessageKBCT.Error(null, t);
+	  } 
+      return auxend;
+  }
+//------------------------------------------------------------------------------
+  /**
+   * <p align="left">
+   * Logical Reduction of the Rule Base contained in "kbct".
+   * </p>
+   * @param kbct knowledge base to be simplified
+   * @param jedf JExtendedDataFile object: data file
+   * @return reduced knowledge base
+   */
+  public void computeLVindex(JFIS fisIni, JFIS fisEnd, double[][] data, int NbInputs) {
+      try {
+	    int nbData=data.length;
+	    double conterr=0;
+	    int cerrini=0;
+	    int cerrend=0;
+	    for (int n=0; n<nbData; n++) {
+		  double obsoutput= data[n][NbInputs];
+		  fisIni.Infer(data[n]);
+		  double outputinfini= fisIni.SortiesObtenues()[0];
+		  fisEnd.Infer(data[n]);
+		  double outputinfend= fisEnd.SortiesObtenues()[0];
+		  if (outputinfini!=outputinfend)
+			  conterr= conterr+1;                        	
+		  if (obsoutput!=outputinfini)
+			  cerrini++;
+		  if (obsoutput!=outputinfend)
+			  cerrend++;
+	    }
+	    this.LVindex=1-(conterr/nbData); 
+	    FileOutputStream fos= new FileOutputStream(this.tempkbend.getAbsolutePath()+".log.txt", false);
+	    PrintStream pLVfile= new PrintStream(fos);
+	    pLVfile.println("++++++++++++++++++++++++++++++++++");
+	    pLVfile.println("EVALUATION LOG: LogicalView");
+	    Date d= new Date(System.currentTimeMillis());
+	    pLVfile.println(DateFormat.getDateTimeInstance().format(d));
+	    pLVfile.println("**********************************");
+	    pLVfile.println("conterr="+conterr);
+	    pLVfile.println("cerrini="+cerrini);
+	    pLVfile.println("cerrend="+cerrend);
+	    pLVfile.println("NbData="+nbData);
+	    pLVfile.println("**********************************");
+	    pLVfile.println("LV="+this.LVindex);
+	    pLVfile.println("++++++++++++++++++++++++++++++++++");
+	    pLVfile.flush();
+	    pLVfile.close();
+	    pLVfile=null;
+	    fos.close();
+	    fos=null;
+	    fisIni.Close();
+	    fisIni.Delete();
+	    fisEnd.Close();
+	    fisEnd.Delete();
+	  } catch (Throwable t) {
+		  t.printStackTrace();
+		  MessageKBCT.Error(null, t);
+	  } 
+  }
+  public boolean[] computeLVindex(JExtendedDataFile jedf) {
+	  try {
+		double[][] data= jedf.GetData();
+		JKBCT auxini= new JKBCT(this.kbct.GetKBCTFile());
+		//long ptrini= auxini.GetPtr();
+		auxini.SetKBCTFile(this.tempkbini.getAbsolutePath());
+		auxini.Save();
+		auxini.SaveFISquality(this.tempkbini.getAbsolutePath()+".fis");
+		JFIS fisIni= new JFIS(this.tempkbini.getAbsolutePath()+".fis");
+	    // Logical reduction (espresso)
+        JKBCT auxend= this.ReduceRuleBase(auxini);
+        if (auxend != null) {
+            //long ptrend= auxend.GetPtr();
+		    auxend.Save();
+		    auxend.SaveFISquality(this.tempkbend.getAbsolutePath()+".fis");
+		    JFIS fisEnd= new JFIS(this.tempkbend.getAbsolutePath()+".fis");
+	        // Compute LogViewIndex
+		    this.computeLVindex(fisIni, fisEnd, data, auxend.GetNbInputs());
+		    // Update current KB, rule-base table
+		    int limR= this.kbct.GetNbRules();
+		    for (int n=0; n<limR; n++) {
+		         this.kbct.RemoveRule(0);
+	        }
+		    int limNR= auxend.GetNbRules();
+		    for (int n=0; n<limNR; n++) {
+		         this.kbct.AddRule(auxend.GetRule(n+1));
+ 	        }
+		    auxend.Close();
+		    auxend.Delete();
+		    auxend=null;
+		    //jnikbct.DeleteKBCT(ptrend+1);
+        }
+        auxini.Close();
+        auxini.Delete();
+	    auxini=null;
+	    //jnikbct.DeleteKBCT(ptrini+1);
+	  } catch (Throwable t) {
+		  t.printStackTrace();
+		  MessageKBCT.Error(null, t);
+	  } 
+      boolean[] res= new boolean[2];
+      res[0]= this.warning;
+      res[1]= this.warningend;
+      return res;
+  }
+//------------------------------------------------------------------------------
+  private int[] translatePremise(int[] ccc) {
+	  int[] res= new int[1];
+	  int c1=0;
+	  int c0=0;
+	  int cDC=0;
+	  for (int m=0; m<ccc.length; m++)
+		   if (ccc[m] >= 0)
+			   if (ccc[m]==0)
+				   c0++;
+			   else if (ccc[m]==1)
+				   c1++;
+		   else
+			   cDC++;
+	  if (cDC==ccc.length)
+		  res[0]=0;
+	  else if (c1==1) // Elementary label
+	  {
+    	  for (int m=0; m<ccc.length; m++)
+    		   if (ccc[m]==1)
+    		   {
+    			   res[0]=m+1;
+    			   break;
+    		   }
+	  } else if (c0==1) // NOT label
+	  {
+    	  for (int m=0; m<ccc.length; m++)
+    		   if (ccc[m]==0)
+    		   {
+    			   res[0] = m+1+ccc.length;
+    			   break;
+    		   }
+	  }
+	  else if (c0 > 1) // More than one 0.
+	  {
+		  int firstPos=-1;
+		  int nOcc=0;
+		  boolean find = false;
+		  int[] res_tmp = new int[0];
+		  for (int i=0;i<ccc.length;i++)
+			  if (ccc[i] != 0)
+				  if (find == true)
+					  nOcc++;
+				  else
+				  {
+					  find=true;
+					  firstPos = i;
+					  nOcc = 1;
+				  }
+			  else
+				  if (find == true) {
+					  int num;
+					  if (nOcc==1)
+						  num = firstPos+1;
+					  else {
+						  num=2*ccc.length;
+						  int k=2;
+						  while (k<nOcc) {
+							  num+=ccc.length-(k-1);
+							  k++;
+						  }
+						  num+=firstPos+1;
+					  }
+					  int[] res_tmp2 = new int[res_tmp.length+1];
+					  for (int j=0;j<res_tmp.length;j++)
+						  res_tmp2[j] = res_tmp[j];
+
+					  res_tmp2[res_tmp2.length-1] = num;
+					  res_tmp = res_tmp2;
+					  res = res_tmp2;
+					  find = false;			  
+				  }
+		  if (find == true) {
+			  int num;
+			  if (nOcc==1)
+				  num = firstPos+1;
+			  else {
+				  num=2*ccc.length;
+				  int k=2;
+				  while (k<nOcc) {
+					  num+=ccc.length-(k-1);
+					  k++;
+				  }
+				  num+=firstPos+1;
+			  }
+			  int[] res_tmp2 = new int[res_tmp.length+1];
+			  for (int j=0;j<res_tmp.length;j++)
+				  res_tmp2[j] = res_tmp[j];
+
+			  res_tmp2[res_tmp2.length-1] = num;
+			  res_tmp = res_tmp2;
+			  res = res_tmp2;
+			  find = false;			  
+		  }
+		  if ( (cDC==1) && (c1==0) )
+        	  for (int m=0; m<ccc.length; m++)
+        		   if (ccc[m]==-1) {
+        			   res[0]= m+1;
+        			   break;
+        		   }
+//	  } else if (c0 > 1) { // More than one 0.
+//		  if ( (cDC==1) && (c1==0) ) {
+//        	  for (int m=0; m<ccc.length; m++)
+//        		   if (ccc[m]==-1) {
+//        			   res[0]= m+1;
+//        			   break;
+//        		   }
+//		  } else // Not allowed
+//    		  res[0]=-1;
+	  }
+	  else if (c1 > 1) // Not allowed
+		  res[0]=-1;
+
+	  return res;
+  }
+//------------------------------------------------------------------------------
+  private void printEspressoError(InputStream stderr) throws Exception {
+	  String line;
+	  // clean up if any output in stderr
+	  FileOutputStream fos= new FileOutputStream(this.tempkbend.getAbsolutePath()+".pla.err.txt", false);
+	  PrintStream pErrFile= new PrintStream(fos);
+	  InputStreamReader is= new InputStreamReader(stderr);
+	  BufferedReader brCleanUp = new BufferedReader (is);
+	  pErrFile.println("++++++++++++++++++++++++++++++++++");
+	  pErrFile.println("ERROR: LogicalView");
+	  Date d= new Date(System.currentTimeMillis());
+	  pErrFile.println(DateFormat.getDateTimeInstance().format(d));
+	  while ((line = brCleanUp.readLine ()) != null) {
+		  //System.out.println ("[Stderr] " + line);
+		  pErrFile.println(line);
+	  }
+	  pErrFile.flush();
+	  pErrFile.close();
+	  brCleanUp.close();
+	  fos.close();
+	  fos=null;
+	  is.close();
+	  is=null;
+  }
+//------------------------------------------------------------------------------
+  private Process callEspresso() {
+      Process p= null;
+	  try {
+		  // calling espresso
+		  String espressoName = "";
+		  if (LocaleKBCT.isWindowsPlatform())
+			  espressoName = "espresso.exe";
+		  else
+			  espressoName = "espresso";
+
+		  String espressoPath=System.getProperty("espressopath")+System.getProperty("file.separator");
+
+		  String[] commands= {espressoPath + espressoName,this.tempkbini.getAbsolutePath()+".pla"};
+		  p= Runtime.getRuntime().exec(commands);
+		  InputStream is = p.getInputStream();
+		  InputStreamReader isr = new InputStreamReader(is);
+		  BufferedReader br = new BufferedReader(isr);
+		  FileOutputStream fos= new FileOutputStream(this.tempkbend.getAbsolutePath()+".pla", false);
+		  PrintStream pOutFile= new PrintStream(fos);
+		  String line;
+		  while ((line = br.readLine()) != null)
+			  pOutFile.println(line);
+
+		  pOutFile.flush();
+		  pOutFile.close();
+		  isr.close();
+		  is.close();
+		  fos.close();
+		  p.waitFor();
+	  } catch (InterruptedException e) {
+		  //System.out.println("TIMEOUT");
+		  p.destroy();
+		  this.warningend= true;
+		  MessageKBCT.Error(null, LocaleKBCT.GetString("Error"), LocaleKBCT.GetString("errorEspresso1"));
+	  } catch (IOException e) {
+		  e.printStackTrace();
+		  MessageKBCT.Error(null, e);
+	  } finally {
+		  Thread.interrupted();
+	  }
+	  return p;
+  }
+}

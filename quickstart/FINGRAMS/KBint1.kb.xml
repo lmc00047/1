@@ -1,0 +1,42 @@
+<KnowledgeBase>
+<System Name="New Knowledge Base" Inputs="2" Outputs="1" Rules="3">
+</System>
+<Inputs>
+<Input1 Active="true" Name="Total number of labels defined in the knowledge base" Type="numerical" Trust="llow" PhysicalLowerRange="2.000" PhysicalUpperRange="117.000" InterestLowerRange="2.000" InterestUpperRange="117.000" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input1>
+<Labels>
+<Input1-Label1 Name="low" MF="SemiTrapezoidalInf" P1="2.000" P2="2.000" P3="59.500" ModalPoint="No MP">
+</Input1-Label1>
+<Input1-Label2 Name="average" MF="triangular" P1="2.000" P2="59.500" P3="117.000" ModalPoint="No MP">
+</Input1-Label2>
+<Input1-Label3 Name="high" MF="SemiTrapezoidalSup" P1="59.500" P2="117.000" P3="117.000" ModalPoint="No MP">
+</Input1-Label3>
+</Labels>
+<Input2 Active="true" Name="Partition Interpretability" Type="numerical" Trust="llow" PhysicalLowerRange="0.000" PhysicalUpperRange="1.000" InterestLowerRange="0.000" InterestUpperRange="1.000" Labels="2" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input2>
+<Labels>
+<Input2-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.000" P2="0.000" P3="1.000" ModalPoint="No MP">
+</Input2-Label1>
+<Input2-Label2 Name="high" MF="SemiTrapezoidalSup" P1="0.000" P2="1.000" P3="1.000" ModalPoint="No MP">
+</Input2-Label2>
+</Labels>
+</Inputs>
+<Outputs>
+<Output1 Active="true" Name="Data base interpretability" Type="numerical" Trust="llow" Classif="yes" PhysicalLowerRange="0.000" PhysicalUpperRange="1.000" InterestLowerRange="0.000" InterestUpperRange="1.000" Labels="2" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Output1>
+<Labels>
+<Output1-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.000" P2="0.000" P3="1.000" ModalPoint="No MP">
+</Output1-Label1>
+<Output1-Label2 Name="high" MF="SemiTrapezoidalSup" P1="0.000" P2="1.000" P3="1.000" ModalPoint="No MP">
+</Output1-Label2>
+</Labels>
+</Outputs>
+<Rules>
+<Rule1 I1="1" I2="0" O1="2" Nature="E" Active="true">
+</Rule1>
+<Rule2 I1="0" I2="2" O1="2" Nature="E" Active="true">
+</Rule2>
+<Rule3 I1="4" I2="1" O1="1" Nature="E" Active="true">
+</Rule3>
+</Rules>
+</KnowledgeBase>

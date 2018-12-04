@@ -1,0 +1,15 @@
+++++++++++++++++++++++++++++++++++
+23-oct-2018 9:46:01
+Archivo de configuración= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.ikb.xml
+filtro KB= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.kb.xml
+El archivo de datos= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.aux
+INDUCCIÓN DE REGLAS
+----------------------------------
+   Hacer una selección de datos previa a la inducción de reglas
+    ->Umbral de tolerancia= 0.6
+   WANG AND MENDEL
+    LessThan2DistinctValuesForOutput : Class 
+   Número de reglas= 4
+----------------------------------
+El proceso de inducción de reglas ha terminado.
+time end -> 9:46:04

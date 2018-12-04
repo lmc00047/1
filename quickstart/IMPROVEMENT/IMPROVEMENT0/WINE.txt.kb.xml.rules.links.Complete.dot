@@ -1,0 +1,43 @@
+graph "" {
+	name=FINGRAM; ratio=auto; size="10,10"; overlap="scale"; nodesep=0.3; center=true; truecolor=true;
+
+	Rule2 [shape=circle,height=1.150,width=1.150,fixedsize=true,peripheries=3,color="#add8e6",fillcolor="#add8e6",fontsize=11.800000190734863,fontcolor=black,style=filled,label="R2\n (cov=0.015) \n (G= 0.419) \n (C2.0=0.019)",tooltip="Rule2:  IF AlcalinityOfAsh is very high AND flavanoids is high AND Proline is high THEN Class is 2.0 (cov=0.015 ; G= 0.419 ; C2.0=0.019)"];
+	Rule3 [shape=circle,height=3.857,width=3.857,fixedsize=true,peripheries=3,color="#add8e6",fillcolor="#add8e6",fontsize=15.399999618530273,fontcolor=black,style=filled,label="R3\n (cov=0.286) \n (G= 0.888) \n (C2.0=0.698)",tooltip="Rule3:  IF Alcohol is very low OR low AND flavanoids is average OR high AND Proline is very low OR low OR average THEN Class is 2.0 (cov=0.286 ; G= 0.888 ; C2.0=0.698)"];
+	Rule4 [shape=circle,height=3.932,width=3.932,fixedsize=true,peripheries=2,color="#add8e6",fillcolor="#add8e6",fontsize=15.399999618530273,fontcolor=black,style=filled,label="R4\n (cov=0.293) \n (G= 0.864) \n (C2.0=0.698)",tooltip="Rule4:  IF flavanoids is average OR high OR very high AND Proline is very low OR low THEN Class is 2.0 (cov=0.293 ; G= 0.864 ; C2.0=0.698)"];
+	Rule5 [shape=circle,height=3.030,width=3.030,fixedsize=true,peripheries=2,color="#add8e6",fillcolor="#add8e6",fontsize=15.399999618530273,fontcolor=black,style=filled,label="R5\n (cov=0.203) \n (G= 0.644) \n (C2.0=0.472)",tooltip="Rule5:  IF flavanoids is low AND ColorIntensity is very low OR low THEN Class is 2.0 (cov=0.203 ; G= 0.644 ; C2.0=0.472)"];
+	Rule6 [shape=circle,height=3.632,width=3.632,fixedsize=true,peripheries=2,color="#add8e6",fillcolor="#add8e6",fontsize=15.399999618530273,fontcolor=black,style=filled,label="R6\n (cov=0.263) \n (G= 0.827) \n (C2.0=0.642)",tooltip="Rule6:  IF Alcohol is very low OR low AND flavanoids is average THEN Class is 2.0 (cov=0.263 ; G= 0.827 ; C2.0=0.642)"];
+	Rule7 [shape=circle,height=3.932,width=3.932,fixedsize=true,peripheries=3,color="#d3d3d3",fillcolor="#d3d3d3",fontsize=15.399999618530273,fontcolor=black,style=filled,label="R7\n (cov=0.293) \n (G= 0.693) \n (C1.0=0.841)",tooltip="Rule7:  IF AlcalinityOfAsh is more or less (more or less (more or less (high))) AND flavanoids is high AND Proline is high THEN Class is 1.0 (cov=0.293 ; G= 0.693 ; C1.0=0.841)"];
+	Rule8 [shape=circle,height=3.406,width=3.406,fixedsize=true,peripheries=2,color="#d3d3d3",fillcolor="#d3d3d3",fontsize=15.399999618530273,fontcolor=black,style=filled,label="R8\n (cov=0.241) \n (G= 0.484) \n (C1.0=0.705)",tooltip="Rule8:  IF flavanoids is high OR very high AND Proline is very high THEN Class is 1.0 (cov=0.241 ; G= 0.484 ; C1.0=0.705)"];
+	Rule9 [shape=circle,height=2.128,width=2.128,fixedsize=true,peripheries=3,color="#d3d3d3",fillcolor="#d3d3d3",fontsize=13.600000381469727,fontcolor=black,style=filled,label="R9\n (cov=0.113) \n (G= 0.491) \n (C1.0=0.318)",tooltip="Rule9:  IF Alcohol is more or less (average OR high) AND flavanoids is average AND Proline is high THEN Class is 1.0 (cov=0.113 ; G= 0.491 ; C1.0=0.318)"];
+	Rule10 [shape=circle,height=1.902,width=1.902,fixedsize=true,peripheries=3,color="#d3d3d3",fillcolor="#d3d3d3",fontsize=11.800000190734863,fontcolor=black,style=filled,label="R10\n (cov=0.090) \n (G= 0.537) \n (C1.0=0.227)",tooltip="Rule10:  IF Alcohol is more or less (average OR high) AND flavanoids is average OR high OR very high AND Proline is average THEN Class is 1.0 (cov=0.090 ; G= 0.537 ; C1.0=0.227)"];
+	Rule11 [shape=circle,height=3.331,width=3.331,fixedsize=true,peripheries=2,color="#ffa07a",fillcolor="#ffa07a",fontsize=15.399999618530273,fontcolor=black,style=filled,label="R11\n (cov=0.233) \n (G= 0.500) \n (C3.0=0.806)",tooltip="Rule11:  IF flavanoids is low AND ColorIntensity is average OR high OR very high THEN Class is 3.0 (cov=0.233 ; G= 0.500 ; C3.0=0.806)"];
+	Rule12 [shape=circle,height=3.556,width=3.556,fixedsize=true,peripheries=1,color="#ffa07a",fillcolor="#ffa07a",fontsize=15.399999618530273,fontcolor=black,style=filled,label="R12\n (cov=0.256) \n (G= 0.776) \n (C3.0=0.833)",tooltip="Rule12:  IF flavanoids is very low THEN Class is 3.0 (cov=0.256 ; G= 0.776 ; C3.0=0.833)"];
+	  
+	Rule2 -- Rule7 [penwidth=2.132,weight=88.677,color=red,fontsize=15,labelfontcolor=red,label="0.113",tooltip="R2 -- R7 (0.113)",title="R2 -- R7 (0.113)"];  
+	Rule2 -- Rule9 [penwidth=2.826,weight=81.743,color=red,fontsize=15,labelfontcolor=red,label="0.183",tooltip="R2 -- R9 (0.183)",title="R2 -- R9 (0.183)"];  
+	Rule2 -- Rule10 [penwidth=3.041,weight=79.588,color=red,fontsize=15,labelfontcolor=red,label="0.204",tooltip="R2 -- R10 (0.204)",title="R2 -- R10 (0.204)"];  
+	Rule3 -- Rule4 [penwidth=9.161,weight=18.393,color=green,fontsize=15,labelfontcolor=green,label="0.816",tooltip="R3 -- R4 (0.816)",title="R3 -- R4 (0.816)"];  
+	Rule3 -- Rule5 [penwidth=6.062,weight=49.378,color=green,fontsize=15,labelfontcolor=green,label="0.506",tooltip="R3 -- R5 (0.506)",title="R3 -- R5 (0.506)"];  
+	Rule3 -- Rule6 [penwidth=10.304,weight=6.959,color=green,fontsize=15,labelfontcolor=green,label="0.930",tooltip="R3 -- R6 (0.930)",title="R3 -- R6 (0.930)"];  
+	Rule3 -- Rule7 [penwidth=1.263,weight=97.368,color=red,fontsize=15,labelfontcolor=red,label="0.026",tooltip="R3 -- R7 (0.026)",title="R3 -- R7 (0.026)"];  
+	Rule3 -- Rule9 [penwidth=1.424,weight=95.755,color=red,fontsize=15,labelfontcolor=red,label="0.042",tooltip="R3 -- R9 (0.042)",title="R3 -- R9 (0.042)"];  
+	Rule3 -- Rule10 [penwidth=1.475,weight=95.254,color=red,fontsize=15,labelfontcolor=red,label="0.047",tooltip="R3 -- R10 (0.047)",title="R3 -- R10 (0.047)"];  
+	Rule3 -- Rule11 [penwidth=1.295,weight=97.047,color=red,fontsize=15,labelfontcolor=red,label="0.030",tooltip="R3 -- R11 (0.030)",title="R3 -- R11 (0.030)"];  
+	Rule4 -- Rule5 [penwidth=5.931,weight=50.693,color=green,fontsize=15,labelfontcolor=green,label="0.493",tooltip="R4 -- R5 (0.493)",title="R4 -- R5 (0.493)"];  
+	Rule4 -- Rule6 [penwidth=8.689,weight=23.107,color=green,fontsize=15,labelfontcolor=green,label="0.769",tooltip="R4 -- R6 (0.769)",title="R4 -- R6 (0.769)"];  
+	Rule4 -- Rule10 [penwidth=1.462,weight=95.377,color=red,fontsize=15,labelfontcolor=red,label="0.046",tooltip="R4 -- R10 (0.046)",title="R4 -- R10 (0.046)"];  
+	Rule4 -- Rule11 [penwidth=2.150,weight=88.496,color=red,fontsize=15,labelfontcolor=red,label="0.115",tooltip="R4 -- R11 (0.115)",title="R4 -- R11 (0.115)"];  
+	Rule5 -- Rule6 [penwidth=6.281,weight=47.192,color=green,fontsize=15,labelfontcolor=green,label="0.528",tooltip="R5 -- R6 (0.528)",title="R5 -- R6 (0.528)"];  
+	Rule5 -- Rule11 [penwidth=2.037,weight=89.630,color=red,fontsize=15,labelfontcolor=red,label="0.104",tooltip="R5 -- R11 (0.104)",title="R5 -- R11 (0.104)"];  
+	Rule5 -- Rule12 [penwidth=2.320,weight=86.798,color=red,fontsize=15,labelfontcolor=red,label="0.132",tooltip="R5 -- R12 (0.132)",title="R5 -- R12 (0.132)"];  
+	Rule6 -- Rule7 [penwidth=1.549,weight=94.508,color=red,fontsize=15,labelfontcolor=red,label="0.055",tooltip="R6 -- R7 (0.055)",title="R6 -- R7 (0.055)"];  
+	Rule6 -- Rule9 [penwidth=1.443,weight=95.572,color=red,fontsize=15,labelfontcolor=red,label="0.044",tooltip="R6 -- R9 (0.044)",title="R6 -- R9 (0.044)"];  
+	Rule6 -- Rule10 [penwidth=1.495,weight=95.049,color=red,fontsize=15,labelfontcolor=red,label="0.050",tooltip="R6 -- R10 (0.050)",title="R6 -- R10 (0.050)"];  
+	Rule6 -- Rule11 [penwidth=1.308,weight=96.920,color=red,fontsize=15,labelfontcolor=red,label="0.031",tooltip="R6 -- R11 (0.031)",title="R6 -- R11 (0.031)"];  
+	Rule7 -- Rule8 [penwidth=8.478,weight=25.224,color=green,fontsize=15,labelfontcolor=green,label="0.748",tooltip="R7 -- R8 (0.748)",title="R7 -- R8 (0.748)"];  
+	Rule7 -- Rule9 [penwidth=6.788,weight=42.117,color=green,fontsize=15,labelfontcolor=green,label="0.579",tooltip="R7 -- R9 (0.579)",title="R7 -- R9 (0.579)"];  
+	Rule7 -- Rule10 [penwidth=5.623,weight=53.775,color=green,fontsize=15,labelfontcolor=green,label="0.462",tooltip="R7 -- R10 (0.462)",title="R7 -- R10 (0.462)"];  
+	Rule8 -- Rule9 [penwidth=5.174,weight=58.263,color=green,fontsize=15,labelfontcolor=green,label="0.417",tooltip="R8 -- R9 (0.417)",title="R8 -- R9 (0.417)"];  
+	Rule9 -- Rule10 [penwidth=4.727,weight=62.732,color=green,fontsize=15,labelfontcolor=green,label="0.373",tooltip="R9 -- R10 (0.373)",title="R9 -- R10 (0.373)"];  
+	Rule10 -- Rule11 [penwidth=1.518,weight=94.815,color=red,fontsize=15,labelfontcolor=red,label="0.052",tooltip="R10 -- R11 (0.052)",title="R10 -- R11 (0.052)"];  
+	Rule11 -- Rule12 [penwidth=8.084,weight=29.155,color=green,fontsize=15,labelfontcolor=green,label="0.708",tooltip="R11 -- R12 (0.708)",title="R11 -- R12 (0.708)"];}

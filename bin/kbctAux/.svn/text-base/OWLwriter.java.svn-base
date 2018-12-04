@@ -1,0 +1,745 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+package kbctAux;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+
+import kbct.JKBCT;
+import kbct.JKBCTInput;
+import kbct.JKBCTOutput;
+import kbct.JVariable;
+import kbct.LocaleKBCT;
+
+import KB.LabelKBCT;
+import KB.Rule;
+
+/**
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+
+//------------------------------------------------------------------------------
+public class OWLwriter {
+	private PrintWriter fOut;
+	
+	public OWLwriter(PrintWriter writer) {
+		this.fOut= writer;
+	}
+//------------------------------------------------------------------------------
+	public void OWLwriteHeader(String fuzzyVarOWL) {
+        File f= new File (fuzzyVarOWL);
+		String fname=f.getName();
+		//System.out.println("file="+fname);
+		fOut.println("<?xml version='1.0'?>");
+		fOut.println("<rdf:RDF");
+		fOut.println("xmlns:fuzzy='http://www.um.es/OntoRep/FuzzyVar_1_0.owl#'");
+		fOut.println("xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'");
+		fOut.println("xmlns:owl='http://www.w3.org/2002/07/owl#'");
+		fOut.println("xmlns:xsd='http://www.w3.org/2001/XMLSchema#'");
+		fOut.println("xmlns:p1='http://www.um.es/OntoRep/"+fname+"#'");
+		fOut.println("xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'");
+		fOut.println("xml:base='http://www.um.es/OntoRep/"+fname+"'>");
+		fOut.println("<owl:Ontology rdf:about=''>");
+		fOut.println("<owl:imports rdf:resource='http://www.um.es/OntoRep/FuzzyVar_1_0.owl'/>");
+		//fOut.println("<owl:imports rdf:resource='"+fuzzyVarOWL+"'/>");
+		fOut.println("</owl:Ontology>");
+		fOut.println("<rdfs:Class rdf:about='http://www.um.es/OntoRep/FuzzyVar_1_0.owl#Label'/>");
+		//fOut.println("<rdfs:Class rdf:about='"+fuzzyVarOWL+"#Label'/>");
+	}
+//------------------------------------------------------------------------------
+	public void OWLwriteClass(String name) {
+	 	  fOut.println("<owl:Class rdf:ID='Label"+name+"'>");
+	  	  fOut.println("<rdfs:subClassOf rdf:resource='http://www.um.es/OntoRep/FuzzyVar_1_0.owl#Label'/>");
+	  	  fOut.println("</owl:Class>");
+	}
+//------------------------------------------------------------------------------
+	public void OWLwriteFunctionalProperty(String name) {
+		  fOut.println("<owl:FunctionalProperty rdf:about='http://www.um.es/OntoRep/FuzzyVar_1_0.owl#"+name+"'>");
+	 	  fOut.println("<rdf:type rdf:resource='http://www.w3.org/1999/02/22-rdf-syntax-ns#Property'/>");
+	 	  fOut.println("</owl:FunctionalProperty>");
+	}
+//------------------------------------------------------------------------------
+	public void OWLwriteInverseFunctionalProperty(String name) {
+		  fOut.println("<owl:InverseFunctionalProperty rdf:about='http://www.um.es/OntoRep/FuzzyVar_1_0.owl#"+name+"'>");
+	 	  fOut.println("<rdf:type rdf:resource='http://www.w3.org/1999/02/22-rdf-syntax-ns#Property'/>");
+	 	  fOut.println("</owl:InverseFunctionalProperty>");
+    } 
+//------------------------------------------------------------------------------
+	public void OWLwriteVariable(JVariable var, boolean output) {
+      String varNameFromOntology= var.GetNameFromOntology();
+	  String vartype= var.GetType();
+      if (vartype.equals("numerical"))
+		  fOut.println("<fuzzy:Numerical rdf:ID='Var"+varNameFromOntology+"'>");
+      else
+		  fOut.println("<fuzzy:Categorical rdf:ID='Var"+varNameFromOntology+"'>");
+    	  
+	  fOut.println("<fuzzy:nameVar rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>"+varNameFromOntology+"</fuzzy:nameVar>");
+      String trust= var.GetTrust();
+	  fOut.println("<fuzzy:trust rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>"+trust+"</fuzzy:trust>");
+      if (output) {
+	    String classif= var.GetClassif();
+	    fOut.println("<fuzzy:classif rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>"+classif+"</fuzzy:classif>");
+      }
+	  double[] iir= var.GetInputInterestRange();
+	  fOut.println("<fuzzy:physicalLowerRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>"+iir[0]+"</fuzzy:physicalLowerRange>");
+	  fOut.println("<fuzzy:physicalUpperRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>"+iir[1]+"</fuzzy:physicalUpperRange>");
+      double[] ipr= var.GetInputPhysicalRange();
+	  fOut.println("<fuzzy:interestLowerRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>"+ipr[0]+"</fuzzy:interestLowerRange>");
+	  fOut.println("<fuzzy:interestUpperRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>"+ipr[1]+"</fuzzy:interestUpperRange>");
+      String scaleName= var.GetScaleName();
+      fOut.println("<fuzzy:scaleOfLabels rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>"+scaleName+"</fuzzy:scaleOfLabels>");
+      int nbLabs= var.GetLabelsNumber();
+      fOut.println("<fuzzy:numLabels rdf:datatype='http://www.w3.org/2001/XMLSchema#int'>"+nbLabs+"</fuzzy:numLabels>");
+  	  //fOut.println("<fuzzy:Numerical rdf:ID='VarHumidity'>");
+	  //fOut.println("<fuzzy:nameVar rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>Humidity %</fuzzy:nameVar>");
+	  //fOut.println("<fuzzy:trust rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>low</fuzzy:trust>");
+	  //fOut.println("<fuzzy:physicalLowerRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>0.0</fuzzy:physicalLowerRange>");
+	  //fOut.println("<fuzzy:physicalUpperRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>100.0</fuzzy:physicalUpperRange>");
+	  //fOut.println("<fuzzy:interestLowerRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>35.0</fuzzy:interestLowerRange>");
+	  //fOut.println("<fuzzy:interestUpperRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>70.0</fuzzy:interestUpperRange>");
+	  //fOut.println("<fuzzy:scaleOfLabels rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>low-high</fuzzy:scaleOfLabels>");
+	  //fOut.println("<fuzzy:numLabels rdf:datatype='http://www.w3.org/2001/XMLSchema#int'>5</fuzzy:numLabels>");
+	  //fOut.println("");
+	  //fOut.println("");
+      String[] labnames= var.GetLabelsName();
+      for (int n=0; n<nbLabs; n++) {
+    	  this.OWLwriteLabel(varNameFromOntology, labnames[n], var.GetLabel(n+1));
+      }
+      if (vartype.equals("numerical"))
+	      fOut.println("</fuzzy:Numerical>");
+      else
+	      fOut.println("</fuzzy:Categorical>");
+
+      //fOut.println("<rdf:Description rdf:ID='Label"+varNameFromOntology+"'>");
+      //fOut.println("<rdfs:subClassOf rdf:resource='http://www.um.es/OntoRep/FuzzyVar_1_0.owl#Label'/>");
+      //fOut.println("</rdf:Description>");
+
+      //<p1:LabelHumidity rdf:ID='Humidity_average'>
+	    //<fuzzy:mf rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>triangular</fuzzy:mf>
+	    //<fuzzy:p3 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>61.25</fuzzy:p3>
+	    //<fuzzy:isLabelOf>
+	      //<fuzzy:Numerical rdf:ID='VarHumidity'>
+	        //<fuzzy:nameVar rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>Humidity %</fuzzy:nameVar>
+	        //<fuzzy:trust rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>low</fuzzy:trust>
+	        //<fuzzy:physicalLowerRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>0.0</fuzzy:physicalLowerRange>
+	        //<fuzzy:physicalUpperRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>100.0</fuzzy:physicalUpperRange>
+	        //<fuzzy:interestLowerRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>35.0</fuzzy:interestLowerRange>
+	        //<fuzzy:interestUpperRange rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>70.0</fuzzy:interestUpperRange>
+	        //<fuzzy:scaleOfLabels rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>low-high</fuzzy:scaleOfLabels>
+	        //<fuzzy:numLabels rdf:datatype='http://www.w3.org/2001/XMLSchema#int'>5</fuzzy:numLabels>
+
+	        /*<fuzzy:label>
+            <p1:LabelHumidity rdf:ID='Humidity_very_low'>
+	        <fuzzy:nameLab rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>very low</fuzzy:nameLab>
+	        <fuzzy:mf rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>SemiTrapezoidalInf</fuzzy:mf>
+	        <fuzzy:p1 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>35.0</fuzzy:p1>
+	        <fuzzy:p2 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>35.0</fuzzy:p2>
+	        <fuzzy:p3 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>43.75</fuzzy:p3>
+	        <fuzzy:mp rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>no MP</fuzzy:mp>
+	        <fuzzy:isLabelOf rdf:resource='#VarHumidity'/>
+	        </p1:LabelHumidity>
+	        </fuzzy:label>
+
+	        <fuzzy:label>
+            <p1:LabelHumidity rdf:ID='Humidity_low'>
+	        <fuzzy:nameLab rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>low</fuzzy:nameLab>
+	        <fuzzy:mf rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>triangular</fuzzy:mf>
+            <fuzzy:p1 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>35.0</fuzzy:p1>
+            <fuzzy:p2 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>43.75</fuzzy:p2>
+            <fuzzy:p3 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>52.5</fuzzy:p3>
+            <fuzzy:mp rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>no MP</fuzzy:mp>
+            <fuzzy:isLabelOf rdf:resource='#VarHumidity'/>
+            </p1:LabelHumidity>
+	        </fuzzy:label>
+
+	        <fuzzy:label>
+            <p1:LabelHumidity rdf:ID='Humidity_average'>
+	        <fuzzy:nameLab rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>low</fuzzy:nameLab>
+	        <fuzzy:mf rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>triangular</fuzzy:mf>
+            <fuzzy:p1 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>43.75</fuzzy:p1>
+            <fuzzy:p2 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>52.5</fuzzy:p2>
+            <fuzzy:p3 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>61.25</fuzzy:p3>
+            <fuzzy:mp rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>no MP</fuzzy:mp>
+            <fuzzy:isLabelOf rdf:resource='#VarHumidity'/>
+            </p1:LabelHumidity>
+	        </fuzzy:label>
+            
+	        <fuzzy:label>
+	        <p1:LabelHumidity rdf:ID='Humidity_high'>
+	        <fuzzy:nameLab rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>high</fuzzy:nameLab>
+            <fuzzy:mf rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>triangular</fuzzy:mf>
+	        <fuzzy:p1 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>52.5</fuzzy:p1>
+	        <fuzzy:p2 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>61.25</fuzzy:p2>
+            <fuzzy:p3 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>70.0</fuzzy:p3>
+            <fuzzy:mp rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>no MP</fuzzy:mp>
+	        <fuzzy:isLabelOf rdf:resource='#VarHumidity'/>
+	        </p1:LabelHumidity>
+	        </fuzzy:label>
+	        
+	        <fuzzy:label>
+	        <p1:LabelHumidity rdf:ID='Humidity_very_high'>
+            <fuzzy:nameLab rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>very high</fuzzy:nameLab>
+            <fuzzy:mf rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>SemiTrapezoidalInf</fuzzy:mf>
+            <fuzzy:p1 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>61.25</fuzzy:p1>
+            <fuzzy:p2 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>70.0</fuzzy:p2>
+            <fuzzy:p3 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>70.0</fuzzy:p3>
+            <fuzzy:mp rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>no MP</fuzzy:mp>
+            <fuzzy:isLabelOf rdf:resource='#VarHumidity'/>
+            </p1:LabelHumidity>
+	        </fuzzy:label>*/
+
+            
+            //<fuzzy:label rdf:resource='#Humidity_average'/>
+	      //</fuzzy:Numerical>
+	    //</fuzzy:isLabelOf>
+	    //<fuzzy:p2 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>52.5</fuzzy:p2>
+	    //<fuzzy:nameLab rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>average</fuzzy:nameLab>
+	    //<fuzzy:mp rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>no MP</fuzzy:mp>
+	    //<fuzzy:p1 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>43.75</fuzzy:p1>
+	  //</p1:LabelHumidity>
+
+	} 
+//------------------------------------------------------------------------------
+	public void OWLwriteLabel(String varName, String labName, LabelKBCT l) {
+  	  fOut.println("<fuzzy:label>");
+	  fOut.println("<p1:Label"+varName+" rdf:ID='"+varName+"_"+labName+"'>");
+	  fOut.println("<fuzzy:nameLab rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>"+labName+"</fuzzy:nameLab>");
+      String labtype= l.GetName();
+	  fOut.println("<fuzzy:mf rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>"+labtype+"</fuzzy:mf>");
+      double[] pp= l.GetParams();
+      for (int n=0; n<pp.length; n++) {
+    	   int cont= n+1;
+	       fOut.println("<fuzzy:p"+cont+" rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>"+pp[n]+"</fuzzy:p"+cont+">");
+      }
+	  String mp= l.GetMP();
+	  fOut.println("<fuzzy:mp rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>"+mp+"</fuzzy:mp>");
+	  fOut.println("<fuzzy:isLabelOf rdf:resource='#Var"+varName+"'/>");
+	  fOut.println("</p1:Label"+varName+">");
+	  fOut.println("</fuzzy:label>");
+	  //fOut.println("<fuzzy:nameLab rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>very low</fuzzy:nameLab>");
+	  //fOut.println("<fuzzy:mf rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>SemiTrapezoidalInf</fuzzy:mf>");
+	  //fOut.println("<fuzzy:p1 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>35.0</fuzzy:p1>");
+	  //fOut.println("<fuzzy:p2 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>35.0</fuzzy:p2>");
+	  //fOut.println("<fuzzy:p3 rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>43.75</fuzzy:p3>");
+	  //fOut.println("<fuzzy:mp rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>no MP</fuzzy:mp>");
+	  //fOut.println("<fuzzy:isLabelOf rdf:resource='#VarHumidity'/>");
+	  //fOut.println("</p1:LabelHumidity>");
+	}
+//------------------------------------------------------------------------------
+	public void OWLclose() {
+		this.fOut.println("</rdf:RDF>");
+		this.fOut.println();
+		this.fOut.println("<!-- File automatically generated by GUAJE -->");
+		this.fOut.flush();
+		this.fOut.close();
+	}
+//------------------------------------------------------------------------------
+	public void OWLwriteFuzzyVar(PrintWriter pw) {
+		pw.println("<?xml version='1.0'?>");
+		pw.println("<rdf:RDF");
+		pw.println("xmlns='http://www.um.es/OntoRep/FuzzyVar_1_0.owl#'");
+		pw.println("xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'");
+		pw.println("xmlns:owl='http://www.w3.org/2002/07/owl#'");
+		pw.println("xmlns:xsd='http://www.w3.org/2001/XMLSchema#'");
+		pw.println("xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'");
+		pw.println("xml:base='http://www.um.es/OntoRep/FuzzyVar_1_0.owl'>");
+		pw.println("<owl:Ontology rdf:about=''/>");
+		pw.println("<owl:Class rdf:ID='Numerical'>");
+		pw.println("<rdfs:subClassOf>");
+		pw.println("<owl:Class rdf:ID='Variable'/>");
+		pw.println("</rdfs:subClassOf>");
+		pw.println("<owl:disjointWith>");
+		pw.println("<owl:Class rdf:ID='Categorical'/>");
+		pw.println("</owl:disjointWith>");
+		pw.println("</owl:Class>");
+		pw.println("<owl:Class rdf:about='#Categorical'>");
+		pw.println("<rdfs:subClassOf>");
+		pw.println("<owl:Class rdf:about='#Variable'/>");
+		pw.println("</rdfs:subClassOf>");
+		pw.println("<owl:disjointWith rdf:resource='#Numerical'/>");
+		pw.println("</owl:Class>");
+		pw.println("<owl:Class rdf:ID='Label'>");
+		pw.println("<owl:disjointWith>");
+		pw.println("<owl:Class rdf:about='#Variable'/>");
+		pw.println("</owl:disjointWith>");
+		pw.println("</owl:Class>");
+		pw.println("<owl:Class rdf:about='#Variable'>");
+		pw.println("<rdfs:subClassOf>");
+		pw.println("<owl:Class>");
+		pw.println("<owl:unionOf rdf:parseType='Collection'>");
+		pw.println("<owl:Class rdf:about='#Numerical'/>");
+		pw.println("<owl:Class rdf:about='#Categorical'/>");
+		pw.println("</owl:unionOf>");
+		pw.println("</owl:Class>");
+		pw.println("</rdfs:subClassOf>");
+		pw.println("<rdfs:subClassOf rdf:resource='http://www.w3.org/2002/07/owl#Thing'/>");
+		pw.println("<owl:disjointWith rdf:resource='#Label'/>");
+		pw.println("</owl:Class>");
+		pw.println("<owl:FunctionalProperty rdf:ID='nameVar'>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#string'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='trust'>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#string'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='classif'>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#string'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='physicalLowerRange'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#float'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='physicalUpperRange'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#float'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='interestLowerRange'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#float'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='interestUpperRange'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#float'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='scaleOfLabels'>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#string'/>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:DatatypeProperty rdf:ID='mp'>");
+		pw.println("<rdfs:domain rdf:resource='#Label'/>");
+		pw.println("</owl:DatatypeProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='mf'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("<rdfs:domain rdf:resource='#Label'/>");
+		pw.println("<rdfs:range>");
+		pw.println("<owl:DataRange>");
+		pw.println("<owl:oneOf rdf:parseType='Resource'>");
+		pw.println("<rdf:first rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>triangular</rdf:first>");
+		pw.println("<rdf:rest rdf:parseType='Resource'>");
+		pw.println("<rdf:rest rdf:parseType='Resource'>");
+		pw.println("<rdf:rest rdf:parseType='Resource'>");
+		pw.println("<rdf:first rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>discrete</rdf:first>");
+		pw.println("<rdf:rest rdf:resource='http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'/>");
+		pw.println("</rdf:rest>");
+		pw.println("<rdf:first rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>SemiTrapezoidalSup</rdf:first>");
+		pw.println("</rdf:rest>");
+		pw.println("<rdf:first rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>SemiTrapezoidalInf</rdf:first>");
+		pw.println("</rdf:rest>");
+		pw.println("</owl:oneOf>");
+		pw.println("</owl:DataRange>");
+		pw.println("</rdfs:range>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='numLabels'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#int'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='nameLab'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#string'/>");
+		pw.println("<rdfs:domain rdf:resource='#Label'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='p1'>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#float'/>");
+		pw.println("<rdfs:domain rdf:resource='#Label'/>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='p2'>");
+		pw.println("<rdfs:domain rdf:resource='#Label'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#float'/>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='p3'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("<rdfs:domain rdf:resource='#Label'/>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#float'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='p4'>");
+		pw.println("<rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#float'/>");
+		pw.println("<rdfs:domain rdf:resource='#Label'/>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#DatatypeProperty'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:FunctionalProperty rdf:ID='isLabelOf'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#ObjectProperty'/>");
+		pw.println("<owl:inverseOf>");
+		pw.println("<owl:InverseFunctionalProperty rdf:ID='label'/>");
+		pw.println("</owl:inverseOf>");
+		pw.println("<rdfs:domain rdf:resource='#Label'/>");
+		pw.println("<rdfs:range rdf:resource='#Variable'/>");
+		pw.println("</owl:FunctionalProperty>");
+		pw.println("<owl:InverseFunctionalProperty rdf:about='#label'>");
+		pw.println("<rdf:type rdf:resource='http://www.w3.org/2002/07/owl#ObjectProperty'/>");
+		pw.println("<owl:inverseOf rdf:resource='#isLabelOf'/>");
+		pw.println("<rdfs:domain rdf:resource='#Variable'/>");
+		pw.println("<rdfs:range rdf:resource='#Label'/>");
+		pw.println("</owl:InverseFunctionalProperty>");
+		pw.println("</rdf:RDF>");
+		pw.println();
+		pw.println("<!-- File automatically generated by GUAJE -->");
+		pw.flush();
+		pw.close();
+	}
+//------------------------------------------------------------------------------
+	public void OWLwriteVarOntology(String name, String[] varnames, String fuzzyVarOntName, boolean rules) {
+		//System.out.println("name="+name);
+		File font= new File(name);
+		String fName= font.getName();
+        String fnName= fName+".import.owl";
+		String newName;
+		if (rules) {
+            newName= name+".import.owl.rules.owl";
+            fnName= fnName+".rules.owl";
+		} else {
+            newName= name+".import.owl";
+		}
+		//System.out.println("newName="+newName);
+		File f= new File(fuzzyVarOntName);
+        String fuzzyName= f.getName();
+		//System.out.println("outFile="+fuzzyName);
+		try {
+			File file= new File(name);
+			LineNumberReader lnr= new LineNumberReader(new InputStreamReader(new FileInputStream(file)));
+	    	this.fOut = new PrintWriter(new FileOutputStream(newName), true);
+            String l;
+            boolean warning= false;
+            while((l= lnr.readLine())!=null) {
+            	if ( (l.contains("xml")) && (l.contains(fName)) ) {
+            		this.fOut.println(l.replace(fName, fnName));
+            	} else {
+                  if (!warning) {
+                	if (l.contains("Ontology rdf:about")) {
+                		if (l.endsWith("/>")) {
+                			this.fOut.println("<owl:Ontology rdf:about=''>");
+                			this.fOut.println("<owl:imports rdf:resource='http://www.um.es/OntoRep/"+fuzzyName+"'/>");
+                			this.fOut.println("</owl:Ontology>");
+                		} else {
+                			this.fOut.println(l);
+                			this.fOut.println("<owl:imports rdf:resource='http://www.um.es/OntoRep/"+fuzzyName+"'/>");
+		    		        while ( !(l=lnr.readLine()).contains("</owl:Ontology>") ) {
+		                			this.fOut.println(l);
+		    		        }
+		    		        this.fOut.println(l);
+                		}
+		    		    warning=true;
+                    } else if (l.startsWith("<owl:Class rdf:ID=")) {
+                    	this.fOut.println("<owl:Ontology rdf:about=''>");
+                    	this.fOut.println("<owl:imports rdf:resource='http://www.um.es/OntoRep/"+fuzzyName+"'/>");
+                    	this.fOut.println("</owl:Ontology>");
+                    	this.fOut.println(l);
+  		    		    warning=true;
+                    } else {
+                    	this.fOut.println(l);
+                    }
+                  } else {
+      		    	//fOut.println(l);
+    		    	  int ind= this.containsRangeName(l,varnames);
+    		    	  //System.out.println("ind="+ind);
+    		    	  if (ind >= 0) {
+    		    		  //System.out.println(ind);
+    		    		  this.fOut.println("<rdfs:range rdf:resource='http://www.um.es/OntoRep/"+fuzzyName+"#Label"+varnames[ind]+"'/>");
+    		    	  } else {
+                          if ( (!l.contains("</rdf:RDF>")) && (!(l.contains("<--") || l.contains("-->"))) )
+    		    		      this.fOut.println(l);
+    		    	  }
+                  }
+                  //System.out.println("l="+l);
+		    	  int ind= this.containsName(l,varnames);
+		    	  //System.out.println("ind="+ind);
+		    	  if (ind >= 0) {
+		    		  //System.out.println(ind);
+		    		  String aux=lnr.readLine();
+                      if (l.contains("owl:Class rdf:ID=")) {
+                          //System.out.println("aux1="+aux);
+    		    		  while (!aux.endsWith("</owl:Class>")) {
+    	                      //System.out.println("aux1="+aux);
+    		    			  this.fOut.println(aux);
+    	                      aux= lnr.readLine();
+    		    		  }
+                      } else if (l.contains("owl:FunctionalProperty rdf:ID=") ||
+    				             l.contains("owl:ObjectProperty rdf:ID=") ) {
+                    	  while (! (aux.contains("</owl:ObjectProperty>") || aux.contains("</owl:FunctionalProperty>"))) {
+                              //System.out.println("aux2="+aux);
+                    		  this.fOut.println(aux);
+    	                      aux= lnr.readLine();
+                          }
+                      }
+                      this.fOut.println("<rdfs:range rdf:resource='http://www.um.es/OntoRep/"+fuzzyName+"#Label"+varnames[ind]+"'/>");
+                      this.fOut.println(aux);
+		    	  }
+              }
+            }
+	      } catch (Exception e) {
+		      e.printStackTrace();
+		      MessageKBCT.Error(null, LocaleKBCT.GetString("Error"), "Error in OWLWriter inside OWLwriteFullOntology: "+e);
+	      }
+	}
+//------------------------------------------------------------------------------
+	public void OWLwriteRulesOntology(JKBCT kbct, String fileOntName, String fileFuzzyName) {
+		//System.out.println("fileOntName -> "+fileOntName);
+        this.fOut.println("<swrl:Variable rdf:about='http://www.w3.org/2003/11/swrl#input'/>");
+        this.fOut.println("<swrl:Variable rdf:about='http://www.w3.org/2003/11/swrl#output'/>");
+        for (int n=0; n<kbct.GetNbRules(); n++) {
+            this.fOut.println("<swrl:Imp rdf:ID='rule-"+String.valueOf(n+1)+"'>");
+    		//System.out.println("rule -> "+String.valueOf(n+1));
+            Rule r= kbct.GetRule(n+1);
+            int[] rinputs= r.Get_in_labels_number();
+            OntAtom[] atoms= new OntAtom[kbct.GetNbInputs()];
+            int cont=0;
+    		//System.out.println("atoms.length -> "+atoms.length);
+            for (int k=0; k<atoms.length; k++) {
+            	 JKBCTInput jin= kbct.GetInput(k+1);
+            	 String[] inlabnames;
+            	 if (jin.GetScaleName().equals(LocaleKBCT.GetString("user")))
+            		 inlabnames= jin.GetUserLabelsName();
+            	 else
+                     inlabnames= jin.GetLabelsName();
+            	 
+         		 //System.out.println("k -> "+k);
+         		 //System.out.println("jin.GetFlagOntology() -> "+jin.GetFlagOntology());
+                 if (jin.GetFlagOntology()) {
+                     if (jin.GetFlagOntObjectProperty()) {
+            	         atoms[cont]= new OntAtom(true, false);
+            	     } else if (jin.GetFlagOntDatatypeProperty()) {
+            	         atoms[cont]= new OntAtom(false, true);
+            	     //} else {
+            	     //    atoms[cont]= new OntAtom(false, false);
+            	     }
+             		 //System.out.println("jin.GetFlagOntObjectProperty() -> "+jin.GetFlagOntObjectProperty());
+             		 //System.out.println("jin.GetFlagOntDatatypeProperty() -> "+jin.GetFlagOntDatatypeProperty());
+                     if (jin.GetFlagOntObjectProperty() || jin.GetFlagOntDatatypeProperty()) {
+        	             atoms[cont].setArg1("input");
+        	             atoms[cont].setPredicate(fileOntName+".rules.owl#"+jin.GetNameFromOntology());
+        	             if (rinputs[k]==0)
+        	                 atoms[cont].setArg2(fileFuzzyName+"#"+jin.GetNameFromOntology()+"_ANY");
+        	             else
+            	             atoms[cont].setArg2(fileFuzzyName+"#"+jin.GetNameFromOntology()+"_"+inlabnames[rinputs[k]-1]);
+        	            	 
+                    	 cont++;
+                     }
+                 }
+            }
+            //System.out.println("cont="+cont);
+            if (cont < atoms.length) {
+            	OntAtom[] onta= new OntAtom[cont];
+            	for (int k=0; k<cont; k++) {
+            		 onta[k]= atoms[k];
+            	}
+                this.writeBodyRule(onta);
+            } else {
+                this.writeBodyRule(atoms);
+            }
+            int[] routputs= r.Get_out_labels_number();
+            OntAtom output=null;
+            JKBCTOutput jout= kbct.GetOutput(1);
+            String[] outlabnames= jout.GetLabelsName();
+            if (jout.GetFlagOntology()) {
+                if (jout.GetFlagOntObjectProperty()) {
+                	output= new OntAtom(true, false);
+       	        } else if (jout.GetFlagOntDatatypeProperty()) {
+       	    	    output= new OntAtom(false, true);
+       	        //} else {
+       	    	//    output= new OntAtom(false, false);
+       	        }
+                if (jout.GetFlagOntObjectProperty() || jout.GetFlagOntDatatypeProperty()) {
+   	                output.setArg1("output");
+   	                output.setPredicate(fileOntName+".rules.owl#"+jout.GetNameFromOntology());
+   	                output.setArg2(fileFuzzyName+"#"+jout.GetNameFromOntology()+"_"+outlabnames[routputs[0]-1]);
+                }
+            }
+            if (output!=null)
+                this.writeHeadRule(output);
+            
+            this.fOut.println("</swrl:Imp>");
+        }
+	}
+//------------------------------------------------------------------------------
+	private void writeBodyRule(OntAtom[] atoms) {
+		this.fOut.println("<swrl:body>");
+		this.fOut.println("<swrl:AtomList>");
+		if ( (atoms!=null) && (atoms.length > 0) ) {
+          //System.out.println("atoms[0]: "+atoms[0]);
+		  this.writeFirstAtom(atoms[0]);
+   	      OntAtom[] aux= new OntAtom[atoms.length-1];
+          for (int k=0; k<aux.length; k++) {
+             aux[k]= atoms[k+1];
+          }
+          this.writeRestAtoms(aux);
+		}
+		this.fOut.println("</swrl:AtomList>");
+		this.fOut.println("</swrl:body>");
+		/*
+				<rdf:first>
+					<swrl:ClassAtom>
+						<swrl:classPredicate rdf:resource="file://C:/Universidad/AgroOntUMU_1_0_NoFuzzy.owl.import.owl#AgricultureLand"/>
+						<swrl:argument1 rdf:resource="http://www.w3.org/2003/11/swrl#input"/>
+					</swrl:ClassAtom>
+				</rdf:first>
+				<rdf:rest>
+					<swrl:AtomList>
+						<rdf:first>
+							<swrl:IndividualPropertyAtom>
+								<swrl:argument1 rdf:resource="http://www.w3.org/2003/11/swrl#input"/>
+								<swrl:propertyPredicate rdf:resource="file://C:/Universidad/AgroOntUMU_1_0_NoFuzzy.owl.import.owl#humidity"/>
+								<swrl:argument2 rdf:resource="http://www.um.es/OntoRep/FuzzyVarRR.kb.owl#humidity_low"/>
+							</swrl:IndividualPropertyAtom>
+						</rdf:first>
+						<rdf:rest>
+							<swrl:AtomList>
+								<rdf:first>
+									<swrl:IndividualPropertyAtom>
+										<swrl:argument1 rdf:resource="http://www.w3.org/2003/11/swrl#input"/>
+										<swrl:propertyPredicate rdf:resource="file://C:/Universidad/AgroOntUMU_1_0_NoFuzzy.owl.import.owl#maxTemperature"/>
+										<swrl:argument2 rdf:resource="http://www.um.es/OntoRep/FuzzyVarRR.kb.owl#maxTemperature_very_high"/>
+									</swrl:IndividualPropertyAtom>
+								</rdf:first>
+								<rdf:rest>
+									<swrl:AtomList>
+										<rdf:first>
+											<swrl:IndividualPropertyAtom>
+												<swrl:argument1 rdf:resource="http://www.w3.org/2003/11/swrl#input"/>
+												<swrl:propertyPredicate rdf:resource="file://C:/Universidad/AgroOntUMU_1_0_NoFuzzy.owl.import.owl#minTemperature"/>
+												<swrl:argument2 rdf:resource="http://www.um.es/OntoRep/FuzzyVarRR.kb.owl#minTemperature_very_low"/>
+											</swrl:IndividualPropertyAtom>
+										</rdf:first>
+										<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+									</swrl:AtomList>
+								</rdf:rest>
+							</swrl:AtomList>
+						</rdf:rest>
+					</swrl:AtomList>
+				</rdf:rest>
+ */		
+	}
+//------------------------------------------------------------------------------
+	private void writeFirstAtom(OntAtom atom) {
+		this.fOut.println("<rdf:first>");
+		this.writeIndividualPropertyAtom(atom);
+		this.fOut.println("</rdf:first>");
+	}
+//------------------------------------------------------------------------------
+	private void writeRestAtoms(OntAtom[] atoms) {
+		this.fOut.println("<rdf:rest>");
+		this.fOut.println("<swrl:AtomList>");
+   	    this.writeFirstAtom(atoms[0]);
+        if (atoms.length==1) {
+            this.fOut.println("<rdf:rest rdf:resource='http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'/>");
+	    } else {
+           	OntAtom[] aux= new OntAtom[atoms.length-1];
+            for (int k=0; k<aux.length; k++) {
+                 aux[k]= atoms[k+1];
+            }
+            this.writeRestAtoms(aux);
+       	}
+		this.fOut.println("</swrl:AtomList>");
+		this.fOut.println("</rdf:rest>");
+	}
+//------------------------------------------------------------------------------
+	private void writeIndividualPropertyAtom(OntAtom atom) {
+/*
+		<swrl:IndividualPropertyAtom>
+			<swrl:argument1 rdf:resource="http://www.w3.org/2003/11/swrl#input"/>
+			<swrl:propertyPredicate rdf:resource="file://C:/Universidad/AgroOntUMU_1_0_NoFuzzy.owl.import.owl#humidity"/>
+			<swrl:argument2 rdf:resource="http://www.um.es/OntoRep/FuzzyVarRR.kb.owl#humidity_low"/>
+		</swrl:IndividualPropertyAtom>
+		// arg1 -> input
+	    // predicate -> AgroOntUMU_1_0_NoFuzzy.owl.import.owl#humidity
+	    // arg2 -> FuzzyVarRR.kb.owl#humidity_low
+ */
+		this.fOut.println("<swrl:IndividualPropertyAtom>");
+		this.fOut.println("<swrl:argument1 rdf:resource='http://www.w3.org/2003/11/swrl#"+atom.getArg1()+"'/>");
+		this.fOut.println("<swrl:propertyPredicate rdf:resource='file://C:/Universidad/"+atom.getPredicate()+"'/>");
+		this.fOut.println("<swrl:argument2 rdf:resource='http://www.um.es/OntoRep/"+atom.getArg2()+"'/>");
+		this.fOut.println("</swrl:IndividualPropertyAtom>");
+	}
+//------------------------------------------------------------------------------
+	private void writeHeadRule(OntAtom atom) {
+		// arg1 -> output
+		// predicate -> AgroOntUMU_1_0_NoFuzzy.owl.import.owl#resultingPlan
+		// arg2 -> FuzzyVarRR.kb.owl#IrrigationPlan_Plan2
+		this.fOut.println("<swrl:head>");
+		this.fOut.println("<swrl:AtomList>");
+        this.writeFirstAtom(atom);
+		//this.fOut.println("<rdf:first>");
+		//this.fOut.println("<swrl:IndividualPropertyAtom>");
+		//this.fOut.println("<swrl:argument1 rdf:resource='http://www.w3.org/2003/11/swrl#"+atom.getArg1()+"'/>");
+		//this.fOut.println("<swrl:propertyPredicate rdf:resource='file://C:/Universidad/"+atom.getPredicate()+"'/>");
+		//this.fOut.println("<swrl:argument2 rdf:resource='http://www.um.es/OntoRep/"+atom.getArg2()+"'/>");
+	    //this.fOut.println("</swrl:IndividualPropertyAtom>");
+	    //this.fOut.println("</rdf:first>");
+		this.fOut.println("<rdf:rest rdf:resource='http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'/>");
+		this.fOut.println("</swrl:AtomList>");
+		this.fOut.println("</swrl:head>");
+	}
+//------------------------------------------------------------------------------
+	private int containsName(String line, String[] varnames) {
+		//System.out.println("line="+line);
+		for (int n=0; n<varnames.length; n++) {
+			 //System.out.println("varnames[n]="+varnames[n]);
+			 if ( (line.contains("owl:Class rdf:ID=")) ||
+				  (line.contains("owl:FunctionalProperty rdf:ID=")) ||
+				  (line.contains("owl:ObjectProperty rdf:ID=")) ) {
+				   int index= line.indexOf("=");
+				   if (index >=0) {
+				     String aux= line.substring(index+1);
+				     //System.out.println("aux="+aux+"  aux.length="+aux.length());
+				     if (aux.contains(varnames[n]) && (aux.length()==varnames[n].length()+3))
+				         return n;
+				   }
+			 }
+		}
+		return -1;
+	}
+//------------------------------------------------------------------------------
+	private int containsRangeName(String line, String[] varnames) {
+		for (int n=0; n<varnames.length; n++) {
+			 //System.out.println("varnames[n]="+varnames[n]);
+			 if (line.contains("<rdfs:range rdf:resource=")) {
+				   //System.out.println("line="+line);
+				   int index= line.indexOf("=");
+				   if (index >=0) {
+				     String aux= line.substring(index+1);
+				     //System.out.println("aux="+aux+"  aux.length="+aux.length());
+				     if (aux.contains(varnames[n]) && (aux.length()==varnames[n].length()+5))
+				         return n;
+				   }
+			 }
+		}
+		return -1;
+	}
+}

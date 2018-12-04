@@ -1,0 +1,156 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                              JFISHFP.java
+//
+//
+//**********************************************************************
+package kbct;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+
+import fis.jnifis;
+
+/**
+ * <p align="left">
+ * kbct.JFISHFP generate configuration files for the three types of induced partitions
+ * </p>
+ * <ul>
+ *   <li> HFP </li>
+ *   <li> Kmeans </li>
+ *   <li> Regular </li>
+ * </ul>
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+
+//------------------------------------------------------------------------------
+public class JFISHFP {
+	private long ptr;
+	static int HFP = 0;
+	static int KMEANS = 1;
+	static int REGULAR = 2;
+	static int MINIMUM = 1;
+//------------------------------------------------------------------------------
+  public JFISHFP(String data_file, String hfp_file) throws Throwable { this.ptr = jnifis.HFPOpen(data_file, hfp_file); }
+//------------------------------------------------------------------------------
+  protected JFISHFP( long ptr ) { this.ptr = ptr; }
+//------------------------------------------------------------------------------
+  static String [] HierarchyType() throws Throwable { return jnifis.HFPHierarchyType(); }
+//------------------------------------------------------------------------------
+  static public JFISHFP HFPConfig(String data_file, int column_not_process, String hfp_file) throws Throwable {
+    return new JFISHFP(jnifis.HFPConfig(data_file, column_not_process, hfp_file));
+  }
+//------------------------------------------------------------------------------
+  int GetHierarchy() throws Throwable {
+    String hierarchy = jnifis.GetHFPHierarchy(this.ptr);
+    String [] type_hierarchy = JFISHFP.HierarchyType();
+    for( int i=0 ; i<type_hierarchy.length ; i++ )
+      if( hierarchy.equals(type_hierarchy[i]) == true )
+        return i;
+
+    throw new Exception(LocaleKBCT.GetString("UnknownHierarchyType") + ": " + hierarchy);
+  }
+//------------------------------------------------------------------------------
+  public void SetHierarchy( int index ) throws Throwable { jnifis.SetHFPHierarchy(this.ptr, JFISHFP.HierarchyType()[index]); }
+//------------------------------------------------------------------------------
+  double GetToleranceThreshold() throws Throwable { return jnifis.GetHFPToleranceThreshold(this.ptr); }
+//------------------------------------------------------------------------------
+  public void SetToleranceThreshold( double tolerance ) throws Throwable { jnifis.SetHFPToleranceThreshold(this.ptr, tolerance); }
+//------------------------------------------------------------------------------
+  public static String [] DistanceType() throws Throwable { return jnifis.HFPDistanceType(); }
+//------------------------------------------------------------------------------
+  //public static String [] MergingType() throws Throwable { return jnifis.HFPMergingType(); }
+//------------------------------------------------------------------------------
+  public Object [] GetParameters() throws Throwable { return jnifis.GetHFPParameters(this.ptr); }
+//------------------------------------------------------------------------------
+  //public void SetParameters( int distance, boolean simplified, int dist_mf_nb, int var_mf_nb, int merging, double hetero_penalty, double hetero_prop ) throws Throwable {
+    //jnifis.SetHFPParameters(this.ptr, DistanceType()[distance], simplified, dist_mf_nb, var_mf_nb, MergingType()[merging], hetero_penalty, hetero_prop);
+  //}
+  public void SetParameters(int distance) throws Throwable
+  {
+    jnifis.SetHFPParameters(this.ptr, DistanceType()[distance]);
+  }
+//------------------------------------------------------------------------------
+  public int GetNbInput() throws Throwable { return jnifis.GetHFPNbInput(this.ptr); }
+//------------------------------------------------------------------------------
+  int GetNbOutput() throws Throwable { return jnifis.GetHFPNbOutput(this.ptr); }
+//------------------------------------------------------------------------------
+  public JInputHFP GetInput( int input_number ) throws Throwable { return new JInputHFP(jnifis.GetHFPInput(this.ptr, input_number)); }
+//------------------------------------------------------------------------------
+  JKBCTOutput GetOutput( int output_number ) throws Throwable { return new JKBCTOutput((int)jnifis.GetHFPOutput(this.ptr, output_number)); }
+//------------------------------------------------------------------------------
+  public void Delete() throws Throwable { jnifis.HFPDelete(this.ptr); }
+//------------------------------------------------------------------------------
+  public void Save( String data_file, String hfp_file ) throws Throwable { jnifis.HFPSave(this.ptr, data_file, hfp_file); }
+//------------------------------------------------------------------------------
+  static public void Vertex( String data_file, String hfp_file, String vertex_file ) throws Throwable { jnifis.HFPVertex(data_file, hfp_file, vertex_file); }
+//------------------------------------------------------------------------------
+  //static void Select(String data_file, String hfp_file, double min_cumul_weight, int cardinality_strategy, double min_matching_degree, int min_cardinality, String result_file_name, double loss_coverage, int initial_number_of_mf, int max_number_of_iter, String vertex_file, int output_number, String validation_file) throws Throwable {
+    //jnifis.HFPSelect(data_file, hfp_file, min_cumul_weight, cardinality_strategy, min_matching_degree, min_cardinality, result_file_name, loss_coverage, initial_number_of_mf, max_number_of_iter, vertex_file, output_number, validation_file);
+  //}
+  static void Select(String data_file, String hfp_file, boolean ruleInductionMethodFPA, double min_cumul_weight, int cardinality_strategy, double min_matching_degree, int min_cardinality, String result_file_name, double loss_coverage, int initial_number_of_mf, int max_number_of_iter, String vertex_file, int output_number, String validation_file) throws Throwable { 
+	  jnifis.HFPSelect(data_file, hfp_file, ruleInductionMethodFPA, min_cumul_weight, cardinality_strategy, min_matching_degree, min_cardinality, result_file_name, loss_coverage, initial_number_of_mf, max_number_of_iter, vertex_file, output_number, validation_file); 
+  }
+//------------------------------------------------------------------------------
+  void ReplaceOutput( int output_number, JKBCTOutput new_output ) throws Throwable { jnifis.ReplaceHFPOutput(this.ptr, output_number, new_output.GetPtr()); }
+//------------------------------------------------------------------------------
+  static void SetHFPFIS(String hfp_in, String cfg, String hfp_out) throws Throwable { jnifis.SetHFPFIS(hfp_in, cfg, hfp_out); }
+//------------------------------------------------------------------------------
+  static public JFIS WangMendel(String fis, String data_file, String aux) throws Throwable {
+    JFIS new_fis = new JFIS(jnifis.WangMendel(fis, data_file, aux));
+    return new_fis;
+  }
+//------------------------------------------------------------------------------
+  static public double[][] ReadHFP(File f_hfp) throws Throwable {
+    double[][] result= null;
+    LineNumberReader lnr= new LineNumberReader(new InputStreamReader(new FileInputStream(f_hfp)));
+    String l;
+    int Ninputs= 0;
+    int cont=0;
+    while((l= lnr.readLine())!=null) {
+        if (l.equals("[System]")) {
+            lnr.readLine();
+            l= lnr.readLine();
+            Ninputs= (new Integer(l.substring(8))).intValue();
+            result= new double[Ninputs][2];
+        } else if (l.startsWith("[Input")) {
+            lnr.readLine();
+            lnr.readLine();
+            l= lnr.readLine();
+            int indIR= l.indexOf(",");
+            result[cont][0]= ((new Double(l.substring(7, indIR))).doubleValue());
+            result[cont][1]= ((new Double(l.substring(indIR+1, l.length()-1))).doubleValue());
+            cont++;
+        }
+    }
+    return result;
+  }
+}

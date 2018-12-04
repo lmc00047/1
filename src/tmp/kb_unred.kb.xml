@@ -1,0 +1,118 @@
+<KnowledgeBase>
+<System Name="Nueva Base de Conocimiento" Inputs="4" Outputs="1" Rules="29">
+</System>
+<Inputs>
+<Input1 Active="true" Name="Sepal Length" Type="numerical" Trust="llow" PhysicalLowerRange="4.300" PhysicalUpperRange="7.900" InterestLowerRange="4.300" InterestUpperRange="7.900" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input1>
+<Labels>
+<Input1-Label1 Name="low" MF="SemiTrapezoidalInf" P1="4.300" P2="4.300" P3="6.100" ModalPoint="No MP">
+</Input1-Label1>
+<Input1-Label2 Name="average" MF="triangular" P1="4.300" P2="6.100" P3="7.900" ModalPoint="No MP">
+</Input1-Label2>
+<Input1-Label3 Name="high" MF="SemiTrapezoidalSup" P1="6.100" P2="7.900" P3="7.900" ModalPoint="No MP">
+</Input1-Label3>
+</Labels>
+<Input2 Active="true" Name="Sepal Width" Type="numerical" Trust="llow" PhysicalLowerRange="2.000" PhysicalUpperRange="4.400" InterestLowerRange="2.000" InterestUpperRange="4.400" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input2>
+<Labels>
+<Input2-Label1 Name="low" MF="SemiTrapezoidalInf" P1="2.000" P2="2.000" P3="3.200" ModalPoint="No MP">
+</Input2-Label1>
+<Input2-Label2 Name="average" MF="triangular" P1="2.000" P2="3.200" P3="4.400" ModalPoint="No MP">
+</Input2-Label2>
+<Input2-Label3 Name="high" MF="SemiTrapezoidalSup" P1="3.200" P2="4.400" P3="4.400" ModalPoint="No MP">
+</Input2-Label3>
+</Labels>
+<Input3 Active="true" Name="Petal Length" Type="numerical" Trust="llow" PhysicalLowerRange="1.000" PhysicalUpperRange="6.900" InterestLowerRange="1.000" InterestUpperRange="6.900" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input3>
+<Labels>
+<Input3-Label1 Name="low" MF="SemiTrapezoidalInf" P1="1.000" P2="1.000" P3="3.950" ModalPoint="No MP">
+</Input3-Label1>
+<Input3-Label2 Name="average" MF="triangular" P1="1.000" P2="3.950" P3="6.900" ModalPoint="No MP">
+</Input3-Label2>
+<Input3-Label3 Name="high" MF="SemiTrapezoidalSup" P1="3.950" P2="6.900" P3="6.900" ModalPoint="No MP">
+</Input3-Label3>
+</Labels>
+<Input4 Active="true" Name="Petal Width" Type="numerical" Trust="llow" PhysicalLowerRange="0.100" PhysicalUpperRange="2.500" InterestLowerRange="0.100" InterestUpperRange="2.500" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input4>
+<Labels>
+<Input4-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.100" P2="0.100" P3="1.300" ModalPoint="No MP">
+</Input4-Label1>
+<Input4-Label2 Name="average" MF="triangular" P1="0.100" P2="1.300" P3="2.500" ModalPoint="No MP">
+</Input4-Label2>
+<Input4-Label3 Name="high" MF="SemiTrapezoidalSup" P1="1.300" P2="2.500" P3="2.500" ModalPoint="No MP">
+</Input4-Label3>
+</Labels>
+</Inputs>
+<Outputs>
+<Output1 Active="true" Name="Class" Type="categorical" Trust="llow" Classif="yes" PhysicalLowerRange="1.000" PhysicalUpperRange="3.000" InterestLowerRange="1.000" InterestUpperRange="3.000" Labels="3" ScaleOfLabels="user" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Output1>
+<Labels>
+<Output1-Label1 Name="1.0" MF="discrete" P1="1.000" ModalPoint="1.0">
+</Output1-Label1>
+<Output1-Label2 Name="2.0" MF="discrete" P1="2.000" ModalPoint="2.0">
+</Output1-Label2>
+<Output1-Label3 Name="3.0" MF="discrete" P1="3.000" ModalPoint="3.0">
+</Output1-Label3>
+</Labels>
+</Outputs>
+<Rules>
+<Rule1 I1="2" I2="3" I3="1" I4="1" O1="1" Nature="I" Active="true">
+</Rule1>
+<Rule2 I1="2" I2="2" I3="1" I4="1" O1="1" Nature="I" Active="true">
+</Rule2>
+<Rule3 I1="1" I2="1" I3="1" I4="1" O1="1" Nature="I" Active="true">
+</Rule3>
+<Rule4 I1="1" I2="2" I3="1" I4="1" O1="1" Nature="I" Active="true">
+</Rule4>
+<Rule5 I1="1" I2="1" I3="2" I4="2" O1="2" Nature="I" Active="true">
+</Rule5>
+<Rule6 I1="2" I2="2" I3="2" I4="2" O1="2" Nature="I" Active="true">
+</Rule6>
+<Rule7 I1="2" I2="1" I3="2" I4="2" O1="2" Nature="I" Active="true">
+</Rule7>
+<Rule8 I1="2" I2="2" I3="3" I4="3" O1="3" Nature="I" Active="true">
+</Rule8>
+<Rule9 I1="2" I2="2" I3="3" I4="2" O1="3" Nature="I" Active="true">
+</Rule9>
+<Rule10 I1="2" I2="1" I3="3" I4="2" O1="3" Nature="I" Active="true">
+</Rule10>
+<Rule11 I1="2" I2="1" I3="2" I4="3" O1="3" Nature="I" Active="true">
+</Rule11>
+<Rule12 I1="2" I2="2" I3="2" I4="3" O1="3" Nature="I" Active="true">
+</Rule12>
+<Rule13 I1="3" I2="1" I3="3" I4="3" O1="3" Nature="I" Active="true">
+</Rule13>
+<Rule14 I1="3" I2="2" I3="3" I4="2" O1="3" Nature="I" Active="true">
+</Rule14>
+<Rule15 I1="3" I2="2" I3="3" I4="3" O1="3" Nature="I" Active="true">
+</Rule15>
+<Rule16 I1="2" I2="2" I3="1" I4="1" O1="1" Nature="I" Active="true">
+</Rule16>
+<Rule17 I1="2" I2="3" I3="1" I4="1" O1="1" Nature="I" Active="true">
+</Rule17>
+<Rule18 I1="1" I2="2" I3="1" I4="1" O1="1" Nature="I" Active="true">
+</Rule18>
+<Rule19 I1="2" I2="2" I3="3" I4="2" O1="3" Nature="I" Active="true">
+</Rule19>
+<Rule20 I1="1" I2="1" I3="2" I4="2" O1="3" Nature="I" Active="true">
+</Rule20>
+<Rule21 I1="2" I2="1" I3="3" I4="2" O1="3" Nature="I" Active="true">
+</Rule21>
+<Rule22 I1="2" I2="1" I3="2" I4="3" O1="3" Nature="I" Active="true">
+</Rule22>
+<Rule23 I1="3" I2="1" I3="3" I4="3" O1="3" Nature="I" Active="true">
+</Rule23>
+<Rule24 I1="2" I2="1" I3="2" I4="2" O1="3" Nature="I" Active="true">
+</Rule24>
+<Rule25 I1="2" I2="2" I3="2" I4="3" O1="3" Nature="I" Active="true">
+</Rule25>
+<Rule26 I1="3" I2="2" I3="3" I4="3" O1="3" Nature="I" Active="true">
+</Rule26>
+<Rule27 I1="3" I2="2" I3="3" I4="2" O1="3" Nature="I" Active="true">
+</Rule27>
+<Rule28 I1="2" I2="2" I3="2" I4="2" O1="3" Nature="I" Active="true">
+</Rule28>
+<Rule29 I1="2" I2="2" I3="3" I4="3" O1="3" Nature="I" Active="true">
+</Rule29>
+</Rules>
+</KnowledgeBase>

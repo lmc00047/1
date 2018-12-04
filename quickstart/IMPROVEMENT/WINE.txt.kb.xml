@@ -1,0 +1,149 @@
+<KnowledgeBase>
+<System Name="New Knowledge Base" Inputs="13" Outputs="1" Rules="0">
+</System>
+<Inputs>
+<Input1 Active="true" Name="Alcohol" Type="numerical" Trust="llow" PhysicalLowerRange="11.030" PhysicalUpperRange="14.830" InterestLowerRange="11.030" InterestUpperRange="14.830" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input1>
+<Labels>
+<Input1-Label1 Name="low" MF="SemiTrapezoidalInf" P1="11.030" P2="11.030" P3="12.930" ModalPoint="No MP">
+</Input1-Label1>
+<Input1-Label2 Name="average" MF="triangular" P1="11.030" P2="12.930" P3="14.830" ModalPoint="No MP">
+</Input1-Label2>
+<Input1-Label3 Name="high" MF="SemiTrapezoidalSup" P1="12.930" P2="14.830" P3="14.830" ModalPoint="No MP">
+</Input1-Label3>
+</Labels>
+<Input2 Active="true" Name="MalicAcid" Type="numerical" Trust="llow" PhysicalLowerRange="0.740" PhysicalUpperRange="5.800" InterestLowerRange="0.740" InterestUpperRange="5.800" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input2>
+<Labels>
+<Input2-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.740" P2="0.740" P3="3.270" ModalPoint="No MP">
+</Input2-Label1>
+<Input2-Label2 Name="average" MF="triangular" P1="0.740" P2="3.270" P3="5.800" ModalPoint="No MP">
+</Input2-Label2>
+<Input2-Label3 Name="high" MF="SemiTrapezoidalSup" P1="3.270" P2="5.800" P3="5.800" ModalPoint="No MP">
+</Input2-Label3>
+</Labels>
+<Input3 Active="true" Name="Ash" Type="numerical" Trust="llow" PhysicalLowerRange="1.360" PhysicalUpperRange="3.230" InterestLowerRange="1.360" InterestUpperRange="3.230" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input3>
+<Labels>
+<Input3-Label1 Name="low" MF="SemiTrapezoidalInf" P1="1.360" P2="1.360" P3="2.295" ModalPoint="No MP">
+</Input3-Label1>
+<Input3-Label2 Name="average" MF="triangular" P1="1.360" P2="2.295" P3="3.230" ModalPoint="No MP">
+</Input3-Label2>
+<Input3-Label3 Name="high" MF="SemiTrapezoidalSup" P1="2.295" P2="3.230" P3="3.230" ModalPoint="No MP">
+</Input3-Label3>
+</Labels>
+<Input4 Active="true" Name="AlcalinityOfAsh" Type="numerical" Trust="llow" PhysicalLowerRange="10.600" PhysicalUpperRange="30.000" InterestLowerRange="10.600" InterestUpperRange="30.000" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input4>
+<Labels>
+<Input4-Label1 Name="low" MF="SemiTrapezoidalInf" P1="10.600" P2="10.600" P3="20.300" ModalPoint="No MP">
+</Input4-Label1>
+<Input4-Label2 Name="average" MF="triangular" P1="10.600" P2="20.300" P3="30.000" ModalPoint="No MP">
+</Input4-Label2>
+<Input4-Label3 Name="high" MF="SemiTrapezoidalSup" P1="20.300" P2="30.000" P3="30.000" ModalPoint="No MP">
+</Input4-Label3>
+</Labels>
+<Input5 Active="true" Name="Magnesium" Type="numerical" Trust="llow" PhysicalLowerRange="70.000" PhysicalUpperRange="162.000" InterestLowerRange="70.000" InterestUpperRange="162.000" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input5>
+<Labels>
+<Input5-Label1 Name="low" MF="SemiTrapezoidalInf" P1="70.000" P2="70.000" P3="116.000" ModalPoint="No MP">
+</Input5-Label1>
+<Input5-Label2 Name="average" MF="triangular" P1="70.000" P2="116.000" P3="162.000" ModalPoint="No MP">
+</Input5-Label2>
+<Input5-Label3 Name="high" MF="SemiTrapezoidalSup" P1="116.000" P2="162.000" P3="162.000" ModalPoint="No MP">
+</Input5-Label3>
+</Labels>
+<Input6 Active="true" Name="TotalPhenols" Type="numerical" Trust="llow" PhysicalLowerRange="0.980" PhysicalUpperRange="3.880" InterestLowerRange="0.980" InterestUpperRange="3.880" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input6>
+<Labels>
+<Input6-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.980" P2="0.980" P3="2.430" ModalPoint="No MP">
+</Input6-Label1>
+<Input6-Label2 Name="average" MF="triangular" P1="0.980" P2="2.430" P3="3.880" ModalPoint="No MP">
+</Input6-Label2>
+<Input6-Label3 Name="high" MF="SemiTrapezoidalSup" P1="2.430" P2="3.880" P3="3.880" ModalPoint="No MP">
+</Input6-Label3>
+</Labels>
+<Input7 Active="true" Name="flavanoids" Type="numerical" Trust="llow" PhysicalLowerRange="0.340" PhysicalUpperRange="5.080" InterestLowerRange="0.340" InterestUpperRange="5.080" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input7>
+<Labels>
+<Input7-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.340" P2="0.340" P3="2.710" ModalPoint="No MP">
+</Input7-Label1>
+<Input7-Label2 Name="average" MF="triangular" P1="0.340" P2="2.710" P3="5.080" ModalPoint="No MP">
+</Input7-Label2>
+<Input7-Label3 Name="high" MF="SemiTrapezoidalSup" P1="2.710" P2="5.080" P3="5.080" ModalPoint="No MP">
+</Input7-Label3>
+</Labels>
+<Input8 Active="true" Name="NonflavanoidsPhenols" Type="numerical" Trust="llow" PhysicalLowerRange="0.130" PhysicalUpperRange="0.660" InterestLowerRange="0.130" InterestUpperRange="0.660" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input8>
+<Labels>
+<Input8-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.130" P2="0.130" P3="0.395" ModalPoint="No MP">
+</Input8-Label1>
+<Input8-Label2 Name="average" MF="triangular" P1="0.130" P2="0.395" P3="0.660" ModalPoint="No MP">
+</Input8-Label2>
+<Input8-Label3 Name="high" MF="SemiTrapezoidalSup" P1="0.395" P2="0.660" P3="0.660" ModalPoint="No MP">
+</Input8-Label3>
+</Labels>
+<Input9 Active="true" Name="Proanthocyanins" Type="numerical" Trust="llow" PhysicalLowerRange="0.410" PhysicalUpperRange="3.580" InterestLowerRange="0.410" InterestUpperRange="3.580" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input9>
+<Labels>
+<Input9-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.410" P2="0.410" P3="1.995" ModalPoint="No MP">
+</Input9-Label1>
+<Input9-Label2 Name="average" MF="triangular" P1="0.410" P2="1.995" P3="3.580" ModalPoint="No MP">
+</Input9-Label2>
+<Input9-Label3 Name="high" MF="SemiTrapezoidalSup" P1="1.995" P2="3.580" P3="3.580" ModalPoint="No MP">
+</Input9-Label3>
+</Labels>
+<Input10 Active="true" Name="ColorIntensity" Type="numerical" Trust="llow" PhysicalLowerRange="1.280" PhysicalUpperRange="13.000" InterestLowerRange="1.280" InterestUpperRange="13.000" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input10>
+<Labels>
+<Input10-Label1 Name="low" MF="SemiTrapezoidalInf" P1="1.280" P2="1.280" P3="7.140" ModalPoint="No MP">
+</Input10-Label1>
+<Input10-Label2 Name="average" MF="triangular" P1="1.280" P2="7.140" P3="13.000" ModalPoint="No MP">
+</Input10-Label2>
+<Input10-Label3 Name="high" MF="SemiTrapezoidalSup" P1="7.140" P2="13.000" P3="13.000" ModalPoint="No MP">
+</Input10-Label3>
+</Labels>
+<Input11 Active="true" Name="Hue" Type="numerical" Trust="llow" PhysicalLowerRange="0.480" PhysicalUpperRange="1.710" InterestLowerRange="0.480" InterestUpperRange="1.710" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input11>
+<Labels>
+<Input11-Label1 Name="low" MF="SemiTrapezoidalInf" P1="0.480" P2="0.480" P3="1.095" ModalPoint="No MP">
+</Input11-Label1>
+<Input11-Label2 Name="average" MF="triangular" P1="0.480" P2="1.095" P3="1.710" ModalPoint="No MP">
+</Input11-Label2>
+<Input11-Label3 Name="high" MF="SemiTrapezoidalSup" P1="1.095" P2="1.710" P3="1.710" ModalPoint="No MP">
+</Input11-Label3>
+</Labels>
+<Input12 Active="true" Name="OD280/OD315" Type="numerical" Trust="llow" PhysicalLowerRange="1.270" PhysicalUpperRange="4.000" InterestLowerRange="1.270" InterestUpperRange="4.000" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input12>
+<Labels>
+<Input12-Label1 Name="low" MF="SemiTrapezoidalInf" P1="1.270" P2="1.270" P3="2.635" ModalPoint="No MP">
+</Input12-Label1>
+<Input12-Label2 Name="average" MF="triangular" P1="1.270" P2="2.635" P3="4.000" ModalPoint="No MP">
+</Input12-Label2>
+<Input12-Label3 Name="high" MF="SemiTrapezoidalSup" P1="2.635" P2="4.000" P3="4.000" ModalPoint="No MP">
+</Input12-Label3>
+</Labels>
+<Input13 Active="true" Name="Proline" Type="numerical" Trust="llow" PhysicalLowerRange="278.000" PhysicalUpperRange="1680.000" InterestLowerRange="278.000" InterestUpperRange="1680.000" Labels="3" ScaleOfLabels="low-high" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Input13>
+<Labels>
+<Input13-Label1 Name="low" MF="SemiTrapezoidalInf" P1="278.000" P2="278.000" P3="979.000" ModalPoint="No MP">
+</Input13-Label1>
+<Input13-Label2 Name="average" MF="triangular" P1="278.000" P2="979.000" P3="1680.000" ModalPoint="No MP">
+</Input13-Label2>
+<Input13-Label3 Name="high" MF="SemiTrapezoidalSup" P1="979.000" P2="1680.000" P3="1680.000" ModalPoint="No MP">
+</Input13-Label3>
+</Labels>
+</Inputs>
+<Outputs>
+<Output1 Active="true" Name="Class" Type="categorical" Trust="llow" Classif="yes" PhysicalLowerRange="1.000" PhysicalUpperRange="3.000" InterestLowerRange="1.000" InterestUpperRange="3.000" Labels="3" ScaleOfLabels="user" FlagOntology="false" NameFromOntology="null" FlagOntObjectProperty="false" FlagOntDatatypeProperty="false">
+</Output1>
+<Labels>
+<Output1-Label1 Name="1.0" MF="discrete" P1="1.000" ModalPoint="1.0">
+</Output1-Label1>
+<Output1-Label2 Name="2.0" MF="discrete" P1="2.000" ModalPoint="2.0">
+</Output1-Label2>
+<Output1-Label3 Name="3.0" MF="discrete" P1="3.000" ModalPoint="3.0">
+</Output1-Label3>
+</Labels>
+</Outputs>
+<Rules/>
+</KnowledgeBase>

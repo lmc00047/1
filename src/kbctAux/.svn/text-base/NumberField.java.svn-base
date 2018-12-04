@@ -1,0 +1,94 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                              NumberField.java
+//
+//
+//**********************************************************************
+package kbctAux;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
+import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
+
+//------------------------------------------------------------------------------
+
+/**
+ * Define a JTextField used with numbers
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+
+abstract public class NumberField extends JTextField implements ActionListener {
+  private NumberFieldActionListener action = null;
+//------------------------------------------------------------------------------
+  public NumberField() {
+    this.addActionListener(this);
+    FocusAdapter fa = new FocusAdapter() {
+      public void focusLost(FocusEvent e) { FocusLost(); }
+    };
+    this.addFocusListener(fa);
+  }
+//------------------------------------------------------------------------------
+  public void FocusLost() {
+    if( action != null )
+      action.NumberFieldAction();
+  }
+//------------------------------------------------------------------------------
+  public void SetAction( NumberFieldActionListener action ) { this.action = action; }
+//------------------------------------------------------------------------------
+  protected Document createDefaultModel() { return new NumberFieldDocument(); }
+//------------------------------------------------------------------------------
+  abstract protected boolean ValidCharacter( char c );
+//------------------------------------------------------------------------------
+  protected class NumberFieldDocument extends PlainDocument {
+    static final long serialVersionUID=0;
+
+    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+      char[] source = str.toCharArray();
+      char[] result = new char[source.length];
+      int j = 0;
+      for( int i=0 ; i<result.length ; i++ )
+        if( ValidCharacter(source[i]) )
+          result[j++] = source[i];
+
+      super.insertString(offs, new String(result, 0, j), a);
+    }
+  }
+//------------------------------------------------------------------------------
+  public void actionPerformed(ActionEvent e) {
+    if( action != null )
+      action.NumberFieldAction();
+  }
+}

@@ -1,0 +1,1236 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+GUAJE=GUAJE
+KBCT=BC
+DB=Base de Datos
+RB=Base de Reglas
+Context=Información de contexto del problema
+License=Licencia
+
+############################################################################################
+# MENUS
+Name= Nombre
+
+# KBCT MENU 
+New=Nuevo
+Open=Abrir
+Close=Cerrar
+Save=Guardar
+SaveAs=Guardar como
+SaveAsFIS=Guardar como SD
+Consistency=Coherencia
+Completeness=Completitud
+Convert=Convertir
+SetAutomaticConfiguration=Parámetros
+SetAutomaticConfiguration_msg=Definir los parámetros de configuración
+Exit=Salir
+LoadOntology=Visualizar ontología
+LoadOntologyText=Visualizar ontología desde archivo
+SaveAsFuzzyOntology=Guardar como Ontología FuzzySaveAsFuzzyOntologyWithoutRules=Guardar como Ontología Fuzzy (sin reglas)OpenValidXML=Abra un archivo con formato apropiado (compruebe la extensión kb/ikb)
+OpenValidKBXML=Seleccione un archivo con formato apropiado (compruebe la extensión kb.xml)
+
+# INPUTS MENU
+Inputs=Entradas
+AllInputs=Todas las entradas
+NewInput=Nueva entrada
+Edit=Edición
+Remove=Eliminar
+RuleRanking=Ordenación de reglas
+Choose_one_option_for_rule_ranking=Elija una opción para ordenación de reglas
+AutomaticRuleRankingProcedure=Ordenación de reglas
+AutomaticRuleRankingEnded=El proceso de ordenación de reglas ha terminado.
+ReverseOrder=Orden inverso
+OrderByOutput=Ordenar por salida
+CumulatedLocalWeight=Pesos de las reglas (Precisión Local)
+CumulatedGlobalWeight=Pesos de las reglas (Precisión Global)
+CumulatedWeight=Pesos de las reglas (Precisión L+G)
+CumulatedLocalIntWeight=Pesos de las reglas (Interpretabilidad Local)
+CumulatedGlobalIntWeight=Pesos de las reglas (Interpretabilidad Global)
+CumulatedIntWeight=Pesos de las reglas (Interpretabilidad L+G)
+averagevalue=media
+OrderByLocalWeight=Ordenar por peso (Precisión Local)
+OrderByGlobalWeight=Ordenar por peso (Precisión Global)
+OrderByWeight=Ordenar por peso (Precisión L+G)
+OrderByLocalInterpretability=Ordenar por Interpretabilidad Local
+OrderByGlobalInterpretability=Ordenar por Interpretabilidad Global
+OrderByInterpretability=Ordenar por Interpretabilidad L+G
+OrderByNbPremises=Ordenar por número de premisas
+IncreasingRuleComplexity=Complejidad de reglas creciente
+DecreasingRuleComplexity=Complejidad de reglas decreciente
+RandomIDRuleComplexity=Complejidad de reglas aleatoria (creciente/decreciente)
+ComparisonRuleComplexity=Combinando complejidad de reglas (creciente/decreciente)
+AccumulatedRuleComplexity=Complejidad de reglas acumulada
+Copy=Copiar
+Up=Subir
+Down=Bajar 
+
+# OUTPUTS MENU
+Outputs=Salidas
+NewOutput=Nueva salida
+
+# RULES MENU
+Rules=Reglas
+Rule=Regla
+NewRule=Nueva regla
+GenerateAllRules=Generar todas las reglas 
+Expand=Expandir
+Group=Fusionar
+MsgMergeAllActiveRules=Todas las reglas seleccionadas deben estar activadas. 
+MsgMergeAllRulesSametype=Todas las reglas seleccionadas deben ser del mismo tipo (expertas o inducidas).
+MsgMergeAllRulesSameConclusion=Todas las reglas seleccionadas deben tener la misma conclusión. 
+MsgMergeNoMergeRules=Las reglas seleccionadas no se pueden fusionar. 
+GroupRule=Agrupar 
+RuleSelection=Selección de reglas
+RemoveRedundantRules=Eliminar Reglas Redundantes
+
+# OPTIONS MENU
+Options=Opciones
+Language=Idioma
+Look=Apariencia
+User=Usuario
+Beginner=Guiado
+Expert=Experto
+PrototypeRules=Reglas prototipo
+ClustersNumber=Número de grupos
+ClustersNumberShouldBe=El número de grupos debe ser mayor que cero.
+
+# HELP MENU
+Help=Ayuda
+QuickStart=Guia Principiantes
+About=Info
+
+############################################################################################
+# FRAMES
+
+# JKBCTFrame
+NewKBCT=Nueva Base de Conocimiento
+OpenInNewWindow=Abrir en una nueva ventana
+FilterOWLFile=filtro Ontología
+FilterIKBFile=filtro IKB
+FilterKBFile=filtro KB
+FilterFISFile=filtro SD
+FilterXfuzzyFile=filtro Xfuzzy
+FilterEspressoFile=filtro Espresso
+errorEspresso1=Proceso interrumpido por "TIMEOUT"
+TheIKBIsNotSaved=El archivo de configuración IKB ha sido modificado. 
+TheKBCTIsNotSaved=La base de conocimiento no ha sido guardada
+TheDataFileIsNotSaved=El archivo de datos ha sido modificado. 
+WarningSaveDataFile=Si guarda la actual base de conocimiento, los cambios en el archivo de datos serán guardados.
+DoYouWantToSaveIt=¿Desea guardar los cambios?
+TheKBCTFile=Archivo de configuración
+TheFISFile=Archivo de FisPro
+TheMatlabFile=Archivo de Matlab 
+TheXfuzzyFile=Archivo de Xfuzzy
+TheEspressoFile=Archivo de Espresso
+NewKB=Generar una nueva base de conocimiento
+OpenKB=Abrir una base de conocimiento guardada 
+CloseKB=Cerrar la base de conocimiento actual
+SaveKB=Guardar la base de conocimiento actual
+SaveAsKB=Generar archivo para guardar la base de conocimiento
+ConvertKB=Convertir ficheros
+ExitKB=Cerrar la ventana actual
+GenerateFISFile=Generar archivo para inferencias borrosas con FisPro
+InfoGenerateFIS1=La base de conocimiento construida con GUAJE se puede usar con varios motores de inferencia: 
+InfoGenerateFIS2=Hay que convertir el archivo de configuración de GUAJE al formato apropiado. 
+AlreadyExist=Ya existe.
+DoYouWantToReplaceIt=¿Desea reemplazarlo?
+IF=SI
+If=Si
+AND=Y
+OR=O
+NOT=NO
+IS=es
+SmallerThan=Menor que 
+BiggerThan=Mayor que
+MoreOrLess=más o menos 
+Strictly=estrictamente 
+Between=entre 
+THEN=ENTONCES
+TheLabel=La etiqueta 
+Of=de
+TheVariable=La variable
+UsedByNoneRule=no es usada en ninguna regla
+TheRules=Las reglas
+and=y
+SamePremiseDifferentConclussions=tienen las mismas premisas y diferentes conclusiones.
+SamePremiseSameConclussions=tienen las mismas premisas y conclusiones.
+TheInputSpaceCoveredByTheRule=El espacio de entrada cubierto por la regla
+IsIncludedIntoTheOneCoveredByTheRule=está incluido en el cubierto por la regla
+HaveIntersectionNoEmpty=tienen intersección no vacía.
+TheRule=La regla
+IsIncomplete_ConclusionNotDefined=es incompleta. La conclusión no está definida.
+ThereIsNoSuitableConclusionThenRemoveRule1=No ha sido posible definir una conclusión adecuada sin reducir la precisión.
+ThereIsNoSuitableConclusionThenRemoveRule2=La regla será eliminada. 
+TheOutput=La salida
+IsNotDefined=no está definida.
+ConsistencyCheckingGood=La comprobación terminó sin detectar ninguna incoherencia.
+ConsistencyMsg=Comprobar la coherencia de la base de conocimiento
+CompletenessCheckingGood=La comprobación terminó sin detectar ninguna incompletitud. La base de reglas es completa.
+CompletenessMsg=Comprobar la completitud de la base de reglas
+SelectCompletenessMode=Seleccione el modo de ejecución
+AutomaticCompletenessProcedure=Procedimiento de Completitud Automático
+RuleBaseCompletenessAnalysis=Análisis de Completitud de la Base de Reglas
+CompleteRuleBase=Completar la Base de Reglas
+CompletenessThres=Umbral de completitud
+CompletenessThresShouldBe=Este umbral debe estar incluido en el intervalo [0, 1].
+DoYouWantToMakeCompleteness=¿ Desea que se analice la completitud de la base de reglas ?
+LogView=Reducción Lógica
+LogViewMsg=Reducción de la base de conocimiento según reglas lógicas
+Simplify=Simplificar
+SimplifyMsg=Simplificar la base de conocimiento
+OnlyDBsimplification=Sólo simplificar las particiones
+OnlyRBsimplification=Sólo simplificar las reglas
+SelectSimplificationMode=Seleccione el modo de simplificación
+ReduceDataBase=Reducir la Base de Datos ( Variables Lingüísticas )
+SelectReductionMode=Seleccione el modo de reducción
+SelectMode=Seleccione el modo de inferencia
+Supervised=Supervisado
+Automatic=Automático
+Iteration=Iteración
+Removed=Eliminada
+MergedLabels=Etiquetas fusionadas:
+ReduceRuleBase=Reducir la Base de Reglas ( Análisis Lingüístico )
+DoYouWantToCheckConsistencyAfterMergingRules=¿ Desea que GUAJE compruebe la coherencia de la base de reglas en el procedimiento de fusión de reglas?
+WarningAutomaticSimplification1=Debería guardar la base de conocimiento antes de empezar el proceso automático de simplificación.
+WarningAutomaticSimplification2=Cuando este proceso termine, si no le satisface el resultado,
+WarningSaveReduceDataBase1=Debería guardar la base de conocimiento antes de empezar el proceso de reducción.
+WarningSaveReduceDataBase2=Cuando este proceso termine, si no le satisface el resultado,
+WarningSaveReduceDataBase3=puede anular todos los cambios cerrando (sin guardar) y volviendo a abrir la base de conocimiento experto.
+WarningSimplificationHalted=Se ha interrumpido el proceso de simplificación.
+WarningSimplificationSaveKB=Se ha guardado la BC simplificada hasta este momento.
+DoYouWantToSolveProblem= ¿ Desea solucionar este problema ?
+LabelsAlwaysUsedTogether=Las siguientes etiquetas siempre se usan juntas en la variable
+GroupLabels=Fusionar las etiquetas
+MinNumberOfLabels=No se puede eliminar esta etiqueta. El número mínimo de etiquetas es 2.
+END=Terminar el proceso de reducción.
+AutomaticSelectPartitionsEnded=El proceso automático de selección de particiones ha terminado.
+AutomaticConsistencyEnded=El análiss de coherencia automático ha terminado.
+AutomaticLogViewEnded=El Proceso Automático de Reduccion (LogicalView) de la Base de Reglas ha terminado.
+AutomaticSimplificationEnded=El Proceso Automático de Simplificación de la Base de Conocimiento ha terminado.
+AutomaticOptimizationEnded=El Proceso Automático de Optimización de variables ha terminado.
+AutomaticCompletenessEnded=El Proceso Automático de Completitud de la base de reglas ha terminado.
+DataBaseReductionEnded=El Proceso de Reducción de la Base de Datos ha terminado.
+NoDataBaseReduction=No hubo reducción de la Base de Datos. La Base de Datos es mínima para la actual Base de Reglas.
+RuleBaseReductionEnded=El Proceso de Reducción de la Base de Reglas ha terminado.
+NoRuleBaseReduction=No hubo reducción de la Base de Reglas. La Base de Reglas es mínima para la actual configuración.
+NoConflictsSolution=No había conflictos de coherencia que resolver.
+SimplifyInducedRules=Simplificar las Reglas Inducidas
+Modeling=Modelado borroso
+SelectOptimizationMode=Seleccione el modo de optimización
+Optimization=Optimización
+OptimizationMsg=Optimización de las variables (cambiando los centros de los conjuntos borrosos)
+PartitionOptimization=Particiones
+GeneticTuning=Tuning Genético
+SolisWetts=Solis Wets
+Quality=Calidad
+Accuracy=Precisión
+Interpretability=Interpretabilidad
+InvalidKBinterpretabilityFile=Debe abrir un fichero válido (compruebe las variables de entrada y salida).
+CompInterpretability=Parámetro para la valoración de interpretabilidad
+CompInterpretabilityShouldBe=Este parámetro debe ser mayor que cero.
+NbInputsShouldBe=El número de variables de entrada debe ser mayor que cero.
+NbClassesShouldBe=El número de clases debe ser mayor que 1.
+MaxNbRules=Límite superior para el "Número total de reglas"
+MaxNbRulesShouldBe=El número máximo de reglas debe ser mayor o igual que el número de clases.
+MaxNbPremises=Límite superior para el "Número total de premisas"
+MaxNbPremisesShouldBe=El número máximo de premisas debe ser mayor o igual que el número máximo de reglas.
+ParameterL=Parámetro L
+ParameterM=Parámetro M
+ParameterLMShouldBe1=Los parámetros L y M deben estar incluidos en el intervalo [0, 100]. Son porcentajes.
+ParameterLMShouldBe2=El parámetro M debe ser mayor que el parámetro L.
+InterpInputFIS=Entradas
+PartitionInterpretability=Interpretabilidad de las Particiones
+NbTotalDefinedLabels=Número total de etiquetas definidas por variable de entrada
+NbTotalRules=Número total de reglas
+#NbRulesWithOneInput=Número de reglas que usan una variable de entrada
+#NbRulesWithTwoInputs=Número de reglas que usan dos variables de entrada
+#NbRulesWithThreeOrMoreInputs=Número de reglas que usan tres o más variables de entrada
+PercentageNbRulesWithLessThanLPercentInputs=Porcentaje de reglas que utilizan menos del L% de las entradas
+PercentageNbRulesWithBetweenLAndMPercentInputs=Porcentaje de reglas que utilizan entre el L% y el M% de las entradas
+PercentageNbRulesWithMoreThanMPercentInputs=Porcentaje de reglas que utilizan más del M% de las entradas
+NbRulesTogetherFired2=Número de pares de reglas que se pueden activar a la vez
+NbRulesTogetherFired3=Número de tríos de reglas que se pueden activar a la vez
+NbRulesTogetherFired4=Número de grupos de reglas (4 o más) que se pueden activar a la vez
+NbTotalPremises=Número total de premisas en la base de reglas
+NbInputsAverage=Número medio de entradas usadas por regla
+NbInputsDeviation=Varianza del número de entradas usadas por regla
+NbAverageLabelsdefinedByInput=Número medio de etiquetas definidas por variable de entrada
+#NbTotalLabelsdefinedByInput=Número total de etiquetas definidas por variable de entrada
+NbTotalLabelsUsedByInput=Número total de etiquetas usadas por variable
+NbLabelsOutputsAverage=Número medio de etiquetas definidas por variable de salida
+NbLabelsDeviation=Varianza del número de etiquetas definidas por variable
+#outputKBRuleBaseComplexity1=Complejidad estructural de la base de reglas
+#outputKBRuleBaseComplexity2=Complejidad de inferencia de la base de reglas
+#outputKBRuleBaseComplexity=Complejidad de la base de reglas
+#outputKBRuleBaseDimension=Dimensión de la base de reglas
+outputKBRuleBaseStructuralComplexity=Complejidad estructural de la base de reglas
+outputKBRuleBaseConceptualComplexity=Complejidad conceptual de la base de reglas
+outputKBRuleBaseStructuralFramework=Marco estructural de la base de reglas
+outputKBRuleBaseStructuralDimension=Dimensión estructural de la base de reglas
+outputKBRuleBaseConceptualDimension=Dimensión conceptual de la base de reglas
+outputKBRuleBaseConceptualFramework=Marco conceptual de la base de reglas
+NbTotalInputs=Número total de entradas
+NbTotalUsedLabels=Número total de etiquetas usadas (en la base de reglas)
+PercentageNbTotalElementaryUsedLabels=Número total de etiquetas elementales usadas (en la base de reglas)
+PercentageNbTotalORCompositeUsedLabels=Número total de etiquetas compuestas (OR) usadas (en la base de reglas)
+PercentageNbTotalNOTCompositeUsedLabels=Número total de etiquetas compuestas (NOT) usadas (en la base de reglas)
+#outputKBDataBaseDimension=Data base dimension
+#outputKBDataBaseComplexity=Data base complexity
+outputKBDataBaseInterpretability=Interpretabilidad de la base de datos (variables lingüísticas)
+outputKBRuleBaseInterpretability=Interpretabilidad de la base de reglas
+outputKBLocalExplanation=Explicación Local
+outputKBotherIndices=Otros Índices
+NauckIndex=Índice de Nauck
+IshibuchiNbRules=Número de reglas
+RuleLength=Número de premisas por regla
+SimultaneousFiredRulesSymmetric=Reglas disparadas a la vez (Medida de codisparo normalizada)
+SimultaneousFiredRulesSymmetricOnlyConflicts=Reglas disparadas a la vez (Medida de codisparo normalizada - Solo conflictos)
+SimultaneousFiredRulesAsymmetric=Reglas disparadas a la vez (Porcentaje de codisparos)
+SimultaneousFiredRulesAsymmetricOnlyConflicts=Reglas disparadas a la vez (Porcentaje de codisparos - Solo conflictos)
+SimultaneousFiredRulesSymmetricFiringDegree=Reglas disparadas a la vez (Diferencia normalizada entre grados de disparo)
+SimultaneousFiredRulesSymmetricFiringDegreeOnlyConflicts=Reglas disparadas a la vez (Diferencia normalizada entre grados de disparo - Solo conflictos)
+SimultaneousFiredRulesAsymmetricByFiringDegree=Reglas disparadas a la vez (Porcentaje * Dif grados de disparo)
+SimultaneousFiredRulesAsymmetricByFiringDegreeOnlyConflicts=Reglas disparadas a la vez (Porcentaje * Dif grados de disparo - Solo conflictos)
+MS=Relación Simétrica
+MA=Relación Asimétrica
+IshibuchiTotalRuleLength=Total rule length
+IshibuchiAverageRuleLength=Average rule length
+AverageFiredRulesTheory=Reglas disparadas (media teórica)
+MinFiredRulesTheory=Reglas disparadas (min teórico)
+MaxFiredRulesTheory=Reglas disparadas (max teórico)
+AverageFiredRulesTraining=Reglas disparadas en entrenamiento (media inferida)
+MinFiredRulesTraining=Reglas disparadas en entrenamiento (min inferido)
+MaxFiredRulesTraining=Reglas disparadas en entrenamiento (max inferido)
+AverageFiredRulesTest=Reglas disparadas en test (media inferida)
+MinFiredRulesTest=Reglas disparadas en test (min inferido)
+MaxFiredRulesTest=Reglas disparadas en test (max inferido)
+LVindexTraining= Índice de Logical View (entrenamiento)
+LVindexTest= Índice de Logical View (test)
+#Dimension=Dimensión
+outputKBGlobalDescription=Descripción Global
+InterpOutput=Salida
+InterpretabilityIndex=Índice de interpretabilidad
+QualityMsg=Evaluar la calidad de la base de conocimiento
+ReplaceVariableFromKB=La partición actual de esta variable será sustituida por la partición seleccionada 
+ThisOperationWillRemove=Esta operación borrará la
+ThisOperationWillComplete=Esta operación definirá la conclusión más apropiada para la
+FromKB=de la base de conocimiento
+YouMustSelectRulesToRemove=Hay que seleccionar las reglas a eliminar
+DoYouWantToRemoveAllSelectedRules= ¿ Desea eliminar todas las reglas seleccionadas ?
+QualityKBgetWorse=El último cambio ha empeorado la calidad de la base de conocimiento.
+DoYouWantToKeepLastChange= ¿ Quiere conservarlo ?
+Reset=Restaurar
+
+# JFISSimple
+SelectedOutput=Variable de salida seleccionada
+HomogeneityThreshold=Umbral de homogeneidad 
+LossOfPerformance=Pérdida de evaluación
+MinimumCardinality=Cardinalidad mínima
+MinimumMatchingDegree=Grado de emparejamiento mínimo
+LossOfCoverage=Pérdida de cobertura
+ValidationFile=Archivo de validación 
+MaxError=Error máximo
+SCE=Error de clasificación cuadrático medio
+Processing=Procesando
+TakeLongTime=Esta operación podría durar unos minutos
+PleaseWait=Por favor, Espere
+KeepLastRule=Guardar la última regla
+NoSimplicationAchieved=Ninguna simplificación con ese configuración
+
+LVred=Reducción (LogicalView) de la base de reglas 
+Simple=Simplificación
+AutomaticLVreductionProcedure=Procedimiento Automático de Reducción (LogicalView) de la Base de Reglas
+AutomaticSimplificationProcedure=Procedimiento de Simplificación Automático
+MaximumLossOfCoverage=Pérdida de cobertura máxima
+MaximumNumberNewUnclassifiedCases=Número máximo de nuevos casos no clasificados
+selectedPerformance=Utilizar el índice de evaluación
+MaximumLossOfPerformance=Pérdida de evaluación máxima
+MaximumNumberNewErrorCases=Número máximo de nuevos casos mal clasificados
+MaximumNumberNewAmbiguityCases=Número máximo de nuevos casos con ambigüedad
+ruleRemoval=opción 1: borrar reglas
+variableRemoval=opción 2: borrar variables
+premiseRemoval=opción 3: borrar premisas
+orderRules=opción 4: ordenar las reglas antes de simplificar
+
+# JRuleBaseQualityFrame
+DataFileNoExist=El archivo de test no existe.
+linkDataVars=Asociar Variables y Datos
+Select_Data_link_to_Var=Seleccione la columna de datos asociada con la variable
+PerformanceTitle=Evaluación de la calidad de la base de reglas
+Performance=Evaluación
+ResultFile=Archivo de resultados
+TestFile=Archivo de test
+TheTestFile=El archivo de test
+TheResultFile=El archivo de resultados
+BlankThres=Umbral disparo
+AmbThres=Umbral ambiguedad
+BTATmessage=Los umbrales de disparo y ambiguedad deben estar definidos en el intervalo [0, 1].
+total=total
+Compute=Calcular
+Precision=Precision
+Recall=Recall (Sensitivity)
+Fmeasure=F-measure
+Coverage=Cobertura
+AvgCFD=Confianza en el grado de disparo de las reglas (media)
+MinCFD=Confianza en el grado de disparo de las reglas (minimo)
+MaxCFD=Confianza en el grado de disparo de las reglas (maximo)
+Results=Resultados
+NoAlarm=Todo es normal
+NoActiveRule=No hay reglas activas en la base de reglas
+Ambiguity=Ambigüedad
+AmbiguityTotal=AC (Total)
+AmbiguityTotalTTT=Ambigüedad (Total)
+AmbiguityReal=AC (Error)
+AmbiguityRealTTT=Ambigüedad (Error)
+NoConnexArea=El área definido por los conjuntos borrosos disparados no es connexa
+NoConnexSegment=El máximo corresponde a dos conjuntos borrosos y el segmento resultante no es connexo
+NbErrorCases=Número de casos de error de 
+PercentageErrorWithRespectTo=Porcentaje de casos de error respecto a todos los casos de 
+NbAmbiguityCases=Número de casos de ambigüedad de 
+NbAmbiguityErrorCases=Number of ambiguity (error) cases of 
+PercentageAmbiguityWithRespectTo=Porcentaje de casos de ambigüedad respecto a todos los casos de 
+InDataFile=en el archivo de datos.
+ErrorCases=Casos de Error
+ErrorCasesToolTipText=Casos de Error del archivo de datos
+AmbiguityCases=Casos de Ambigüedad
+AmbiguityErrorCases=Casos de Ambigüedad (error)
+AmbiguityCasesToolTipText=Casos de Ambigüedad del archivo de datos
+AmbiguityErrorCasesToolTipText=Casos de Ambigüedad (error) del archivo de datos
+NoClassif=UC
+NoClassifTTT=Casos no clasificados
+NoClassifCases=Casos no clasificados
+NoClassifCasesToolTipText=Casos no clasificados del archivo de datos
+NoClassifErrorCases=UC (Error)
+NoClassifErrorCasesTTT=Casos no clasificados (Error)
+NoClassifErrorCasesToolTipText=Casos no clasificados (error) del archivo de datos
+NbNoClassifCases=Número de casos no clasificados de  
+NbNoClassifErrorCases=Número de casos no clasificados (error) de  
+PercentageNoClassifWithRespectTo=Porcentaje de casos no clasificados respecto a todos los casos de 
+observed=Observados
+infered=Inferidos
+CorrectConclusion=Conclusión correcta
+IncorrectConclusion=Conclusión incorrecta
+PositiveInstances=Ejemplos Positivos
+NegativeInstances=Ejemplos Negativos
+NoItems=No hay ejemplos
+AutomaticQualityEvaluationProcedure=Proceso de evaluación de calidad automático
+AutomaticQualityEnded=El proceso de evaluación de calidad automático ha terminado.
+IncorrectTESTfileName1=El nombre del archivo de prueba no es válido. Debería ser igual al nombre del archivo
+IncorrectTESTfileName2=de entrenamiento, pero cambiando "tra.txt" por "tst.txt" (o "lrn.sample" por "tst.sample").
+tpTTT=Verdaderos Positivos
+fpTTT=Falsos Positivos
+tnTTT=Verdaderos Negativos
+fnTTT=Falsos Negativos
+
+# JRuleFrame
+RulesAddedToKB=Las reglas inducidas serán añadidas a la base de conocimiento.
+ReplaceRulesFromKB=Las reglas de la base de conocimiento serán sustituidas por las reglas simplificadas. 
+
+# JFileChooser
+# los caracteres nemónicos
+FCAcceptAllFileFilterText=Todos los archivos
+FCCancelButtonMnemonic=C
+FCCancelButtonText=Cancelar
+FCCancelButtonToolTipText=Cerrar la ventana
+FCDetailsViewButtonToolTipText=Detalles
+FCFileNameLabelMnemonic=N
+FCFileNameLabelText=Nombre del archivo
+FCFilesOfTypeLabelMnemonic=T
+FCFilesOfTypeLabelText=Tipo de archivo
+FCHomeFolderToolTipText=Inicio
+FCListViewButtonToolTipText=Lista
+FCNewFolderToolTipText= Nueva carpeta
+FCOpenButtonMnemonic=A
+FCOpenButtonText=Abrir
+FCOpenButtonToolTipText=Abrir el archivo seleccionado
+FCSaveButtonMnemonic=S
+FCSaveButtonText=Guardar
+FCSaveButtonToolTipText=Guardar el archivo seleccionado
+FCUpFolderToolTipText=Subir un nivel
+
+# propiedades de FileChooser CDE/Motif
+FCFolderLabelText=Directorios
+FCFilesLabelText=Archivos
+
+# JAboutFrame
+AboutKBCT=Acerca de GUAJE
+Authors=Autores
+Author=Autor
+Collaborators=Colaboradores
+OpenSourceSoftware=Software libre
+
+# JInputFrame
+Input=Entrada
+Range=Rango
+Print=Imprimir
+Export=Exportar 
+RangeP=Rango Físico
+RangeI=Rango de Interés
+Lower=Mínimo
+Upper=Máximo
+MustBeHigherThan= debe ser mayor que 
+RangeP>RangeI=El rango de interés debe estar contenido dentro del rango físico
+Type=Tipo
+numerical=numérica
+logical=lógica
+categorical=categórica
+Imp= Confianza
+ExpertTrust1=Confianza del experto en su propio conocimiento sobre esta variable
+ExpertTrust2=alta: El experto conoce la importancia de la variable y es capaz de describir su comportamiento
+ExpertTrust3=media: El conocimiento de esta variable tiene que ser confimado por datos
+ExpertTrust4=baja: Se supone que la variable influye pero no se puede cuantificar su comportamiento
+llow=baja
+middle=media
+hhigh=alta
+Labels=Etiquetas
+Label=Etiqueta
+NOL=Número de etiquetas
+2=dos
+3=tres
+4=cuatro
+5=cinco
+6=seis
+7=siete
+8=ocho
+9=nueve 
+LL=Etiquetas Lingüísticas
+small-large=pequeño - grande
+few-lot=poco - mucho
+negative-positive=negative - positive
+low-high=bajo - alto
+user=Definido por Usuario
+NewScale=Nueva Escala de Etiquetas
+SetNbLabels=Número de etiquetas
+NbLabelsShouldBe=El número de etiquetas debe ser mayor que 1.
+WarningScaleLabels=Si se selecciona otra escala, el número de etiquetas debe ser menor o igual que 9.
+ModalPoints=Puntos Modales
+ModalPoint=Punto Modal 
+AdvOpt=Opciones Avanzadas
+ultra_low=super bajo
+very_low=muy bajo
+low=bajo
+average_low=medio bajo
+average=medio
+average_high=medio alto
+high=alto
+very_high=muy alto
+ultra_high=super alto
+ultra_few=poquísimo
+very_few=muy poco
+few=poco
+average_few=medio poco
+average_lot=medio mucho
+lot=mucho
+very_lot=muchísimo
+ultra_lot=extremadamente mucho
+ultra_small=super pequeño
+very_small=muy pequeño
+small=pequeño
+average_small=medio pequeño
+average_large=medio grande
+large=grande
+very_large=muy grande
+ultra_large=super grande
+ultra_negative=super negativo
+very_negative=muy negativo
+negative=negativo
+zero_negative=cero negativo
+zero=cero
+zero_positive=cero positivo
+positive=positivo
+very_positive=muy positivo
+ultra_positive=super positivo
+WARNING=AVISO
+IfSelectedTypeIs=Si el tipo seleccionado es
+NumberOfLabelsMustBe=el número de etiquetas debe ser
+OnlyExpertUsers=Sólo debe acceder si es un usuario experto.
+SemanticAnalysisOnlyStrongFuzzyPartitions= El análisis semántico sólo es válido con particiones borrosas fuertes.      
+DoYouWantToContinue=¿Está seguro de querer continuar?
+Apply=Aplicar
+Cancel=Cancelar 
+LabelNotDefined=Se debe dar un nombre a todas las etiquetas definidas
+Out_of_range1=Estaban fuera del nuevo rango, por esto han sido borrados.  
+Out_of_range2=Estaba fuera del nuevo rango, por esto ha sido borrado. 
+
+#JOutputFrame
+Output=Salida
+Classif=Clasificación
+yes=sí
+no=no
+
+#JChangeNameFrame
+ChangeName=Cambio de Nombre
+IncorrectChangeName=Cambio de Nombres Incorrecto
+InfoChangeName=No puede haber 2 etiquetas con el mismo nombre
+
+# JModalPointsFrame
+MP=Punto Modal 
+IncorrectModalPoints=Puntos modales erróneos
+InfoModalPointsSize=Una etiqueta mayor no puede tener un punto modal menor
+InfoModalPointsEquals=Dos etiquetas no pueden tener el mismo punto modal 
+ModalPointsMustBeInRangeP=Los Puntos Modales se deben definir dentro del Rango Físico definido para la variable
+
+#JAdvOptFrame
+MFs=Etiquetas
+MF=Etiqueta
+NewMF=Nueva Etiqueta (CTRL+N)
+RemoveMF=Eliminar Etiqueta (CTRL+DEL)
+MergeMFs=Fusionar Etiquetas (CTRL+M)
+CopyMF=Copiar Etiqueta (CTRL+C)
+UpMF=Subir Etiqueta (CTRL+U)
+DownMF=Bajar Etiqueta (CTRL+D)
+RefinementMF=Refinamiento (CTRL+R)
+ScalingMFs=Escalado de la partición (CTRL+S)
+ParExpA=Exponente AParExpB=Exponente BParameterC=Parámetro C
+IncorrectParameter=Parámetros no válidos
+ParameterMustBeIncludedIntoRange=debe estar inlcuido en el intervalo 
+ParameterCMustBeBiggerThanMinimum=El parámetro C debe ser mayor que el valor mínimo
+ParameterCMustBeSmallerThanMaximum=El parámetro C debe ser menor que el valor máximo
+ParExpAMustBePositive=El exponente A debe ser positivo
+ParExpBMustBePositive=El exponente B debe ser positivo
+MFParameters=Parámetros
+RegularGrid=Equi-espaciada grilla
+triangular=Triángulo
+trapezoidal=Trapecio
+SemiTrapezoidalInf=Semi-trapecio inferior
+SemiTrapezoidalSup=Semi-trapecio superior
+discrete=Discreto
+gaussian=Gaussiana
+universal=Universal
+Top=Vertice
+NumberOfValues=Número de valores
+NumberOfMF=Número de Etiquetas
+Value=Valor
+MustBePositive=Debe ser positivo
+Mean=Media
+StandardDeviation=Desviación estándar
+Modify=Modificar
+AllMFsWillBeErased\nDoYouWantToContinue=Todas las FP serán perdidas.\n¿Desea continuar?
+MPmustBeIncludedIntoSupport=El Punto Modal debe estar definido dentro del soporte de la etiqueta.
+Error=ERROR
+ErrorEC= EC
+ErrorTTT= Casos de Error
+ResetZoom=Resetaurar zoom
+
+# JRangeFrame
+PhysicalRange=Rango Físico
+InterestRange=Rango de Interés
+
+# JBeginner
+Ini=Inicio
+BeginnerMode=Modo Principiante
+CloseWindow_ChangeExpertUse=Si cierra la ventana pasará a la opción de modo experto.
+DoYouWantToCloseIt=¿Quiere cerrarla?
+ExternalPage=Esta página está disponible en Internet. Para acceder a ella necesitas utilizar un navegador.
+Forward=Página siguiente
+Backward=Página anterior
+
+# JConsistency
+SolveProblems=Solucionar Problemas
+SolvingLinguisticConflicts=Analizando y resolviendo conflictos lingüísticos entre reglas
+CONSISTENCY_ERRORS=ERRORES DE COHERENCIA
+REDUNDANCY_OR_SPECIFICITY_WARNINGS=AVISOS DE REDUNDANCIA o ESPECIFICIDAD 
+INPUT_WARNINGS=AVISOS EN ENTRADAS
+OUTPUT_WARNINGS=AVISOS EN SALIDAS
+UNUSUED_VARIABLES_WARNINGS=AVISOS DE VARIABLES NO USADAS
+UNUSUED_LABELS_WARNINGS=AVISOS DE ETIQUETAS NO USADAS
+NO_ERRORS=NO ERRORES
+WarningConsistencySolvingConflictsHalted=El análiss de coherencia automático ha sido interrumpido.
+WarningConsistencySolvingConflictsOutOfMemory=El análiss de coherencia debería hacerse en modo supervisado (paso a paso).
+
+# JSolveProblems
+SelectOneProblemToSolveAndClickTheButton=Seleccione un problema a resolver y haga click en el botón
+Solve=Solucionar
+TwoOptions=Tiene 2 opciones
+RemoveOneRule=Eliminar una de las reglas. Sugerimos eliminar la regla más específica
+RemoveOneRuleSamePremiseDifferentConclusion=Eliminar una de las reglas.
+ChangePremises=Cambiar las premisas en una de las reglas.
+RemoveThe=Eliminar la 
+DefineConclusion=Definir la conclusión de la
+UseVariable=Usar la variable en alguna regla.
+UseLabel=Usar la etiqueta en alguna regla.
+SupportEffect=Hay un efecto de refuerzo. Sugerimos utilizar el operador de agregación "max" para evitar el refuerzo.
+ThreeOptions=Tiene 3 opciones
+DoNothing=No hacer nada.
+DependsOnInferenceSystem=Pero el resultado de la inferencia dependerá del sistema de inferencia usado.
+ChangeInputSpaceOneRule=Cambiar el espacio de entrada de una de las reglas.
+ChangeInputSpaceTwoRule=Cambiar el espacio de entrada de ambas reglas.
+SelectConclusion=Seleccionar la mejor conclusión.
+
+# JKBCTIntegrationFrame
+Data=Datos
+Generate=Generar
+Sample=Entrenamiento/Prueba
+CrossValidation=Validación-cruzada
+FoldsNumber=Número de particiones
+FoldsNumberShouldBe=El número de particiones debe ser mayor que 1.
+View=Ver
+Table=Tabla
+items=ejemplos
+NCitems=Estos ejemplos no están cubiertos por ninguna regla
+Active=Activa
+Activate=Activar
+Deactivate=Desactivar
+Switch=Switch
+ActivateAll=Activar todo
+ActivateNothing=Activar nada
+AtLeastOne=Al menos un ejemplo debe estar activado
+Induce=Inducción
+Partitions=Particiones
+NewData=Abrir una nueva ventana para recoger Conocimiento de Datos 
+NewExpert=Abrir una nueva ventana para recoger el Conocimiento del Experto
+KB_modeling=Base de Conocimiento
+Expert_Knowledge_Base=Añadiendo Conocimiento Experto
+Data_Knowledge_Base=Extrayendo Conocimiento a partir de Datos
+IKBCT=IKB
+NewKBFile=Nueva BC
+NewKBExpertFile=NuevaBC
+NewExpertKB=Nueva BC (Experto)
+OpenExpertKB=Abrir BC (Experto)
+OpenDataKB=Abrir BC (Datos) 
+CloseExpertKB=Cerrar BC (Experto)
+CloseDataKB=Cerrar BC (Datos)
+SaveAsExpertKB=Cambiar el nombre al archivo KB
+SaveAsDataKB=Cambiar el nombre al archivo de datos
+Separator=Separador
+Variable=Variable
+Introduce_valid_number_of_outputs=Por favor, Introduzca un número válido de salidas.
+Valid_number_of_outputs=Debe introducir un número válido de salidas.
+Data_file_has=El fichero de datos tiene
+Variables=variables
+How_many_variables=¿Cuántas variables desea que se traten como salidas?
+DataChooser=Elección de datos
+Histogram=Histograma
+All=Todos
+NumberOfInputs= Número de entradas
+NumberOfClasses=Número de clases
+NumberOfOutputLabels= Número de etiquetas (salida)
+Class=Clase
+Classes=Clases
+If_NbOutput_equal_zero_Not_Induced_Rules=Si el número de salidas es 0 no podrá inducir reglas a partir de los datos
+Confirm_NbOutputs_equal_zero=¿Desea continuar?
+has=tiene
+You_must_open_valid_data_file_with_less_than=Debe abrir un fichero de datos válido con menos de
+Incorrect_KBCT_file=El fichero con la base de conocimiento debe tener como mínimo el mismo número de entradas y salidas que el fichero de datos.
+Not_Remove= No se puede borrar esta
+Open_Data_File_With= Tiene abierto un fichero de datos con
+Induce_Partitions=Inducir Particiones 
+Select_Partitions=Seleccionar Particiones
+Induce_Rules=Inducir Reglas
+AutomaticInducePartitionsEnded=El proceso de inducción de particiones ha terminado.
+AutomaticInduceRulesProcedure=Inducción de Reglas
+AutomaticInduceRulesEnded=El proceso de inducción de reglas ha terminado.
+Choose_one_variable=Seleccione una variable
+Choose_one_algorithm_for_partition_induction=Elija un algoritmo para inducción de particiones
+Choose_number_of_labels_for_partition_induction=Elija el número de etiquetas para inducción de particiones
+Choose_one_algorithm_for_rule_induction=Elija un algoritmo para inducción de reglas
+Choose_one_option=Elija una opción
+Maximum_Number_Of_MF_is=El número máximo de etiquetas es 
+RangeExpert>RangeData=El rango de los datos debe estar incluido en el rango definido por el experto     
+UnalterableVariableMsg=Esta variable no se puede modificar porque el experto la definió con un nivel de confianza "ALTA".
+
+RangeData=Rango de los datos
+DataDistribution=Distribución de los datos
+ExpertPartition=Partición Actual
+SavingCurrentPartitionNoChanges=Ha seleccionado la partición actual. No habrá cambios.
+AllPartitions=Particiones inducidas
+PartitionHFP=Partición HFP
+PartitionRegular=Partición Regular
+PartitionKmeans=Partición Kmeans
+AutomaticSelectPartitionsProcedure=Procedimiento de selección de particiones automático
+SelectPartition=Selecciona partición
+TypeOfPartition=Tipo de partición
+Evaluation=Evaluación
+EvaluationOfFuzzyPartitions=Evaluación de las Particiones Borrosas generadas
+PartitionCoefficient=Coeficiente de la partición (max)
+PartitionEntropy=Entropía de la partición (min)
+ChenIndex=Índice de Chen (max)
+FISconf=Configuración FIS
+SetFISoptions=OPERADORES FIS 
+SetFISoptionsMenu=Operadores FIS 
+SetFISoptionsText=Definir los operadores de inferencia para los archivos FIS
+GenerateFIS=GENERAR FIS
+GenerateFIStext=Generar el archivo de configuración FIS
+Choose_one_data_file_To_generate_FIS=Elija el archivo de datos a partir del cual quiere generar el archivo FIS
+NoOutput_NoInduceRules=Si no define al menos una salida, no podrá inducir reglas
+Strategy=Estrategia
+MinCard=Cardinalidad mínima
+MinDeg=Grado mínimo
+decrease=disminución
+Default_values=Los valores por defecto son
+DoYouWantToMakeChanges=¿Desea cambiar los valores por defecto?
+DoYouWantToSpecifyVariablesToUse=¿Desea elegir las variables a utilizar en el archivo de datos?
+DefaultAllUsed=(Por defecto todas las variables son usadas)
+IncorrectNbOutputs=Número de salidas incorrecto.
+IncorrectNbOutputsOrNbInputs=Número de salidas o entradas incorrecto.
+TheDataFile=El archivo de datos
+OutOfMemory=No hay suficiente memoria.\nVuelva a intentarlo con un número menor de variables.
+UnknownNature=Naturaleza desconocida
+BuildTempDataFile=Se acaba de crear un archivo de datos temporal (copia del archivo de datos abierto)
+MsgTempDataFile=Solo si se guarda el actual archivo de la base de conocimiento, el actual fichero de datos será modificado.
+ModifyTempDataFile=El archivo temporal de datos se ha modificado
+
+# Induce rules
+DoYouWantToMakeInductionWithDataSelection=¿Quiere que la inducción de reglas se realice con selección de datos?
+ThresholdDataSelectionShouldBe=Este umbral debe estar incluido en el intervalo [0, 1].
+
+# FPA
+WrongNumberVariablesFPA=Este algoritmo de inducción de reglas necesita el mismo número de entradas y salidas en la base de conocimiento y en el archivo de datos.
+
+# Wang & Mendel
+OutputMustBeNumerical=La salida debe ser numérica
+WrongNumberVariablesWM=Este algoritmo de inducción de reglas necesita el mismo número de entradas y salidas en la base de conocimiento y en el archivo de datos.
+NoDataRemoved= Se utilizaron todos los datos en la inducción de reglas.
+NextDataDeactive= En el proceso de inducción no se tuvieron encuenta los siguientes casos: 
+
+# JTreeGenerateFrame
+WrongNumberVariablesFDT=Este algoritmo de inducción de reglas necesita el mismo número de entradas y salidas en la base de conocimiento y en el archivo de datos.
+AmbiguityThreshold= Umbral de tolerancia
+Prune=Poda
+Split=Poda por subárbol/hoja
+Relgain=ganancia relativa
+TreeDepth=Profundidad de árbol
+RelPerfLoss=Perdida relativa de evaluación
+OutputHasNoClasses=No clases para la salida
+TreeCannotBeBuilt=No se puede deseñar el árbol
+PruningImplementedForClassificationOnly=Ahora sólo se puede podar si clasificación
+MinEDGain=Entropía mínima/desviación de ganancia
+Tree=Árbol
+TreeGenerate=Generar árbol
+TreeFile=Archivo de árbol
+MaxTreeDepth=Máxima profundidad de árbol
+MinSignificantLevel=Mínimo nivel significativo
+LeafMinCard=Número mínimo de ejemplos por nodo
+ToleranceThreshold= Umbral de tolerancia
+OutputHasNoClasses=No clases para la salida
+TreeCannotBeBuilt=No se puede deseñar el árbol
+PruningImplementedForClassificationOnly=Ahora sólo se puede podar si clasificación 
+Display=Ver
+ErrorInTreeFile=Error en el archivo (árbol)
+UnexpectedValueForNumberOfClass=Número de clases incorrecto
+UnexpectedFormat=Formato inesperado
+CovThresh=Umbral de cobertura
+
+# frame Tree
+ParentNode=vínculo padre 
+NotFoundForNode=no encontrado para el vínculo
+Leafs=Hojas
+AllNodes=todos los vínculos
+Samples=Patrones
+Entropie=Entropía 
+MajorityClass=- clase mayoritaria
+Majority\nClass=clase\n mayoritaria
+ClassEffectif=cardinalidades por clases
+
+# Infer frame
+SelectALabelForEachOutput=Seleccione una etiqueta para cada variable de salida en todas las reglas.
+Infer=Inferir
+InferMsg=Hacer inferencia usando la Base de Conocimiento
+UnknownMFType=Tipo de FP desconocido
+Inference=Inferencia
+AllData=Todos los datos
+Measures=Medidas
+OK=Aceptar
+START=Empezar
+ENDInfer=Terminar
+setDataValue= Seleccionar datos
+Choose_one_data_value_from_data_file=Seleccione el número del ejemplo en el archivo de datos.
+NbData=Número de muestra
+OutputShouldBe=Según el archivo de datos, la salida debería ser
+Links=Conexiones
+GenerateFingrams=Generar Fingrams
+VisualizeFingrams=Visualizar Fingrams
+GenerateAnalyzeFingrams=Generar y Analizar Fingrams
+Fingram=Fingram
+Fingrams=Fingrams
+FingramsMsg=Generación de Fingrams
+FingramsWS=Fingrams con SMOTE
+FingramsWOS=Fingrams sin SMOTE
+FingramsALL=Fingrams con y sin SMOTE
+FingramsLimMaxIntIndex=Introduce el valor LimMax para el índice de interpretabilidad basado en Fingrams:
+FingramsLimMaxIntIndexBe=LimMax debe ser mayor de cero
+CentralityOfDegree=Centralidad de grado
+CentralityOfCloseness=Centralidad de proximidad
+CentralityOfIntermediation=Centralidad de intermediacion
+PageRank=Page Rank
+Zoom=Zoom
+ZoomIn=Ampliar
+ZoomOut=Reducir
+Shift=Mover
+ShiftUp=Arriba
+ShiftDown=Abajo
+ShiftRight=Derecha
+ShiftLeft=Izquierda
+SortByWeight=Ordenar per peso
+Threshold=Umbral
+PrefixLinksFiles=Links files prefix
+
+# Java Console
+JavaConsole=Consola Java
+Summary=Resumen
+SummaryMsg=Resumen Lingüístico de la Base de Conocimiento
+LinguisticRules=Reglas Lingüísticas
+LinguisticVariable=Variables Lingüísticas
+LinguisticTerms=Términos Lingüísticos
+
+# Automatic Configuration
+InducePartitions=Inducción de particiones
+PartitionSelection=Selección de particiones
+DataSelection=Hacer una selección de datos previa a la inducción de reglas
+RuleInduction=Inducción de reglas
+SolveLingConflicts=Análisis de coherencia y resolución de conflictos lingüísticos
+InductionRulesAlgorithm=Algoritmo de inducción de reglas
+FirstReduceRuleBase=Primero reducir la base de reglas
+FirstReduceDataBase=Primero reducir la base de datos
+SelectedOutput=Salida Seleccionada
+MaximumLossOfCoverage=Pérdida máxima de cobertura
+MaximumLossOfPerformance=Pérdida máxima en el índice de evaluación
+MaximumNumberNewErrorCases=Número máximo de nuevos casos de error
+MaximumNumberNewAmbiguityCases=Número máximo de nuevos casos de ambigüedad
+MaximumNumberNewUnclassifiedCases=Número máximo de nuevos casos no clasificados
+RuleRemoval=Forzar la eliminación de reglas
+VariableRemoval=Forzar la eliminación de variables
+PremiseRemoval=Forzar la eliminación de premisas
+OrderRules=Ordenar las reglas antes de simplificar
+SelectedPerformance=Utilizar el índice de evaluación
+DoYouWantToMakePartitionInduction=¿Desea que se haga inducción de particiones?
+DoYouWantToMakePartitionSelection=¿Desea que se haga selección de particiones?
+DoYouWantToMakeRuleInduction=¿Desea que se haga inducción de reglas?
+DefaultValues=Valores por defecto
+SelectedValues=Valores seleccionados
+DoYouWantToChangeSelectedValues=¿Desea cambiar los valores seleccionados?
+DoYouWantToMakeRuleRemoval=¿Desea forzar la eliminación de reglas?
+DoYouWantToMakeVariableRemoval=¿Desea forzar la eliminación de variables?
+DoYouWantToMakePremiseRemoval=¿Desea forzar la eliminación de premisas?
+DoYouWantToMakeSolveLingConflicts=¿Desea resolver de forma automática los conflictos lingüísticos?
+DoYouWantToMakeSolveRedundancy=¿Desea eliminar de forma automática la Redundancia de la Base de Reglas?
+DoYouWantToMakeSelectedPerformance=¿Desea utilizar el índice de evaluación para valorar la precisión?
+DoYouWantToMakeLVreduction=¿Desea que se realice una reducción lógica (LogicalView) de la base de reglas?
+DoYouWantToMakeSimplification=¿Desea que se simplifique la base de conocimiento?
+DoYouWantToMakeOrderRules=¿Desea que se ordenen las reglas según su importancia respecto a los datos?
+DoYouWantToMakeOptimization=¿Desea que se intente optimizar la definición de las variables de entrada?
+DoYouWantToMakeRuleRanking=¿Desea que se ordene la base de reglas?
+OutputClassSelected=Clase seleccionada
+all=todas
+
+# exception
+java.lang.ClassNotFoundException=Clase no encontrada
+java.lang.NoClassDefFoundError=Definición de clase no encontrada 
+java.io.FileNotFoundException=Archivo no encontrado
+java.lang.UnsatisfiedLinkError=Librería o método nativo no encontrado
+java.util.MissingResourceException=Recurso no encontrado
+fis.JNIException=Error en una librería nativa
+java.lang.NumberFormatException=Formato de número inesperado
+java.lang.Exception=Error
+java.lang.Throwable=Error
+
+SetToolsPath=Indicar la ubicación de programas auxiliares
+MsgSelToolsPath=Debe indicar los directorios donde están instalados los programas auxiliares (sin espacios en blanco).
+SelectAFisProPath=¡ Debe indicar la ruta de acceso a FisPro !
+SelectAGraphvizPath=¡ Debe indicar la ruta de acceso a Graphviz !
+LaunchKBCTagain=Vuelva a lanzar GUAJE.
+YouMustModifyKbctBat=Debe modificar el archivo guaje.bat
+YouMustModifyKbctMake=Debe modificar el archivo Makefile.
+ReadTXT=Lea "Readme.txt" para obtener más información.
+ReadTXT_Linux=Lea "readme_lin_exec.txt" para más información. 
+ReadTXT_Windows=Lea "readme_win_exec.txt" para más información. 
+Confirmation=Confirmación
+Yes=Sí
+No=No
+Information=Información
+Question=Pregunta
+
+#convert
+FisToMatlab=FisPro a Matlab
+GuajeToXfuzzy=GUAJE a Xfuzzy
+GuajeToEspresso=GUAJE a Espresso
+GuajeToFis=GUAJE a FisPro
+FisToGuaje=FisPro a GUAJE
+GuajeToMatlab=GUAJE a Matlab
+Operators=Operadores
+Conjunction_value=El operador para la conjunción es
+Default_conjunction_value=El operador por defecto para la conjunción es el mínimo.
+setFisProConjunction=Seleccionar operador de conjunción
+Choose_one_Fispro_conjunction=Seleccione el operador de conjunción para FisPro:
+prod=producto
+min=mínimo
+luka=Lukasiewicz
+Disjunction_value=El operador para la disyunción es
+Default_disjunction_value=El operador por defecto para la disyunción es el máximo.
+setFisProDisjunction=Seleccionar operador de disyunción
+Choose_one_Fispro_disjunction=Seleccione el operador de disyunción para FisPro:
+sum=suma
+max=máximo
+Defuzzification_value=El operador para la desborrosificación es
+Default_defuzzification_value_crisp=El operador por defecto para la desborrosificación es el máximo crisp.
+Default_defuzzification_value_fuzzy=El operador por defecto para la desborrosificación es el área.
+setFisProDefuzzification=Seleccionar operador de desborrosificación
+Choose_one_Fispro_defuzzification=Seleccione el operador de desborrosificación para FisPro:
+sugeno=sugeno
+area=área
+MeanMax=media de máximos
+MaxCrisp=máximo crisp
+newfis=nuevo_sd
+newmatlabfis=nuevo_matlab_sif
+newxfuzzy=nuevo_xfuzzy
+newespresso=nuevo_espresso
+ClassifRegError=Parece que intentas resolver un problema de regresión con una variable de salida definida para clasificación. 
+
+// FisPro (Errors in native library)
+NotFoundInResourceFile=no encontrado en fuentes
+NotFound=- no encontrado
+NativeLibrary=libreria nativa
+NativeFunction=función nativa
+IsNotAValidValueFor=No es un valor correcto para
+EnterACharacterFor=Escriba un caracter para
+MustBeHigherThan=Debe ser superior a 
+CannotSaveFISFile=No se puede guardar el SD
+ErrorInFISFile=Error en el archivo de configuración SD
+ExpectedString=Cadena esperada
+ReadString=Cadena acupada
+StringSeparatorNotFoundInString=Limitador de cadena no encontrado en la cadena
+CannotOpenFISFile=No se puede abrir el archivo de configuración SD
+CannotOpenDataFile=No se puede abrir el archivo de datos
+ErrorInDataFile=Error en el archivo de datos
+UnexpectedNumberOfColumnsInLine=Inesperado número de columna en la linea 
+CannotOpenResultFile=No se puede abrir el archivio de resultado
+CannotOpenRuleFile=No se puede abrir el archivio de las reglas
+SpaceSeparatorNotAllowed=No está autorizado el separador espacio
+InvalidNumberOfInputs=Número de entradas invalido
+InvalidNumberOfOutputs=Número de salidas invalido
+UnknownNature=Naturaleza desconocida
+FormatErrorInMFParameters=Error en el formato de los parámetros de FP
+UnknownMFType=Tipo de FP desconocido
+Or=o
+#IncorrectNumberOfBounds=Número de cotas desconocido
+DistanceMustBePositive=La distancia debe ser positiva
+NotAllowed=No autorizado
+CannotOpenRulesFile=No se puede abrir el archivio de las reglas
+UnknownConjunction=Tipo de conjunción desconocido
+UnknownDefuzzification=Tipo de defuzzificación desconocido  
+ErrorInRuleValues=Error en los valores de la regla
+RuleFactor=Factor de regla
+NumberOfMFInInput=Número de FP en la entrada
+RuleAction=Acción de la regla
+NumberOfMFInOutput=Número de FP en la salida
+ErrorInTreeFile=Error en el archivo (árbol)
+UnexpectedValueForNumberOfClass=Número de clases incorrecto
+UnexpectedFormat=Formato inesperado
+UnexpectedNumberOfColumnInDataFile=Inesperado número de columnas en el archivo de datos
+ColumnsInDataFile=Columnas en el archivo de datos
+ErrorInVertexFile=Error en el archivo de vertices
+NotaNumber= No es un número
+LessThan2MFDefinedForOutput= Menos de dos FP son definidos en la salida 
+NoRuleInitializedUsingThisConfiguration=Ninguna regla inicializada con este configuración
+TooManyRulesToGenerate=Demasiadas reglas que generar
+NumberOfRules=Número de reglas
+MaxNumber=Número máximo
+TooManyRules=Demasiadas reglas
+LessThan2MFDefinedForOutput= Menos de dos FP definidas en la salida
+
+# JHFPParametersFrame
+HFPParameters=Parámetros HFP
+Distance=Distancia
+numerical=numérica
+symbolic=symbólica
+symbnum=symbnum
+SimplifiedDistance=Distancia simplificada
+DistanceMFNb=Número de FP para distancia
+VarianceMFNb=Número de FP para varianza
+MergingCriterion=Criterio de fusión
+distance=distancia
+variance=varianza
+HeteroPenalty=Penalización de Heterogeneidad
+HeteroProportion=Proporción de Heterogeneidad
+
+#JPanelValidationFile
+Validation=Validación
+ActiveData=Datos activados
+InactiveData=Datos desactivados
+OtherFile=Otro archivo de datos
+SelectAValidationFile=Eligir un archivo de validación
+
+#JPanelGenerateSample
+SampleNumber=Número de ejemplos
+ValidationDataRatio=Validación/data ratio
+Seed=Seed
+Precision=Precisión
+
+# JPrintPreview
+PrintPreview=Vista previa
+PrintSetup=Configuración de la impresión
+FitToPage=Ajustar a página
+
+# JFISConsole
+Clear=Borrar
+
+#JOntologyFrame
+LoadOntologyFile=Abrir ontología de archivo local
+LoadOntologyURL=Abrir ontología de URL
+OpenOntologyURLquestion=Introduzca la URL correspondiente a la ontología
+
+# JOptFrame
+# Solis Wetts
+OptimizationImpossibleTheFISHasNoRules=Optimización imposible: no hay reglas en el FIS
+OutputToBeOptimized=Salida que optimizar
+StdGaussianNoise=Desviación estándar del ruido (gaussian)
+MaximumNumberOfConstraints=Máximo número de restricciones
+MaximumNumberOfFailures=Máximo número de fracasos
+CenterDistanceThreshold=Restricción sobre la distancia entre centros
+CardinalOfRulesVocabulary=Cardinalidad del vocabulario de salida
+AdvancedParameters=Parámetros avanzados
+SeedValue=Valor de semilla
+SolisWetsConstants=Constantes Solis Wetts
+PFF=Estandar
+Optimize=Optimizar
+OutputVocabularyInFIS=Vocabulario de salida en el FIS
+OutputCardinalVocabulary=Cardinalidad del vocabulario de salida
+NoAccuracyImprovement=No hay mejora de precisión
+Cnear=Limitar la variación de los limites de los conjuntos borrosos
+Selectall=Seleccionar/Deseleccionar todo
+SelectallInputs=Seleccionar tadas las entradas
+SelectallOutput=Seleccionar tada la salida
+SelectallRules=Seleccionar tadas las reglas
+DisplayKey=Mostrar clave
+MaximumNumberOfIterations=Número máximo de iteraciones
+SWoption=Opción
+VariableByVariable=Variable por Variable
+LabelByLabel=Etiqueta por Etiqueta
+NbIterations=Número máximo de iteraciones (por etiqueta o variable a optimizar)
+NbIterationsShouldBe=El número máximo de iteraciones (por término lingüístico a optimizar) debe ser mayor que cero.
+AutomaticOptimizationProcedure=Procedimiento de Optimización de Variables Automático
+AccuracyImprovement=Modificación (Mejora de precisión)
+
+# GA rule Selection
+RuleSelectionW1=Parámetro W1 (Precisión)
+RuleSelectionW2=Parámetro W2 (Interpretabilidad)
+RSinterpretabilityIndex=Índice de Interpretabilidad
+RSinterpretabilityIndex0=HILK
+RSinterpretabilityIndex1=Nauck
+RSinterpretabilityIndex2=Number of rules
+RSinterpretabilityIndex3=Number of premises
+WarningGAruleSelectionHalted=El proceso de selección de reglas ha sido interrumpido.
+WarningGAruleSelectionSaveCurrentPopulation=La población actual se ha guardado en el fichero temporal
+WarningGAruleSelectionJavaOutOfMemory1=Después se puede reiniciar el proceso de selección de reglas,
+WarningGAruleSelectionJavaOutOfMemory2=Continuará por la generación actual.
+
+# Genetic Tuning
+NbGenes=Número de genes
+MutProb=Probabilidad de mutación
+CrossoverProb=Probabilidad de cruce
+BoundedOptimization=Limitar los intervalos de variación de las funciones de pertenencia
+InitialGeneration=Generación Inicial
+MilestoneGeneration=Generación de parada intermedia
+NbInitialGenerationShouldBe=El número de Generación Inicial debe ser menor que el número total de generaciones.
+NbMilestoneGenerationShouldBe=El número de Generación de parada intermedia debe ser menor que el número total de generaciones.
+ParAlfa=Parámetro Alfa (Cruce)
+ParA=Parámetro A (Cruce)
+ParB=Parámetro B (Mutación)
+PopLength=Número de individuos en la población
+TournamentSize=Dimensión del torneo
+W1ACC=W1(PRECISIÓN)
+W2INT=W2(INTERPRETABILIDAD)
+DoYouWantToMakeRuleSelection=¿Desea que se haga "Selección de reglas"?
+NbGenerations=Número de generaciones
+Generation=Generación
+BestAccuracy=Mejor índice de precisión
+BestError=Mejor índice de error
+OldAccuracy=Índice de precisión de la BC inicial
+OldError=Índice de error de la BC inicial
+NbGenerationsShouldBe=El número de generaciones debe ser mayor que cero.
+TournamentSizeShouldBe=La dimensión del torneo debe estar incluida en el intervalo [2, Número de individuos en la población].
+PopLengthShouldBe=El número de individuos en la población debe ser mayor que uno.
+MutProbShouldBe=La probabilidad de mutación debe estar incluida en el intervalo [0, 1].
+CrossoverProbShouldBe=La probabilidad de cruce debe estar incluida en el intervalo [0, 1].
+ParAShouldBe=El parámetro A (Cruce) debe estar incluido en el intervalo [0, 1].
+ParAlfaShouldBe=El parámetro Alfa (Cruce) debe estar incluido en el intervalo [0, 1].
+WarningSWHalted=La optimización con Solis-Wetts ha sido interrumpida.
+WarningGeneticTuningHalted=El Tuning Genético ha sido interrumpido.
+WarningJVMOutOfMemory=Ha consumido demasiada memoria! La JVM podría quedarse sin memoria!
+WarningGeneticTuningSaveCurrentPopulation=La población actual se ha guardado en el fichero temporal
+WarningReleaseMemory=Hay que cerrar GUAJE para liberar memoria.
+WarningGeneticTuningJavaOutOfMemory1=Después se puede reiniciar el Tuning Genético.
+WarningGeneticTuningJavaOutOfMemory2=Continuará por la generación actual.
+WarningGAruleSelectionHalted=El proceso de selección de reglas ha sido interrumpido.
+WarningGAruleSelectionSaveCurrentPopulation=La población actual se ha guardado en el fichero temporal
+WarningGAruleSelectionJavaOutOfMemory1=Después se puede reiniciar el proceso de selección de reglas,
+WarningGAruleSelectionJavaOutOfMemory2=Continuará por la generación actual.
+
+# SMOTE
+SMOTE=SMOTE
+SMOTEnumberOfNeighbors=Número de vecinos
+SMOTEtype=Tipo
+SMOTEbalancing=Forzar balanceo total
+SMOTEquantity=Cantidad
+SMOTEdistance=Distancia
+SMOTEinterpolation=Interpolación
+SMOTEalpha=Alpha
+SMOTEmu=Mu
+DoYouWantToMakeSMOTE=¿Desea ejecutar SMOTE para balancear los datos de entrenamiento?
+AutomaticSmoteEnded=El proceso automático para SMOTE ha terminado.
+SmoteError-BalancedClasses=No se va a ejecutar SMOTE porque los datos ya estan balanceados.
+
+# Feature Selection
+FeatureSelection= Selección de atributos
+DoYouWantToMakeFeatureSelection=¿Desea que se haga selección de atributos?
+AutomaticFeatureSelectionEnded=El proceso automático para "Selección de atributos" ha terminado.
+
+# Fingrams
+DoYouWantToMakeFingrams=¿Desea construir Fingrams?
+DoYouWantToMakeFingramsWS=¿Desea construir Fingrams con SMOTE?
+DoYouWantToMakeFingramsWOS=¿Desea construir Fingrams sin SMOTE?
+AutomaticFingramsProcedure=Generación de Fingrams
+AutomaticFingramsProcedureEnded=El proceso automático para generar "Fingrams" ha terminado.
+OriginalFingram=Fingram inicial
+OnlyConsistency=Sólo análisis de inconsistencias
+ConsistencyAndRedundancy=Análisis de inconsistencias y redundancias
+Choose_one_metric=Elige una métrica para la generación de Fingrams
+Choose_one_graph_layout=Elige un método para pintar los fingrams generados
+Legend=Leyenda
+Goodness=Goodness
+GoodnessThres=Umbral (Goodness)
+PathFinderThres=Umbral (PathFinder)
+ParameterQ=Parámetro Q
+PTGTShouldBe=Los umbrales deben estar definidos en el intervalo [0, 1].
+PathFinderThresShouldBe=Este umbral debe estar incluido en el intervalo [0, 1].
+DoYouWantToDeactivateRule=¿Desea desactivar la regla
+    
+# JTutorialFrame
+STEP=PASO
+Outline=Índice
+NewKBdata=Cargar un conjunto de datos y generar una base de conocimiento a partir del mismo
+CreateNewInput=Crear una nueva entrada
+CreateNewOutput=Crear una variable de salida
+DefineRules=Definir reglas
+MakeInferences=Hacer inferencias
+DataVisualization=Visualizar datos (tabla, histogramas, XY)
+WarningTutExpertS1=Debe crear una base de conocimiento antes de ir al PASO2
+WarningTutExpertS2=Debe crear al menos una variable de entrada antes de ir al PASO3
+WarningTutExpertS3a=Ya creó una variable de salida. Puede editarla.
+WarningTutExpertS3b=Debe crear una variable de salida antes de ir al PASO4
+WarningTutExpertS5=Debe definir al menos una regla antes de ir al PASO6
+WarningTutDataS1=Debe abrir un archivo de datos apropiado antes de ir al PASO2
+WarningTutDataS5=Debe generar reglas antes de ir al PASO6
+WarningTutFingramsS4=Debe generar reglas antes de ir al PASO5
+Improvement=Mejora de BC
