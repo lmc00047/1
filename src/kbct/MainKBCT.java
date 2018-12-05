@@ -71,12 +71,10 @@ public class MainKBCT {
   private static JBeginnerFrame jbf;
   private static JTutorialFrame jtf;
   public static boolean flagHalt=false;
- 
 //------------------------------------------------------------------------------
   public MainKBCT(boolean visible, String[] args) throws Throwable {
 	  String path;
 	  path="C:/Program Files (x86)/Graphviz2.38/bin";
-
 	   System.out.println("GRAPHVIZ: "+path);
         	if (true) { 
         	this.jbInit();
@@ -87,17 +85,25 @@ public class MainKBCT {
         	//Quitar primera ventana (la de las rutas de fispro y graphviz)
         	JPanelSetToolsPathFrame view1 = new JPanelSetToolsPathFrame();
             view1.jbApply_actionPerformed();
+            JMainFrame JM = new JMainFrame();
+            //JM.InitJKBCTFrameWithKBCT();
+           JM.jbInit();
+           JM.jExpertButton_actionPerformed();
    	        }
    }
 //------------------------------------------------------------------------------
   public MainKBCT() throws Throwable {
     try { 
     	this.jbInit();
+    	System.out.println("hshshshs");
     }
     catch(Throwable t) {
+    	System.out.println("hshshshs");
+
       MessageKBCT.Error(null, t);
       if (t.getMessage().equals("no jnifis in java.library.path")) {
-         Frame frame = new Frame();
+    	  
+    	  Frame frame = new Frame();
          frame.setIconImage(LocaleKBCT.getIconGUAJE().getImage());
          new JPanelSetToolsPathFrame(frame);
          JMainFrame JM = new JMainFrame();
@@ -108,7 +114,10 @@ public class MainKBCT {
   }
 //------------------------------------------------------------------------------
   public MainKBCT(boolean noFrames) {
-    try { 
+  	System.out.println("holllllllllll");
+
+	  try { 
+
         //generate config object
         config= new ConfigKBCT();
         locale= new LocaleKBCT(config.GetLanguage(), config.GetCountry());
@@ -132,19 +141,26 @@ public class MainKBCT {
  * @throws Throwable 
    */
   public static void main(String[] args) throws Throwable { 
-      if (args.length==0) {
+    	System.out.println("gcgcgh");
+    	System.out.println(args[3]);
+
+	  if (args.length==0) {
+
    	      new MainKBCT(true, null);
       } else {
+      	System.out.println("hgchgvj");
+
          // args[0] -> file IKB
     	 // args[i], i=1..N -> N data file for learning
-   	      new MainKBCT(false, args);
+   	      new MainKBCT(false, args);  	      
       }
   }
 //------------------------------------------------------------------------------
   public void Init(String[] args) throws Throwable {
       try {
           MainKBCT.getConfig().SetTESTautomatic(true);
-          if (args[0].equals("FISfiles")) {
+             if (args[0].equals("FISfiles")) {
+
               System.out.println("BEGIN");
               String dir= args[1];
         	  String ikbName= args[2];        	  

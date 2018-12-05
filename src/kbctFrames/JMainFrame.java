@@ -134,8 +134,10 @@ public class JMainFrame extends JKBCTFrame {
   public String OrigKBDataFile="C:/GUAJE/IRIS.txt";//????
   private String SelectedVariablesDataFile="";
   private String oldIKBFile="";
-  private String oldKBExpertFile="C:/GUAJE/IRIS.txt.kb.xml";//aquiiiiiiiiiiiii
-  private String oldKBDataFile="C:/GUAJE/IRIS.txt"; //aquiiiiiiiii
+  private String oldKBExpertFile="/src/IRIS.txt.kb.xml";//aquiiiiiiiiiiiii
+  private String oldKBDataFile="/src/IRIS.txt"; //aquiiiiiiiii
+  //private String oldKBExpertFile="C:/GUAJE/IRIS.txt.kb.xml";//aquiiiiiiiiiiiii
+ // private String oldKBDataFile="C:/GUAJE/IRIS.txt"; //aquiiiiiiiii
   private String oldConjunction= null;
   private String[] oldDisjunction= null;
   private String[] oldDefuzzification= null;
@@ -247,6 +249,7 @@ public class JMainFrame extends JKBCTFrame {
     
 //------------------------------------------------------------------------------
   public JMainFrame() {
+	  System.out.println("ventana bien");
     try {
       jbInit();
       this.InitJKBCTFrameWithKBCT();
@@ -258,6 +261,7 @@ public class JMainFrame extends JKBCTFrame {
 //------------------------------------------------------------------------------
     //private void jbInit() throws Throwable {
     public void jbInit() throws Throwable {
+  	  System.out.println("ventana iniiiiiiiiiiiiii");
 
     MainKBCT.getConfig().SetFingramsSelectedSample(LocaleKBCT.DefaultFingramsSelectedSample());
 	if (MainKBCT.getConfig().GetTESTautomatic())
@@ -4567,14 +4571,16 @@ public class JMainFrame extends JKBCTFrame {
     }
   }
 //------------------------------------------------------------------------------
-  void jExpertButton_actionPerformed() {
+  public void jExpertButton_actionPerformed() {
+	  System.out.println("entra en el boton");
       String TempKBCTFile= null;
       if (this.jef != null) {
           try {
             if (this.jef.Temp_kbct!=null) {
               if (this.jef.Temp_kbct.GetKBCTFile()==null) {
                 if (JKBCTFrame.KBExpertFile.equals(""))
-                	JKBCTFrame.KBExpertFile= this.jTFExpertName.getText();
+                	JKBCTFrame.KBExpertFile= "/src/IRIS.txt.kb.xml"; //cambiaaaaaaaaaaaaaaaaaaaaaaaar
+                //JKBCTFrame.KBExpertFile= this.jTFExpertName.getText();
 
                 this.jef.Temp_kbct.SetKBCTFile(JKBCTFrame.KBExpertFile);
               }
