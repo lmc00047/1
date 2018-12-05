@@ -1,0 +1,112 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//*********************************************************************
+//
+//
+//                         SortableHeaderListener.java
+//
+//
+//**********************************************************************
+package kbctAux;
+
+import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Vector;
+
+import javax.swing.table.JTableHeader;
+
+import util.sortabletable.SortButtonRenderer;
+import util.sortabletable.SortableTableModel;
+
+  /**
+   *@author     Jose Maria Alonso Moral
+   *@version    2.1 , 04/06/13
+   */
+
+//------------------------------------------------------------------------------
+/**
+ * Classe listener des headers de table triable\n
+ * intercepte les actions sur la souris et déclenche le tri du modèle de la table
+ * Ce listener est à utiliser quand le tri est réalisé sur plusieurs table qui partagent un même modèle de données.
+ */
+public class SortableHeaderListener extends MouseAdapter {
+  private JTableHeader header; /**< Header de la table */
+  private SortButtonRenderer renderer; /**< Renderer du header de table */
+  private SortableObject sort_obj; /**< Référence de l'interface SortableObject */
+  /**
+   * Interface de lien avec l'objet triable
+   */
+  public interface SortableObject {
+    void SetSortedColumn(int column); /**< Mémorisation du numéro de colonne triée */
+    int GetSortedColumn(); /**< Récupération du numéro de colonne triée */
+    void SetSortAscent(boolean ascent); /**< Mémorisation de l'ordre de tri */
+    Vector GetTablesHeaders(); /**< Vecteur des objets JTableHeader des différentes tables utilisant le modèle triable */
+  }
+//------------------------------------------------------------------------------
+  /**
+   * @param header objet JTableHeader de la table
+   * @param renderer objet Renderer du header de table
+   * @param sort_obj Référence à l'interface SortableObject
+   */
+  public SortableHeaderListener(JTableHeader header, SortButtonRenderer renderer, SortableObject sort_obj) {
+    this.header   = header;
+    this.renderer = renderer;
+    this.sort_obj = sort_obj;
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Fonction appelée lors du clic sur le header de la table\n
+   * déclenche le tri du modèle de la table
+   */
+  public void mousePressed(MouseEvent e) {
+    // pas de tri si on est en cours de redimensionnement de colonne
+    if( ((JTableHeader)e.getSource()).getCursor().getType() == Cursor.E_RESIZE_CURSOR ) return;
+    int col = header.columnAtPoint(e.getPoint());
+    int sortCol = header.getTable().convertColumnIndexToModel(col); // colonne du modèle cliquée
+    this.sort_obj.SetSortedColumn( sortCol ); // mémorisation de la colonne triée
+    renderer.setPressedColumn(sortCol);
+    renderer.setSelectedColumn(sortCol);
+    // redessine l'ensemble des headers de table
+    for( int i=0 ; i<this.sort_obj.GetTablesHeaders().size() ; i++ )
+      ((JTableHeader)this.sort_obj.GetTablesHeaders().elementAt(i)).repaint();
+
+    if (header.getTable().isEditing()) { header.getTable().getCellEditor().stopCellEditing(); }
+    boolean isAscent;
+    if (SortButtonRenderer.DOWN == renderer.getState(sortCol)) { isAscent = true; }
+    else { isAscent = false; }
+    this.sort_obj.SetSortAscent(isAscent); // mémorisation de l'ordre de tri
+    ((SortableTableModel)header.getTable().getModel()).sortByColumn(sortCol, isAscent); // tri de la colonne
+  }
+//------------------------------------------------------------------------------
+  /**
+   * Fonction appelée quand la souris est relachée
+   */
+  public void mouseReleased(MouseEvent e) {
+    renderer.setPressedColumn(-1);                // clear
+    // redessine l'ensemble des headers de table
+    for( int i=0 ; i<this.sort_obj.GetTablesHeaders().size() ; i++ )
+      ((JTableHeader)this.sort_obj.GetTablesHeaders().elementAt(i)).repaint();
+  }
+}

@@ -1,0 +1,182 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+// Contains: JOutput, JOutputFloue, JOutputNette
+
+//***********************************************************************
+
+//
+//
+//                              JOutput.java
+//
+//
+// Author(s) : Jean-Luc LABLEE
+// FISPRO Version : 2.1
+// Contact : fispro@ensam.inra.fr
+// Last modification date:  September 15, 2004
+// File :
+
+//**********************************************************************
+package fis;
+
+import java.util.Arrays;
+
+import kbct.LocaleKBCT;
+
+/**
+ * fis.JOutput.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 04/06/13
+ */
+
+//------------------------------------------------------------------------------
+public class JOutput extends JInput {
+//------------------------------------------------------------------------------
+  public final static int FUZZY = 0;
+  public final static int CRISP = 1;
+  public final static int DEFUZ_FUZZY_AREA = 0;
+  public final static int DEFUZ_CRISP_SUGENO = 0;   /**<Defuzification sugeno nette. index de retour de la fonction jnifis#TypeDefuzzificationNette (à modifier pour plus de robustesse) */
+  public final static int DEFUZ_CRISP_MAXCRISP = 1; /**<Defuzification maxcrisp nette. index de retour de la fonction jnifis#TypeDefuzzificationNette (à modifier pour plus de robustesse) */
+//------------------------------------------------------------------------------
+  public JOutput( long ptr ) { super( ptr ); }
+//------------------------------------------------------------------------------
+  public JOutput( JOutput output ) throws Throwable { super( jnifis.NewOutput(output.Ptr()) ); }
+//------------------------------------------------------------------------------
+  public JInput NewRegular( int nb_sef, double min, double max) throws Throwable {
+    JOutput new_output = new JOutput( jnifis.NewRegularOutput(nb_sef, min, max, this.TypeDefuzzification()[this.GetDefuz()], this.GetClassif(), this.GetDefaultValue(), this.TypeDisjunction()[this.GetDisjunction()]) );
+    new_output.SetName(this.GetName());
+    new_output.SetActive(this.GetActive());
+    // les SEF sont créés sans nom -> affectation d'un nom par defaut
+    for( int i=0 ; i<new_output.GetNbMF() ; i++ )
+      ((JMF)new_output.GetMF(i)).SetName(LocaleKBCT.GetString("MF") + String.valueOf(i+1) );
+
+    return new_output;
+  }
+//------------------------------------------------------------------------------
+  public JInput NewIrregular( double []sommets, int nb_sef, double min, double max) throws Throwable {
+    JOutput new_output = new JOutput( jnifis.NewIrregularOutput(sommets, nb_sef, min, max, this.TypeDefuzzification()[this.GetDefuz()], this.GetClassif(), this.GetDefaultValue(), this.TypeDisjunction()[this.GetDisjunction()]) );
+    new_output.SetName(this.GetName());
+    new_output.SetActive(this.GetActive());
+    // les SEF sont créés sans nom -> affectation d'un nom par defaut
+    for( int i=0 ; i<new_output.GetNbMF() ; i++ )
+      ((JMF)new_output.GetMF(i)).SetName(LocaleKBCT.GetString("MF") + String.valueOf(i+1) );
+
+    return new_output;
+  }
+//------------------------------------------------------------------------------
+  public int GetNature() throws Throwable {
+    String [] types = JOutput.TypeNature();
+    String type = jnifis.GetOutputNature( ptr );
+    if( type.equals(types[JOutput.CRISP]) )
+      return JOutput.CRISP;
+
+    if( type.equals(types[JOutput.FUZZY]) )
+      return JOutput.FUZZY;
+
+    throw new Exception(LocaleKBCT.GetString("UnknownNature") + ": " + type);
+  }
+//------------------------------------------------------------------------------
+  public int GetDefuz() throws Throwable {
+    String defuz = jnifis.GetOutputDefuz( ptr );
+    String [] defuzs = this.TypeDefuzzification();
+    for( int i=0 ; i<defuzs.length ; i++ )
+      if( defuz.equals(defuzs[i]) )
+        return i;
+
+    throw new Exception(LocaleKBCT.GetString("UnknownDefuzzification") + ": " + defuz);
+  }
+//------------------------------------------------------------------------------
+  public int GetDisjunction() throws Throwable {
+    String disjunction = jnifis.GetOutputDisjunction( ptr );
+    String [] disjs = this.TypeDisjunction();
+    for( int i=0 ; i<disjs.length ; i++ )
+      if( disjunction.equals(disjs[i]) )
+        return i;
+
+    throw new Exception(LocaleKBCT.GetString("UnknownDefuzzification") + ": " + disjunction);
+  }
+//------------------------------------------------------------------------------
+  public void SetDefaultValue( double default_value ) throws Throwable { jnifis.SetOutputDefaultValue( ptr, default_value ); }
+//------------------------------------------------------------------------------
+  public double GetDefaultValue() throws Throwable { return jnifis.GetOutputDefaultValue( ptr ); }
+//------------------------------------------------------------------------------
+  public boolean GetClassif() throws Throwable { return jnifis.GetOutputClassif( ptr ); }
+//------------------------------------------------------------------------------
+  public String [] TypeDefuzzification() throws Throwable {
+    if( this.GetNature() == JOutput.FUZZY )
+      return jnifis.TypeDefuzzificationFloue();
+    if( this.GetNature() == JOutput.CRISP )
+      return jnifis.TypeDefuzzificationNette();
+
+    throw new Exception(LocaleKBCT.GetString("UnknownNature") + ": " + this.GetNature());
+  }
+//------------------------------------------------------------------------------
+  public String [] TypeDisjunction() throws Throwable {
+    if( this.GetNature() == JOutput.FUZZY )
+      return jnifis.TypeDisjunctionFloue();
+    if( this.GetNature() == JOutput.CRISP )
+      return jnifis.TypeDisjunctionNette();
+
+    throw new Exception(LocaleKBCT.GetString("UnknownNature") + ": " + this.GetNature());
+  }
+//------------------------------------------------------------------------------
+  static public String [] TypeNature() throws Throwable { return jnifis.TypeNature(); }
+//------------------------------------------------------------------------------
+  static public String [] TypeFuzzyDefuzzification() throws Throwable { return jnifis.TypeDefuzzificationFloue(); }
+//------------------------------------------------------------------------------
+  static public String [] TypeFuzzyDisjunction() throws Throwable { return jnifis.TypeDisjunctionFloue(); }
+//------------------------------------------------------------------------------
+  public int GetAlarm() throws Throwable { return jnifis.GetAlarm(this.ptr); }
+//------------------------------------------------------------------------------
+  public void SetDefuzThres( double thres ) throws Throwable { jnifis.SetDefuzThres(this.ptr, thres); }
+//------------------------------------------------------------------------------
+  public double GetDefuzThres() throws Throwable { return jnifis.GetDefuzThres(this.ptr); }
+//------------------------------------------------------------------------------
+  /** Renvoie les labels des classes pour une sortie classif
+   * @return tableau trié des labels des classes ou null si la sortie n'est pas classif
+   * */
+  public double[] GetClasses() throws Throwable {
+    double []classes = jnifis.GetClasses(this.ptr);
+    Arrays.sort(classes);
+    return classes;
+  }
+}
+
+
+//------------------------------------------------------------------------------
+class JOutputFloue extends JOutput {
+//------------------------------------------------------------------------------
+  public JOutputFloue() throws Throwable { super( jnifis.NewOutputFloue() ); }
+//------------------------------------------------------------------------------
+  public JOutputFloue( JOutput output ) throws Throwable { super(jnifis.NewOutputFloue(output.Ptr())); }
+}
+
+
+//------------------------------------------------------------------------------
+class JOutputNette extends JOutput {
+//------------------------------------------------------------------------------
+  public JOutputNette() throws Throwable { super( jnifis.NewOutputNette() ); }
+//------------------------------------------------------------------------------
+  public JOutputNette( JOutput output ) throws Throwable { super(jnifis.NewOutputNette(output.Ptr())); }
+}

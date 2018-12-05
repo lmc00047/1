@@ -1,0 +1,195 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+// Contains: JMF, JMFTriangular, JMFTrapezoidal, JMFSemiTrapezoidalInf,
+//           JMFSemiTrapezoidalSup, JMFUniversal, JMFGaussian, JMFDoor.
+
+//***********************************************************************
+
+//
+//
+//                              JMF.java
+//
+//
+// Author(s) : Jean-Luc LABLEE
+// FISPRO Version : 2.1
+// Contact : fispro@ensam.inra.fr
+// Last modification date:  September 15, 2004
+// File :
+
+//**********************************************************************
+package fis;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+
+import kbct.LocaleKBCT;
+import util.polygon2d.Polygon2D;
+
+/**
+ * fis.JMF.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+
+//------------------------------------------------------------------------------
+/**
+ * Classe de base des SEF
+ */
+public class JMF {
+  private long ptr; /**< pointeur vers classe native MF */
+//------------------------------------------------------------------------------
+  public final static int TRIANGULAR = 0;  /**< SEF triangulaire. \warning il faut respecter l'ordre des types de SEF retournés par la fonction jnifis#MFType() */
+  public final static int TRAPEZOIDAL = 1;  /**< SEF trapézoïdal. \warning il faut respecter l'ordre des types de SEF retournés par la fonction jnifis#MFType() */
+  public final static int SEMITRAPEZOIDALINF = 2;  /**< SEF trapézoïdal inférieur. \warning il faut respecter l'ordre des types de SEF retournés par la fonction jnifis#MFType() */
+  public final static int SEMITRAPEZOIDALSUP = 3;  /**< SEF trapézoïdal supérieur. \warning il faut respecter l'ordre des types de SEF retournés par la fonction jnifis#MFType() */
+  public final static int DISCRETE = 4;  /**< SEF discret. \warning il faut respecter l'ordre des types de SEF retournés par la fonction jnifis#MFType() */
+//------------------------------------------------------------------------------
+  public JMF( long ptr ) { this.ptr = ptr; }
+//------------------------------------------------------------------------------
+  public JMF NewMF() throws Throwable {
+    switch( this.GetType() ) {
+      case JMF.TRIANGULAR: return new JMFTriangular(this);
+      case JMF.TRAPEZOIDAL:  return new JMFTrapezoidal(this);
+      case JMF.SEMITRAPEZOIDALINF: return new JMFSemiTrapezoidalInf(this);
+      case JMF.SEMITRAPEZOIDALSUP: return new JMFSemiTrapezoidalSup(this);
+      case JMF.DISCRETE: return new JMFDiscrete(this);
+    }
+    throw new Exception(LocaleKBCT.GetString("UnknownMFType") + ": " + this.GetType());
+  }
+//------------------------------------------------------------------------------
+  public void Delete() throws Throwable { jnifis.DeleteMF(ptr); ptr = 0; }
+//------------------------------------------------------------------------------
+  public long Ptr() { return ptr; }
+//------------------------------------------------------------------------------
+  public String GetName() throws Throwable { return jnifis.GetMFName(ptr); }
+//------------------------------------------------------------------------------
+  public void SetName( String name ) throws Throwable { jnifis.SetMFName(ptr, name); }
+//------------------------------------------------------------------------------
+  public int GetType() throws Throwable {
+    String type = jnifis.GetMFType(ptr);
+    String [] MF_type = JMF.MFType();
+    for( int i=0 ; i<MF_type.length ; i++ )
+      if( type.equals(MF_type[i]) )
+        return i;
+
+    throw new Exception(LocaleKBCT.GetString("UnknownMFType") + ": " + type);
+  }
+//------------------------------------------------------------------------------
+  public double [] GetParams() throws Throwable { return jnifis.GetMFParam(ptr); }
+//------------------------------------------------------------------------------
+  public void Draw( FISPlot plot, int data_set )  throws Throwable {}
+//------------------------------------------------------------------------------
+  public static String [] MFType() throws Throwable { return jnifis.MFType(); }
+//------------------------------------------------------------------------------
+  public double [] Support() throws Throwable { return jnifis.MFSupport(ptr); }
+//------------------------------------------------------------------------------
+  public double [] NoyauAlpha( double alpha ) throws Throwable { return jnifis.MFAlphaKernel(ptr, alpha); }
+//------------------------------------------------------------------------------
+  public void DrawAlphaKernel( FISPlot pb, Graphics2D g2d, double alpha )  throws Throwable {
+    double [] support = this.Support();
+    double [] noyau_alpha = this.NoyauAlpha(alpha);
+    g2d.setColor(Color.blue);
+    if( pb.getPlotRectangle().height > 0 ) {
+      Polygon2D.Double poly = new Polygon2D.Double(pb.XtoPixel(noyau_alpha[0]),pb.YtoPixel(alpha));
+      poly.lineTo(pb.XtoPixel(noyau_alpha[1]),pb.YtoPixel(alpha));
+      poly.lineTo(pb.XtoPixel(support[1]),pb.YtoPixel(0));
+      poly.lineTo(pb.XtoPixel(support[0]),pb.YtoPixel(0));
+      g2d.fill( poly );
+    }
+  }
+}
+
+
+//------------------------------------------------------------------------------
+class JMFTriangular extends JMF {
+//------------------------------------------------------------------------------
+  public JMFTriangular( JMF sef ) { super( sef.Ptr() ); }
+//------------------------------------------------------------------------------
+  public JMFTriangular( String name, double[] params ) throws Throwable {
+    super( jnifis.NewMFTriangular(name, params[0], params[1], params[2]) );
+  }
+//------------------------------------------------------------------------------
+  public void Draw( FISPlot plot, int data_set ) throws Throwable {
+    double [] params = GetParams();
+    plot.addPoint(data_set, params[0], 0, false);
+    plot.addPoint(data_set, params[1], 1, true);
+    plot.addPoint(data_set, params[2], 0, true);
+  }
+}
+
+
+//------------------------------------------------------------------------------
+class JMFTrapezoidal extends JMF {
+//------------------------------------------------------------------------------
+  public JMFTrapezoidal( JMF sef ) { super( sef.Ptr() ); }
+//------------------------------------------------------------------------------
+  public JMFTrapezoidal( String name, double[] params ) throws Throwable {
+    super( jnifis.NewMFTrapezoidal(name, params[0], params[1], params[2], params[3]) );
+  }
+//------------------------------------------------------------------------------
+  public void Draw( FISPlot plot, int data_set ) throws Throwable {
+    double [] params = GetParams();
+    plot.addPoint(data_set, params[0], 0, false);
+    plot.addPoint(data_set, params[1], 1, true);
+    plot.addPoint(data_set, params[2], 1, true);
+    plot.addPoint(data_set, params[3], 0, true);
+  }
+}
+
+
+//------------------------------------------------------------------------------
+class JMFSemiTrapezoidalInf extends JMF {
+//------------------------------------------------------------------------------
+  public JMFSemiTrapezoidalInf( JMF sef ) { super( sef.Ptr() ); }
+//------------------------------------------------------------------------------
+  public JMFSemiTrapezoidalInf( String name, double[] params ) throws Throwable {
+    super( jnifis.NewMFSemiTrapezoidalInf(name, params[0], params[1], params[2]) );
+  }
+//------------------------------------------------------------------------------
+  public void Draw( FISPlot plot, int data_set ) throws Throwable {
+    double [] params = GetParams();
+    plot.addPoint(data_set, plot.GetXMin(), 1, false);
+    plot.addPoint(data_set, params[1], 1, true);
+    plot.addPoint(data_set, params[2], 0, true);
+  }
+}
+
+
+//------------------------------------------------------------------------------
+class JMFSemiTrapezoidalSup extends JMF {
+//------------------------------------------------------------------------------
+  public JMFSemiTrapezoidalSup( JMF sef ) { super( sef.Ptr() ); }
+//------------------------------------------------------------------------------
+  public JMFSemiTrapezoidalSup( String name, double[] params ) throws Throwable {
+    super( jnifis.NewMFSemiTrapezoidalSup(name, params[0], params[1], params[2]) );
+  }
+//------------------------------------------------------------------------------
+  public void Draw( FISPlot plot, int data_set ) throws Throwable {
+    double [] params = GetParams();
+    plot.addPoint(data_set, params[0], 0, false);
+    plot.addPoint(data_set, params[1], 1, true);
+    plot.addPoint(data_set, plot.GetXMax(), 1, true);
+  }
+}

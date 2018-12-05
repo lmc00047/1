@@ -1,0 +1,75 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+package kbctAux;
+
+/**
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+
+//------------------------------------------------------------------------------
+public class OntAtom {
+   private boolean objectPropertyAtom= false;	
+   private boolean datatypePropertyAtom= false;
+   private String arg1;
+   private String arg2;
+   private String predicate;
+
+   public OntAtom(boolean opa, boolean dtpa) {
+      this.objectPropertyAtom= opa;
+      this.datatypePropertyAtom= dtpa;
+   }
+//------------------------------------------------------------------------------
+   public boolean isObjectPropertyAtom() {
+	   return this.objectPropertyAtom;
+   }
+// ------------------------------------------------------------------------------
+   public boolean isDatatypePropertyAtom() {
+	   return this.datatypePropertyAtom;
+   }
+// ------------------------------------------------------------------------------
+   public String getArg1() {
+	   return this.arg1;
+   }
+// ------------------------------------------------------------------------------
+   public void setArg1(String a1) {
+	   this.arg1= a1;
+   }
+// ------------------------------------------------------------------------------
+   public String getArg2() {
+	   return this.arg2;
+   }
+// ------------------------------------------------------------------------------
+   public void setArg2(String a2) {
+	   this.arg2= a2;
+   }
+// ------------------------------------------------------------------------------
+   public String getPredicate() {
+	   return this.predicate;
+   }
+// ------------------------------------------------------------------------------
+   public void setPredicate(String p) {
+	   this.predicate= p;
+   }
+}

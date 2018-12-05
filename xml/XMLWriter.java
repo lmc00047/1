@@ -1,0 +1,972 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                            XMLWriter.java
+//
+//
+//**********************************************************************
+
+package xml;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Writer;
+import java.io.File;
+import java.util.Stack;
+
+import kbct.JConvert;
+import kbct.MainKBCT;
+
+/**
+ * xml.XMLWriter is a writer for XML files
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+public class XMLWriter {
+    private static FileOutputStream file;
+    private static XMLWriter xmlWriter;
+	private static Writer writer;      // underlying writer
+    private static FileOutputStream fileKB;
+    private static XMLWriter xmlWriterKB;
+	private static Writer writerKB;      // underlying writer
+    private static XMLWriter xmlWriterCF;
+	private static Writer writerCF;      // underlying writer
+    private static FileOutputStream fileCF;
+    private Stack stack;        // of xml entity names
+    private StringBuffer attrs; // current attribute string
+    private boolean empty;      // is the current node empty
+    private boolean closed;     // is the current node closed...
+
+    /**
+     * Create an XMLWriter on top of an existing java.io.Writer.
+     */
+    public XMLWriter(Writer writer, String opt) {
+        if (opt.equals("IKB"))
+    	    XMLWriter.writer = writer;
+        else if (opt.equals("KB"))
+    	    XMLWriter.writerKB = writer;
+        else if (opt.equals("CF"))
+        	XMLWriter.writerCF = writer;
+        
+        this.closed = true;
+        this.stack = new Stack();
+    }
+
+    /**
+     * Begin to output an entity.
+     *
+     * @param String name of entity.
+     */
+    public XMLWriter writeEntity(String name, String opt) throws XMLWritingException {
+        try {
+            closeOpeningTag(opt);
+            this.closed = false;
+            if (opt.equals("IKB")) {
+                XMLWriter.writer.write("<");
+                XMLWriter.writer.write(name);
+            } else if (opt.equals("KB")) {
+                XMLWriter.writerKB.write("<");
+                XMLWriter.writerKB.write(name);
+            } else if (opt.equals("CF")) {
+                XMLWriter.writerCF.write("<");
+                XMLWriter.writerCF.write(name);
+            }
+            stack.add(name);
+            this.empty = true;
+            return this;
+        } catch (IOException ioe) {
+            throw new XMLWritingException(ioe);
+        }
+    }
+
+    // close off the opening tag
+    private void closeOpeningTag(String opt) throws IOException {
+        if (!this.closed) {
+            writeAttributes(opt);
+            this.closed = true;
+            if (opt.equals("IKB"))
+                XMLWriter.writer.write(">\n");
+            else if (opt.equals("KB"))
+                XMLWriter.writerKB.write(">\n");
+            else if (opt.equals("CF"))
+                XMLWriter.writerCF.write(">\n");
+        }
+    }
+
+    // write out all current attributes
+    private void writeAttributes(String opt) throws IOException {
+        if (this.attrs != null) {
+        	if (opt.equals("IKB"))
+        	    XMLWriter.writer.write(this.attrs.toString());
+        	else if (opt.equals("KB"))
+            	XMLWriter.writerKB.write(this.attrs.toString());
+        	else if (opt.equals("CF"))
+            	XMLWriter.writerCF.write(this.attrs.toString());
+        		
+        	this.attrs.setLength(0);
+            this.empty = false;
+        }
+    }
+
+    /**
+     * Write an attribute out for the current entity.
+     * Any xml characters in the value are escaped.
+     * Currently it does not actually throw the exception, but
+     * the api is set that way for future changes.
+     *
+     * @param String name of attribute.
+     * @param String value of attribute.
+     */
+    public XMLWriter writeAttribute(String attr, String value) throws XMLWritingException {
+
+        // maintain api
+        if (false) throw new XMLWritingException();
+
+        if (this.attrs == null) {
+            this.attrs = new StringBuffer();
+        }
+        this.attrs.append(" ");
+        this.attrs.append(attr);
+        this.attrs.append("=\"");
+        this.attrs.append(escapeXml(value));
+        this.attrs.append("\"");
+        return this;
+    }
+
+    /**
+     * End the current entity. This will throw an exception
+     * if it is called when there is not a currently open
+     * entity.
+     */
+    public XMLWriter endEntity(String opt) throws XMLWritingException {
+        try {
+            if(this.stack.empty()) {
+                throw new XMLWritingException("Called endEntity too many times. ");
+            }
+            String name = (String)this.stack.pop();
+            if (name != null) {
+                if (this.empty) {
+                    writeAttributes(opt);
+                	if (opt.equals("IKB"))
+                        XMLWriter.writer.write("/>\n");
+                	else if (opt.equals("KB"))
+                        XMLWriter.writerKB.write("/>\n");
+                	else if (opt.equals("CF"))
+                        XMLWriter.writerCF.write("/>\n");
+
+                } else {
+                	if (opt.equals("IKB")) {
+                	    XMLWriter.writer.write("</");
+                        XMLWriter.writer.write(name);
+                        XMLWriter.writer.write(">\n");
+                	} else if (opt.equals("KB")) {
+                	    XMLWriter.writerKB.write("</");
+                        XMLWriter.writerKB.write(name);
+                        XMLWriter.writerKB.write(">\n");
+                	} else if (opt.equals("CF")) {
+                	    XMLWriter.writerCF.write("</");
+                        XMLWriter.writerCF.write(name);
+                        XMLWriter.writerCF.write(">\n");
+                	}
+                }
+                this.empty = false;
+            }
+            return this;
+        } catch (IOException ioe) {
+            throw new XMLWritingException(ioe);
+        }
+    }
+
+    /**
+     * Close this writer. It does not close the underlying
+     * writer, but does throw an exception if there are
+     * as yet unclosed tags.
+     */
+    public void close() throws XMLWritingException {
+        if(!this.stack.empty()) {
+            throw new XMLWritingException("Tags are not all closed. "+
+                "Possibly, "+this.stack.pop()+" is unclosed. ");
+        }
+    }
+
+    /**
+     * Output body text. Any xml characters are escaped.
+     */
+    public XMLWriter writeText(String text, String opt) throws XMLWritingException {
+        try {
+            closeOpeningTag(opt);
+            this.empty = false;
+            if (opt.equals("IKB"))
+                writer.write(escapeXml(text));
+            else if (opt.equals("KB"))
+                writerKB.write(escapeXml(text));
+            else if (opt.equals("CF"))
+                writerCF.write(escapeXml(text));
+            	
+            return this;
+        } catch (IOException ioe) {
+            throw new XMLWritingException(ioe);
+        }
+    }
+
+    // Static functions lifted from generationjava helper classes
+    // to make the jar smaller.
+
+    // from XmlW
+    static public String escapeXml(String str) {
+        str = replaceString(str,"&","&amp;");
+        str = replaceString(str,"<","&lt;");
+        str = replaceString(str,">","&gt;");
+        str = replaceString(str,"\"","&quot;");
+        str = replaceString(str,"'","&apos;");
+        return str;
+    }
+
+    // from StringW
+    static public String replaceString(String text, String repl, String with) {
+        return replaceString(text, repl, with, -1);
+    }
+    /**
+     * Replace a string with another string inside a larger string, for
+     * the first n values of the search string.
+     *
+     * @param text String to do search and replace in
+     * @param repl String to search for
+     * @param with String to replace with
+     * @param n    int    values to replace
+     *
+     * @return String with n values replacEd
+     */
+    static public String replaceString(String text, String repl, String with, int max) {
+        if(text == null) {
+            return null;
+        }
+
+        StringBuffer buffer = new StringBuffer(text.length());
+        int start = 0;
+        int end = 0;
+        while( (end = text.indexOf(repl, start)) != -1 ) {
+            buffer.append(text.substring(start, end)).append(with);
+            start = end + repl.length();
+
+            if(--max == 0) {
+                break;
+            }
+        }
+        buffer.append(text.substring(start));
+
+        return buffer.toString();
+    }
+
+  //Deletes the prevoiusly existing file and creates a new one.
+  //Returns 1 if ok and -1 if it's been not successful
+  public static int createIKBFile(String ikbFile) {
+    //String fileName = ikbFile + ".xml";
+    //File f = new File (ikbFile);
+    //if (f.exists()) {
+      //  f.delete();
+    //}
+    try {
+      //f.createNewFile();
+      file = new FileOutputStream(ikbFile);
+      Writer writer =new java.io.StringWriter();
+      xmlWriter = new XMLWriter(writer, "IKB");
+      xmlWriter.writeEntity("ConfigurationFile", "IKB");
+      return 1;
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      return -1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int writeIKBFileExpert(String ExpertFile, String Conjunction, boolean outputs) {
+    try {
+      xmlWriter.writeEntity("Expert", "IKB");
+      xmlWriter.writeEntity("ExpertFile", "IKB");
+      if (ExpertFile.contains("Documents and Settings"))
+          ExpertFile= ExpertFile.replace("Documents and Settings","Docume~1");
+
+      xmlWriter.writeAttribute("value",ExpertFile);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      xmlWriter.writeEntity("Conjunction", "IKB");
+      xmlWriter.writeAttribute("value",Conjunction);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      if (outputs) {
+          xmlWriter.writeEntity("Outputs", "IKB");
+          for (int n=0; n<JConvert.disjunction.length; n++) {
+              int N_output= n+1;
+              xmlWriter.writeEntity("Output"+N_output, "IKB");
+              xmlWriter.writeAttribute("Disjunction",JConvert.disjunction[n]);
+              xmlWriter.writeAttribute("Defuzzification",JConvert.defuzzification[n]);
+              xmlWriter.writeText("","IKB");
+              xmlWriter.endEntity("IKB");
+          }
+          xmlWriter.endEntity("IKB");
+      }
+      xmlWriter.endEntity("IKB");
+      return 1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int writeIKBFileData(String OrigDataFile, String VariableNames, String SelectedVariables, String DataFile, int DataVariableCount) {
+    try {
+      xmlWriter.writeEntity("Data", "IKB");
+      xmlWriter.writeEntity("OrigDataFile", "IKB");
+      if (OrigDataFile.startsWith("Archivos de programa (x86)",3))
+    	  OrigDataFile= OrigDataFile.replaceFirst("Archivos de programa (x86)","Archiv~2");
+      else if (OrigDataFile.startsWith("Archivos de programa",3))
+    	  OrigDataFile= OrigDataFile.replaceFirst("Archivos de programa","Archiv~1");
+      else if (OrigDataFile.startsWith("Program Files (x86)",3))
+    	  OrigDataFile= OrigDataFile.replaceFirst("Program Files (x86)","Progra~2");
+      else if (OrigDataFile.startsWith("Program Files",3))
+    	  OrigDataFile= OrigDataFile.replaceFirst("Program Files","Progra~1");
+      else if (OrigDataFile.startsWith("Documents and Settings",3))
+    	  OrigDataFile= OrigDataFile.replaceFirst("Documents and Settings","Docume~1");
+
+      xmlWriter.writeAttribute("value",OrigDataFile);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      xmlWriter.writeEntity("VariableNames", "IKB");
+      xmlWriter.writeAttribute("value",VariableNames);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      xmlWriter.writeEntity("SelectedVariables", "IKB");
+      xmlWriter.writeAttribute("value",SelectedVariables);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      xmlWriter.writeEntity("DataFile", "IKB");
+      if (DataFile.startsWith("Archivos de programa (x86)",3))
+    	  DataFile= DataFile.replaceFirst("Archivos de programa (x86)","Archiv~2");
+      else if (DataFile.startsWith("Archivos de programa",3))
+    	  DataFile= DataFile.replaceFirst("Archivos de programa","Archiv~1");
+      else if (DataFile.startsWith("Program Files (x86)",3))
+    	  DataFile= DataFile.replaceFirst("Program Files (x86)","Progra~2");
+      else if (DataFile.startsWith("Program Files",3))
+    	  DataFile= DataFile.replaceFirst("Program Files","Progra~1");
+      else if (DataFile.startsWith("Documents and Settings",3))
+    	  DataFile= DataFile.replaceFirst("Documents and Settings","Docume~1");
+
+      xmlWriter.writeAttribute("value",DataFile);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      xmlWriter.writeEntity("DataVariableCount", "IKB");
+      xmlWriter.writeAttribute("value",""+DataVariableCount);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      return 1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int writeIKBFileDataVariable(String variable, String variableName, String variableType, String variableLowerRange, String variableUpperRange, int numberOfLabels, boolean output) {
+    try {
+      xmlWriter.writeEntity(variable, "IKB");
+      xmlWriter.writeAttribute("Name",variableName);
+      xmlWriter.writeAttribute("Type",variableType);
+      xmlWriter.writeAttribute("LowerRange",variableLowerRange);
+      xmlWriter.writeAttribute("UpperRange",variableUpperRange);
+      xmlWriter.writeAttribute("Labels",""+numberOfLabels);
+      xmlWriter.writeAttribute("Output",""+output);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      return 1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int writeIKBFileContext(String Problem, int Inputs, boolean Classification, int OutputLabels) {
+    try {
+      xmlWriter.writeEntity("Context", "IKB");
+      xmlWriter.writeAttribute("Problem",Problem);
+      xmlWriter.writeAttribute("Inputs",""+Inputs);
+      if (Classification) {      
+          xmlWriter.writeAttribute("Classification","yes");
+      } else {
+          xmlWriter.writeAttribute("Classification","no");
+      }
+      xmlWriter.writeAttribute("OutputLabels",""+OutputLabels);
+      xmlWriter.writeText("","IKB");
+      xmlWriter.endEntity("IKB");
+      return 1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int writeIKBFileInterpretability(String[] KBpaths, String[] conj, String[] disj, String[] defuzz) {
+	    try {
+	      xmlWriter.writeEntity("Interpretability", "IKB");
+	      int lim=KBpaths.length;
+          for (int n=0; n<lim; n++) {
+    	      xmlWriter.writeEntity("KB"+String.valueOf(n+1), "IKB");
+    	      if (KBpaths[n].contains("Documents and Settings"))
+    	    	  KBpaths[n]= KBpaths[n].replace("Documents and Settings","Docume~1");
+    	      xmlWriter.writeAttribute("path",KBpaths[n]);
+    	      xmlWriter.writeAttribute("conjunction",conj[n]);
+    	      xmlWriter.writeAttribute("disjunction",disj[n]);
+    	      xmlWriter.writeAttribute("defuzzification",defuzz[n]);
+    	      xmlWriter.writeText("","IKB");
+    	      xmlWriter.endEntity("IKB");
+          }
+	      xmlWriter.writeText("","IKB");
+	      xmlWriter.endEntity("IKB");
+	      return 1;
+	    }
+	    catch (XMLWritingException e) {
+	      e.printStackTrace();
+	      return -1;
+	    }
+  }
+  
+  public static int writeIKBFileOntology(String OntFile) {
+	    try {
+	      xmlWriter.writeEntity("Ontology", "IKB");
+	      if (OntFile.contains("Documents and Settings"))
+	    	  OntFile= OntFile.replace("Documents and Settings","Docume~1");
+	      xmlWriter.writeAttribute("OntFile",OntFile);
+	      xmlWriter.writeText("","IKB");
+	      xmlWriter.endEntity("IKB");
+	      return 1;
+	    }
+	    catch (XMLWritingException e) {
+	      e.printStackTrace();
+	      return -1;
+	    }
+  }
+
+  public static int closeIKBFile(boolean closeFile) {
+    try {
+      xmlWriter.endEntity("IKB");
+      if (closeFile) {
+          file.write(writer.toString().getBytes());
+          xmlWriter.close();
+          file.close();
+      }
+      return 1;
+    }
+    catch (FileNotFoundException e) {
+      e.printStackTrace();
+      return -1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  //Deletes the prevoiusly existing file and creates a new one.
+  //Returns 1 if ok and -1 if it's been not successful
+  public static int createKBFile(String kbFile) {
+    //System.out.println("file_name="+kbFile);
+    //String fileName = kbFile + ".xml";
+    File f = new File (kbFile);
+    if (f.exists()) {
+        f.delete();
+    }
+    try {
+      f.createNewFile();
+      fileKB = new FileOutputStream(kbFile);
+      Writer writerKB =new java.io.StringWriter();
+      xmlWriterKB = new XMLWriter(writerKB,"KB");
+      xmlWriterKB.writeEntity("KnowledgeBase", "KB");
+      return 1;
+    }
+    catch (IOException e) {
+        System.out.println("XMLWriter.java -> FNFE: file_name="+kbFile);
+        e.printStackTrace();
+        return -1;
+    }
+    catch (XMLWritingException e) {
+      //System.out.println("XWE: file_name="+kbFile);
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int createKBFileEntity(String entity) {
+    try {
+      xmlWriterKB.writeEntity(entity, "KB");
+      return 1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int writeKBFileSystem(String Name, int Inputs, int Outputs, int Rules) {
+	    try {
+	      xmlWriterKB.writeEntity("System", "KB");
+	      xmlWriterKB.writeAttribute("Name",Name);
+	      xmlWriterKB.writeAttribute("Inputs",""+Inputs);
+	      xmlWriterKB.writeAttribute("Outputs",""+Outputs);
+	      xmlWriterKB.writeAttribute("Rules",""+Rules);
+	      xmlWriterKB.writeText("","KB");
+	      xmlWriterKB.endEntity("KB");
+	      return 1;
+	    }
+	    catch (XMLWritingException e) {
+	      e.printStackTrace();
+	      return -1;
+	    }
+	  }
+
+  public static int writeKBFileVariable(String variable, boolean active, String variableName, String variableType, String variableTrust, String variableClassif, String physicalLowerRange, String physicalUpperRange, String interestLowerRange, String interestUpperRange, int numberOfLabels, String scaleOfLabels, boolean flagOntology, String nameOntology, boolean flagOntDatatypeProperty, boolean flagOntObjectProperty) {
+	    try {
+	      xmlWriterKB.writeEntity(variable, "KB");
+  	      xmlWriterKB.writeAttribute("Active",""+active);
+	      xmlWriterKB.writeAttribute("Name",variableName);
+	      xmlWriterKB.writeAttribute("Type",variableType);
+	      xmlWriterKB.writeAttribute("Trust",variableTrust);
+          if (!variableClassif.equals("input"))
+	          xmlWriterKB.writeAttribute("Classif",variableClassif);
+
+          xmlWriterKB.writeAttribute("PhysicalLowerRange",physicalLowerRange);
+	      xmlWriterKB.writeAttribute("PhysicalUpperRange",physicalUpperRange);
+	      xmlWriterKB.writeAttribute("InterestLowerRange",interestLowerRange);
+	      xmlWriterKB.writeAttribute("InterestUpperRange",interestUpperRange);
+	      xmlWriterKB.writeAttribute("Labels",""+numberOfLabels);
+	      xmlWriterKB.writeAttribute("ScaleOfLabels",scaleOfLabels);
+	      xmlWriterKB.writeAttribute("FlagOntology",""+flagOntology);
+	      xmlWriterKB.writeAttribute("NameFromOntology",nameOntology);
+	      xmlWriterKB.writeAttribute("FlagOntObjectProperty",""+flagOntObjectProperty);
+	      xmlWriterKB.writeAttribute("FlagOntDatatypeProperty",""+flagOntDatatypeProperty);
+	      //xmlWriterKB.writeAttribute("Output",""+output);
+	      xmlWriterKB.writeText("","KB");
+	      xmlWriterKB.endEntity("KB");
+	      return 1;
+	    }
+	    catch (XMLWritingException e) {
+	      e.printStackTrace();
+	      return -1;
+	    }
+	  }
+
+  public static int writeKBFileLabel(String label, String labelName, String labelMF, String[] params, String modalPoint, String mpAux) {
+	    try {
+	      xmlWriterKB.writeEntity(label, "KB");
+	      xmlWriterKB.writeAttribute("Name",labelName);
+	      xmlWriterKB.writeAttribute("MF",labelMF);
+          for (int n=0; n<params.length; n++) {
+    	      xmlWriterKB.writeAttribute("P"+String.valueOf(n+1),params[n]);
+          }
+	      xmlWriterKB.writeAttribute("ModalPoint",modalPoint);
+          if (mpAux!=null) {
+    	      xmlWriterKB.writeAttribute("ModalPointAux",mpAux);
+          }
+	      xmlWriterKB.writeText("","KB");
+	      xmlWriterKB.endEntity("KB");
+	      return 1;
+	    }
+	    catch (XMLWritingException e) {
+	      e.printStackTrace();
+	      return -1;
+	    }
+	  }
+
+  public static int writeKBFileRule(String rule, int[] inputs, int[] outputs, String ruleNature, boolean ruleActive) {
+	    try {
+	      xmlWriterKB.writeEntity(rule, "KB");
+	      //xmlWriterKB.writeAttribute("NbInputs",""+inputs.length);
+          for (int n=0; n<inputs.length; n++) {
+  	        xmlWriterKB.writeAttribute("I"+String.valueOf(n+1),""+inputs[n]);
+          }
+	      //xmlWriterKB.writeAttribute("NbOutputs",""+outputs.length);
+          for (int n=0; n<outputs.length; n++) {
+    	        xmlWriterKB.writeAttribute("O"+String.valueOf(n+1),""+outputs[n]);
+          }
+	      xmlWriterKB.writeAttribute("Nature",ruleNature);
+	      xmlWriterKB.writeAttribute("Active",""+ruleActive);
+	      xmlWriterKB.writeText("","KB");
+	      xmlWriterKB.endEntity("KB");
+	      return 1;
+	    }
+	    catch (XMLWritingException e) {
+	      e.printStackTrace();
+	      return -1;
+	    }
+	  }
+  
+  public static int closeKBFile(boolean closeFile) {
+    try {
+      xmlWriterKB.endEntity("KB");
+      if (closeFile) {
+          fileKB.write(writerKB.toString().getBytes());
+          xmlWriterKB.close();
+          fileKB.close();
+      }
+      return 1;
+    }
+    catch (FileNotFoundException e) {
+      e.printStackTrace();
+      return -1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int createCFFile(String cfFile) {
+	try {
+	  fileCF = new FileOutputStream(cfFile);
+	  Writer writer =new java.io.StringWriter();
+	  xmlWriterCF = new XMLWriter(writer, "CF");
+	  xmlWriterCF.writeEntity("AutomaticConfigurationParametersFile", "CF");
+	  return 1;
+	}
+	catch (IOException e) {
+	  e.printStackTrace();
+	  return -1;
+	}
+	catch (XMLWritingException e) {
+	  e.printStackTrace();
+	  return -1;
+	}
+  }
+
+  public static int writeCFFile() {
+	try {
+	  xmlWriterCF.writeEntity("SMOTE", "CF");
+	  boolean sm= MainKBCT.getConfig().GetSMOTE();
+      xmlWriterCF.writeAttribute("Selected",""+sm);
+      if (sm) {
+          int nn= MainKBCT.getConfig().GetSMOTEnumberOfNeighbors();
+          xmlWriterCF.writeAttribute("Neighbors",""+nn);
+          String type= MainKBCT.getConfig().GetSMOTEtype();
+          xmlWriterCF.writeAttribute("Type",""+type);
+          boolean bal= MainKBCT.getConfig().GetSMOTEbalancing();
+          xmlWriterCF.writeAttribute("Balancing",""+bal);
+          boolean balall= MainKBCT.getConfig().GetSMOTEbalancingALL();
+          xmlWriterCF.writeAttribute("BalancingAll",""+balall);
+          double q= MainKBCT.getConfig().GetSMOTEquantity();
+          xmlWriterCF.writeAttribute("Quantity",""+q);
+          String dis= MainKBCT.getConfig().GetSMOTEdistance();
+          xmlWriterCF.writeAttribute("Distance",""+dis);
+          String interp= MainKBCT.getConfig().GetSMOTEinterpolation();
+          xmlWriterCF.writeAttribute("Interpolation",""+interp);
+          double alpha= MainKBCT.getConfig().GetSMOTEalpha();
+          xmlWriterCF.writeAttribute("Alpha",""+alpha);
+          double mu= MainKBCT.getConfig().GetSMOTEmu();
+          xmlWriterCF.writeAttribute("Mu",""+mu);
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+
+	  xmlWriterCF.writeEntity("FeatureSelection", "CF");
+	  boolean fs= MainKBCT.getConfig().GetFeatureSelection();
+      xmlWriterCF.writeAttribute("Selected",""+fs);
+      if (fs) {
+          xmlWriterCF.writeAttribute("P1",""+MainKBCT.getConfig().GetFeatureSelectionC45P1());
+          xmlWriterCF.writeAttribute("P2",""+MainKBCT.getConfig().GetFeatureSelectionC45P2());
+          xmlWriterCF.writeAttribute("P3",""+MainKBCT.getConfig().GetFeatureSelectionC45P3());
+          xmlWriterCF.writeAttribute("P4",""+MainKBCT.getConfig().GetFeatureSelectionC45P4());
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("InducePartitions", "CF");
+	  boolean ip= MainKBCT.getConfig().GetInducePartitions();
+      xmlWriterCF.writeAttribute("Selected",""+ip);
+      if (ip) {
+    	  String itype= MainKBCT.getConfig().GetInductionType();
+          xmlWriterCF.writeAttribute("InductionType",itype);
+          if (itype.equals("hfp")) {
+              xmlWriterCF.writeAttribute("Distance",MainKBCT.getConfig().GetDistance());
+          }
+          xmlWriterCF.writeAttribute("InductionNbLabels",""+MainKBCT.getConfig().GetInductionNbLabels());
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("PartitionSelection", "CF");
+	  boolean ps= MainKBCT.getConfig().GetPartitionSelection();
+      xmlWriterCF.writeAttribute("Selected",""+ps);
+      if (ps) {
+          xmlWriterCF.writeAttribute("Distance",MainKBCT.getConfig().GetDistance());
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("RuleInduction", "CF");
+	  boolean ri= MainKBCT.getConfig().GetRuleInduction();
+      xmlWriterCF.writeAttribute("Selected",""+ri);
+      if (ri) {
+    	  boolean ds= MainKBCT.getConfig().GetDataSelection();
+          xmlWriterCF.writeAttribute("DataSelection",""+ds);
+          if (ds) {
+              xmlWriterCF.writeAttribute("TolThresDataSelection",""+MainKBCT.getConfig().GetTolThresDataSelection());
+          }
+          boolean cl= MainKBCT.getConfig().GetClusteringSelection();
+          xmlWriterCF.writeAttribute("ClusteringSelection",""+cl);
+          if (cl) {
+              xmlWriterCF.writeAttribute("ClustersNumber",""+MainKBCT.getConfig().GetClustersNumber());
+          }
+          String ira= MainKBCT.getConfig().GetInductionRulesAlgorithm();
+          xmlWriterCF.writeAttribute("InductionRulesAlgorithm",ira);
+          if (ira.equals("Fast Prototyping Algorithm")) {
+              xmlWriterCF.writeAttribute("Strategy",MainKBCT.getConfig().GetStrategy());
+              xmlWriterCF.writeAttribute("MinCard",""+MainKBCT.getConfig().GetMinCard());
+              xmlWriterCF.writeAttribute("MinDeg",""+MainKBCT.getConfig().GetMinDeg());
+          } else if (ira.equals("Fuzzy Decision Trees")) {
+              xmlWriterCF.writeAttribute("TreeFile",MainKBCT.getConfig().GetTreeFile());
+              xmlWriterCF.writeAttribute("MaxTreeDepth",""+MainKBCT.getConfig().GetMaxTreeDepth());
+              xmlWriterCF.writeAttribute("MinSignificantLevel",""+MainKBCT.getConfig().GetMinSignificantLevel());
+              xmlWriterCF.writeAttribute("LeafMinCard",""+MainKBCT.getConfig().GetLeafMinCard());
+              xmlWriterCF.writeAttribute("ToleranceThreshold",""+MainKBCT.getConfig().GetToleranceThreshold());
+              xmlWriterCF.writeAttribute("MinEDGain",""+MainKBCT.getConfig().GetMinEDGain());
+              xmlWriterCF.writeAttribute("CovThresh",""+MainKBCT.getConfig().GetCovThresh());
+              xmlWriterCF.writeAttribute("PerfLoss",""+MainKBCT.getConfig().GetPerfLoss());
+              xmlWriterCF.writeAttribute("Prune",""+MainKBCT.getConfig().GetPrune());
+              xmlWriterCF.writeAttribute("Split",""+MainKBCT.getConfig().GetSplit());
+              xmlWriterCF.writeAttribute("Display",""+MainKBCT.getConfig().GetDisplay());
+          } else if (ira.equals("PrototypeRules")) {
+        	  System.out.println("RuleInductionAlgorithm -> PrototypeRules");
+          } 
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("RuleRanking", "CF");
+	  boolean rr= MainKBCT.getConfig().GetRuleRanking();
+      xmlWriterCF.writeAttribute("Selected",""+rr);
+      if (rr) {
+    	  boolean out= MainKBCT.getConfig().GetOrderRulesByOutputClass();
+          xmlWriterCF.writeAttribute("OrderRulesByOutputClass",""+out);
+          xmlWriterCF.writeAttribute("OrderRulesByLocalWeight",""+MainKBCT.getConfig().GetOrderRulesByLocalWeight());
+          xmlWriterCF.writeAttribute("OrderRulesByGlobalWeight",""+MainKBCT.getConfig().GetOrderRulesByGlobalWeight());
+          xmlWriterCF.writeAttribute("OrderRulesByWeight",""+MainKBCT.getConfig().GetOrderRulesByWeight());
+          xmlWriterCF.writeAttribute("OrderRulesByLocalIntWeight",""+MainKBCT.getConfig().GetOrderRulesByLocalIntWeight());
+          xmlWriterCF.writeAttribute("OrderRulesByGlobalIntWeight",""+MainKBCT.getConfig().GetOrderRulesByGlobalIntWeight());
+          xmlWriterCF.writeAttribute("OrderRulesByIntWeight",""+MainKBCT.getConfig().GetOrderRulesByIntWeight());
+          xmlWriterCF.writeAttribute("OrderRulesByNumberPremises",""+MainKBCT.getConfig().GetOrderRulesByNumberPremises());
+          xmlWriterCF.writeAttribute("ReverseOrderRules",""+MainKBCT.getConfig().GetReverseOrderRules());
+          if (!out) {
+              xmlWriterCF.writeAttribute("OutputClassSelected",""+MainKBCT.getConfig().GetOutputClassSelected());
+          }
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("SolveLingConflicts", "CF");
+	  boolean slc= MainKBCT.getConfig().GetSolveLingConflicts();
+      xmlWriterCF.writeAttribute("Selected",""+slc);
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("LVreduction", "CF");
+	  boolean lvr= MainKBCT.getConfig().GetLVreduction();
+      xmlWriterCF.writeAttribute("Selected",""+lvr);
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("LinguisticSimplification", "CF");
+	  boolean simp= MainKBCT.getConfig().GetSimplify();
+      xmlWriterCF.writeAttribute("Selected",""+simp);
+      if (simp) {
+          xmlWriterCF.writeAttribute("FirstReduceRuleBase",""+MainKBCT.getConfig().GetFirstReduceRuleBase());
+          xmlWriterCF.writeAttribute("OnlyDBsimplification",""+MainKBCT.getConfig().GetOnlyDBsimplification());
+          xmlWriterCF.writeAttribute("OnlyRBsimplification",""+MainKBCT.getConfig().GetOnlyRBsimplification());
+          xmlWriterCF.writeAttribute("MaximumLossOfCoverage",""+MainKBCT.getConfig().GetMaximumLossOfCoverage());
+          xmlWriterCF.writeAttribute("MaximumLossOfPerformance",""+MainKBCT.getConfig().GetMaximumLossOfPerformance());
+          xmlWriterCF.writeAttribute("MaximumNumberNewErrorCases",""+MainKBCT.getConfig().GetMaximumNumberNewErrorCases());
+          xmlWriterCF.writeAttribute("MaximumNumberNewAmbiguityCases",""+MainKBCT.getConfig().GetMaximumNumberNewAmbiguityCases());
+          xmlWriterCF.writeAttribute("MaximumNumberNewUnclassifiedCases",""+MainKBCT.getConfig().GetMaximumNumberNewUnclassifiedCases());
+          xmlWriterCF.writeAttribute("RuleRemoval",""+MainKBCT.getConfig().GetRuleRemoval());
+          xmlWriterCF.writeAttribute("VariableRemoval",""+MainKBCT.getConfig().GetVariableRemoval());
+          xmlWriterCF.writeAttribute("PremiseRemoval",""+MainKBCT.getConfig().GetPremiseRemoval());
+          xmlWriterCF.writeAttribute("RuleRanking",""+MainKBCT.getConfig().GetSimpRuleRanking());
+          xmlWriterCF.writeAttribute("SelectedPerformance",""+MainKBCT.getConfig().GetSelectedPerformance());
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("Optimization", "CF");
+	  boolean opt= MainKBCT.getConfig().GetOptimization();
+      xmlWriterCF.writeAttribute("Selected",""+opt);
+      if (opt) {
+    	  int optAlg= MainKBCT.getConfig().GetOptAlgorithm();
+          xmlWriterCF.writeAttribute("OptAlgorithm",""+optAlg);
+          if (optAlg==0) {
+  			  // GeneticTuning
+              xmlWriterCF.writeAttribute("OptAlgorithmName","GeneticTuning");
+              xmlWriterCF.writeAttribute("NbGenerations",""+MainKBCT.getConfig().GetNbGenerations());
+              xmlWriterCF.writeAttribute("PopulationLength",""+MainKBCT.getConfig().GetPopulationLength());
+              xmlWriterCF.writeAttribute("TournamentSize",""+MainKBCT.getConfig().GetTournamentSize());
+              xmlWriterCF.writeAttribute("MutationProb",""+MainKBCT.getConfig().GetMutationProb());
+              xmlWriterCF.writeAttribute("CrossoverProb",""+MainKBCT.getConfig().GetCrossoverProb());
+              xmlWriterCF.writeAttribute("ParAlfa",""+MainKBCT.getConfig().GetParAlfa());
+              xmlWriterCF.writeAttribute("BoundedOptimization",""+MainKBCT.getConfig().GetBoundedOptimization());
+              xmlWriterCF.writeAttribute("InitialGeneration",""+MainKBCT.getConfig().GetInitialGeneration());
+              xmlWriterCF.writeAttribute("MilestoneGeneration",""+MainKBCT.getConfig().GetMilestoneGeneration());
+          } else if (optAlg==1) {
+    	      // solisWetts (FisPro)
+              xmlWriterCF.writeAttribute("OptAlgorithmName","SolisWetts");
+              int swopt= MainKBCT.getConfig().GetSWoption();
+              xmlWriterCF.writeAttribute("SWoption",""+swopt);
+              if (swopt==2) {
+            	  // LabelByLabel
+                  xmlWriterCF.writeAttribute("SWoptName","LabelByLabel");
+              } else {
+            	  // VariableByVariable
+                  xmlWriterCF.writeAttribute("SWoptName","VariableByVariable");
+              }
+              xmlWriterCF.writeAttribute("NbIterations",""+MainKBCT.getConfig().GetNbIterations());
+              xmlWriterCF.writeAttribute("BoundedOptimization",""+MainKBCT.getConfig().GetBoundedOptimization());
+          } else if (optAlg==2) {
+    	      // GA rule selection
+              xmlWriterCF.writeAttribute("OptAlgorithmName","GAruleSelection");
+              xmlWriterCF.writeAttribute("NbGenerations",""+MainKBCT.getConfig().GetRuleSelectionNbGenerations());
+              xmlWriterCF.writeAttribute("PopulationLength",""+MainKBCT.getConfig().GetRuleSelectionPopulationLength());
+              xmlWriterCF.writeAttribute("TournamentSize",""+MainKBCT.getConfig().GetRuleSelectionTournamentSize());
+              xmlWriterCF.writeAttribute("MutationProb",""+MainKBCT.getConfig().GetRuleSelectionMutationProb());
+              xmlWriterCF.writeAttribute("CrossoverProb",""+MainKBCT.getConfig().GetRuleSelectionCrossoverProb());
+              xmlWriterCF.writeAttribute("W1",""+MainKBCT.getConfig().GetRuleSelectionW1());
+              xmlWriterCF.writeAttribute("W2",""+MainKBCT.getConfig().GetRuleSelectionW2());
+              xmlWriterCF.writeAttribute("InterpretabilityIndex",""+MainKBCT.getConfig().GetRuleSelectionInterpretabilityIndex());
+              xmlWriterCF.writeAttribute("InitialGeneration",""+MainKBCT.getConfig().GetRuleSelectionInitialGeneration());
+          }
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      
+	  xmlWriterCF.writeEntity("Completeness", "CF");
+	  boolean c= MainKBCT.getConfig().GetCompleteness();
+      xmlWriterCF.writeAttribute("Selected",""+c);
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+
+	  xmlWriterCF.writeEntity("Fingrams", "CF");
+	  boolean fing= MainKBCT.getConfig().GetFingram();
+      xmlWriterCF.writeAttribute("Selected",""+fing);
+      if (fing) {
+    	  boolean fingWS= MainKBCT.getConfig().GetFingramWS();
+    	  boolean fingWOS= MainKBCT.getConfig().GetFingramWOS();
+    	  String fingOpt="";
+    	  if ( (fingWS) && (fingWOS) )
+    		  fingOpt= "ALL";
+    	  else if (fingWS)
+    		  fingOpt= "WS";
+    	  else if (fingWOS)
+    		  fingOpt= "WOS";
+
+    	  xmlWriterCF.writeAttribute("Option",""+fingOpt);
+          if (fingWS) {
+              int nn= MainKBCT.getConfig().GetSMOTEnumberOfNeighbors();
+              xmlWriterCF.writeAttribute("Neighbors",""+nn);
+              String type= MainKBCT.getConfig().GetSMOTEtype();
+              xmlWriterCF.writeAttribute("Type",""+type);
+              boolean bal= MainKBCT.getConfig().GetSMOTEbalancing();
+              xmlWriterCF.writeAttribute("Balancing",""+bal);
+              boolean balall= MainKBCT.getConfig().GetSMOTEbalancingALL();
+              xmlWriterCF.writeAttribute("BalancingAll",""+balall);
+              double q= MainKBCT.getConfig().GetSMOTEquantity();
+              xmlWriterCF.writeAttribute("Quantity",""+q);
+              String dis= MainKBCT.getConfig().GetSMOTEdistance();
+              xmlWriterCF.writeAttribute("Distance",""+dis);
+              String interp= MainKBCT.getConfig().GetSMOTEinterpolation();
+              xmlWriterCF.writeAttribute("Interpolation",""+interp);
+              double alpha= MainKBCT.getConfig().GetSMOTEalpha();
+              xmlWriterCF.writeAttribute("Alpha",""+alpha);
+              double mu= MainKBCT.getConfig().GetSMOTEmu();
+              xmlWriterCF.writeAttribute("Mu",""+mu);
+          }
+          double glthres= MainKBCT.getConfig().GetGoodnessLowThreshold();
+          xmlWriterCF.writeAttribute("GLthres",""+glthres);
+          double ghthres= MainKBCT.getConfig().GetGoodnessHighThreshold();
+          xmlWriterCF.writeAttribute("GHthres",""+ghthres);
+          double thres= MainKBCT.getConfig().GetPathFinderThreshold();
+          xmlWriterCF.writeAttribute("PFthres",""+thres);
+          int q= MainKBCT.getConfig().GetPathFinderParQ();
+          xmlWriterCF.writeAttribute("PFq",""+q);
+          String metric= MainKBCT.getConfig().GetFingramsMetric();
+          xmlWriterCF.writeAttribute("Metric",""+metric);
+          String layout= MainKBCT.getConfig().GetFingramsLayout();
+          xmlWriterCF.writeAttribute("Layout",""+layout);
+      }
+      xmlWriterCF.writeText("","CF");
+      xmlWriterCF.endEntity("CF");
+      return 1;
+    }
+    catch (XMLWritingException e) {
+      e.printStackTrace();
+      return -1;
+    }
+  }
+
+  public static int closeCFFile(boolean closeFile) {
+	try {
+	  xmlWriterCF.endEntity("CF");
+	  if (closeFile) {
+	      fileCF.write(writerCF.toString().getBytes());
+	      xmlWriterCF.close();
+	      fileCF.close();
+	  }
+	  return 1;
+	}
+	catch (FileNotFoundException e) {
+	  e.printStackTrace();
+	  return -1;
+	}
+	catch (XMLWritingException e) {
+	  e.printStackTrace();
+	  return -1;
+	}
+	catch (IOException e) {
+	  e.printStackTrace();
+	  return -1;
+	}
+  }
+}

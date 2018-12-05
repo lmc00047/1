@@ -1,0 +1,378 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                              JModalPointsFrame.java
+//
+//
+//**********************************************************************
+
+package kbctFrames;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
+import kbct.JVariable;
+import kbct.LocaleKBCT;
+import kbctAux.DoubleField;
+import kbctAux.MessageKBCT;
+import KB.LabelKBCT;
+
+/**
+ * kbctFrames.JModalPointsFrame displays a frame which let user changes modal points.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+//------------------------------------------------------------------------------
+public class JModalPointsFrame extends JDialog {
+  static final long serialVersionUID=0;
+  private JPanel jPanelModalPoints = new JPanel();
+  private GridBagLayout gridBLDisplayRange = new GridBagLayout();
+  private JPanel jPanelMP = new JPanel();
+  private JPanel jPanelValidation = new JPanel();
+  private GridBagLayout gridBagLayoutValidation = new GridBagLayout();
+  private JButton jButtonCancel = new JButton();
+  private JButton jButtonApply = new JButton();
+  private GridBagLayout gridBLSaisie = new GridBagLayout();
+  private JButton[] jButtonMP;
+  private JButton[] jButtonNoMP;
+  private DoubleField[] dfMP;
+  private double[] MP;
+  private int NOL;
+  private int NOMP;
+  private int[] NOMPlab;
+  private JVariable input;
+  private double[] result;
+//------------------------------------------------------------------------------
+  public JModalPointsFrame( JVariableFrame parent, JVariable input, String title ) {
+    super(parent);
+    try {
+      this.input= input;
+      this.NOL= input.GetLabelsNumber();
+      this.NOMPlab= new int[this.NOL];
+      this.NOMP= this.NOL;
+      for (int n=0; n<this.NOL; n++) {
+    	   int nbpar= this.input.GetLabel(n+1).GetParams().length;
+    	   if (nbpar==4) {
+    		   this.NOMP++;
+    		   this.NOMPlab[n]= 2;
+    	   } else {
+    		   this.NOMPlab[n]= 1;
+    	   }
+      }
+      this.setTitle(LocaleKBCT.GetString(title));
+      this.jButtonMP= new JButton[NOMP];
+      this.dfMP= new DoubleField[NOMP];
+      this.jButtonNoMP= new JButton[NOMP];
+      jbInit();
+    } catch( Throwable t) {
+    	t.printStackTrace();
+        MessageKBCT.Error(this, LocaleKBCT.GetString("Error"), "Error en constructor de JModalPointsFrame: "+t);
+    }
+  }
+//------------------------------------------------------------------------------
+  private void jbInit() throws Throwable {
+	this.setIconImage(LocaleKBCT.getIconGUAJE().getImage());
+    jPanelModalPoints.setLayout(gridBLDisplayRange);
+    jPanelValidation.setLayout(gridBagLayoutValidation);
+    jButtonCancel.setText(LocaleKBCT.GetString("Cancel"));
+    jButtonCancel.addActionListener(new java.awt.event.ActionListener() { public void actionPerformed(ActionEvent e) { jButtonCancel_actionPerformed(); } });
+    jButtonApply.setText(LocaleKBCT.GetString("Apply"));
+    jButtonApply.addActionListener(new java.awt.event.ActionListener() { public void actionPerformed(ActionEvent e) { jButtonApply_actionPerformed(); } });
+    jPanelMP.setLayout(gridBLSaisie);
+    int cont=0;
+    for (int n=0; n < NOL; n++) {
+       if (this.NOMPlab[n]==1) { 
+    	  if (! this.input.GetMP(n+1).equals("No MP")) {
+              this.dfMP[cont]= new DoubleField();
+              this.dfMP[cont].setValue((new Double(this.input.GetMP(n + 1))).doubleValue());
+          } else
+              this.dfMP[cont]= new DoubleField();
+
+          this.dfMP[cont].setEnabled(false);
+          this.jButtonMP[cont]= new JButton();
+          this.jButtonMP[cont].addActionListener(new java.awt.event.ActionListener() { public void actionPerformed(ActionEvent e) { jButtonMP_actionPerformed(e); }});
+          this.jButtonNoMP[cont]= new JButton();
+          this.jButtonNoMP[cont].addActionListener(new java.awt.event.ActionListener() { public void actionPerformed(ActionEvent e) { jButtonNoMP_actionPerformed(e); }});
+          this.jButtonNoMP[cont].setText(LocaleKBCT.GetString("No")+" "+LocaleKBCT.GetString("MP")+" "+String.valueOf(cont+1));
+          if (! this.input.GetScaleName().equals("user"))
+              this.jButtonMP[cont].setText(LocaleKBCT.GetString(this.input.GetLabelsName(n)));
+          else {
+              if (! this.input.GetLabelsName(n).equals(""))
+                  this.jButtonMP[cont].setText(this.input.GetLabelsName(n));
+              else
+                  this.jButtonMP[cont].setText(LocaleKBCT.GetString("Label")+String.valueOf(n+1));
+          }
+       } else {
+          for (int k=0; k<2; k++) {
+            if (k==0) {
+        	  if (! this.input.GetMP(n+1).equals("No MP")) {
+                  this.dfMP[cont]= new DoubleField();
+                  this.dfMP[cont].setValue((new Double(this.input.GetMP(n+1))).doubleValue());
+              } else
+                  this.dfMP[cont]= new DoubleField();
+            } else {
+                if (! this.input.GetMPaux(n+1).equals("No MP")) {
+                    this.dfMP[cont]= new DoubleField();
+                    this.dfMP[cont].setValue((new Double(this.input.GetMPaux(n+1))).doubleValue());
+                } else
+                    this.dfMP[cont]= new DoubleField();
+            }
+            this.dfMP[cont].setEnabled(false);
+            this.jButtonMP[cont]= new JButton();
+            this.jButtonMP[cont].addActionListener(new java.awt.event.ActionListener() { public void actionPerformed(ActionEvent e) { jButtonMP_actionPerformed(e); }});
+            this.jButtonNoMP[cont]= new JButton();
+            this.jButtonNoMP[cont].addActionListener(new java.awt.event.ActionListener() { public void actionPerformed(ActionEvent e) { jButtonNoMP_actionPerformed(e); }});
+            this.jButtonNoMP[cont].setText(LocaleKBCT.GetString("No")+" "+LocaleKBCT.GetString("MP")+" "+String.valueOf(cont+1));
+            if (k==0) {
+              if (! this.input.GetScaleName().equals("user"))
+                  this.jButtonMP[cont].setText(LocaleKBCT.GetString(this.input.GetLabelsName(n))+" (1)");
+              else {
+                if (! this.input.GetLabelsName(n).equals(""))
+                    this.jButtonMP[cont].setText(this.input.GetLabelsName(n)+" (1)");
+                else
+                    this.jButtonMP[cont].setText(LocaleKBCT.GetString("Label")+String.valueOf(n+1)+" (1)");
+              }
+            } else {
+                if (! this.input.GetScaleName().equals("user"))
+                    this.jButtonMP[cont].setText(LocaleKBCT.GetString(this.input.GetLabelsName(n))+" (2)");
+                else {
+                    if (! this.input.GetLabelsName(n).equals(""))
+                        this.jButtonMP[cont].setText(this.input.GetLabelsName(n)+" (2)");
+                    else
+                        this.jButtonMP[cont].setText(LocaleKBCT.GetString("Label")+String.valueOf(n+1)+" (2)");
+                }
+            }
+            if (k==0)
+                cont++;
+         }
+       }
+       cont++;
+    }
+    this.getContentPane().add(jPanelModalPoints);
+    jPanelModalPoints.add(jPanelMP, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+    jPanelModalPoints.add(jPanelValidation, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+    jPanelValidation.add(jButtonApply, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
+    jPanelValidation.add(jButtonCancel, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 5, 0, 0), 0, 0));
+    for (int n=0; n < NOMP; n++) {
+      jPanelMP.add(jButtonMP[n], new GridBagConstraints(0, n, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
+      jPanelMP.add(dfMP[n], new GridBagConstraints(1, n, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 0), 50, 0));
+      jPanelMP.add(jButtonNoMP[n], new GridBagConstraints(2, n, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
+    }
+    this.setModal(true);
+    this.pack();
+    this.setResizable(false);
+  }
+//------------------------------------------------------------------------------
+  private int NumberOfLabel(String LabelName) {
+    for (int n=0; n<this.NOL; n++)
+      if ( ( !(this.input.GetScaleName().equals("user")) && (LocaleKBCT.GetString(this.input.GetLabelsName(n)).equals(LabelName)) ) || (this.input.GetLabelsName(n).equals(LabelName)) )
+          return n;
+
+    return -1;
+  }
+//------------------------------------------------------------------------------
+  private int getButtomIndex(String aux) {
+	    String labName="";
+	    int mpaux=0;
+	    if (this.NOMP==this.NOL) 
+	    	labName=aux;
+	    else {
+            if ( aux.endsWith("(1)") || aux.endsWith("(2)") ) { 
+	    	    labName= aux.substring(0,aux.length()-4);
+		        String end= aux.substring(aux.length()-3);
+		        //System.out.println("end="+end);
+		        if (end.equals("(2)"))
+		    	    mpaux++;
+            } else {
+    	    	labName=aux;
+            }
+	    }
+	    //System.out.println("labName="+labName+"N");
+		int LabelNumber= (new Integer(this.NumberOfLabel(labName))).intValue();
+	    int index=mpaux;
+	    for (int n=0; n<LabelNumber; n++) {
+	    	index= index+this.NOMPlab[n];
+	    }
+	    return index;
+  }
+//------------------------------------------------------------------------------
+  private void jButtonMP_actionPerformed(ActionEvent e) {
+	//System.out.println("button="+e.getActionCommand());
+	String aux= e.getActionCommand();
+	int index= this.getButtomIndex(aux);
+	this.dfMP[index].setEnabled(true);
+    this.repaint();
+  }
+//------------------------------------------------------------------------------
+  private void jButtonNoMP_actionPerformed(ActionEvent e) {
+	String ActionCommand= e.getActionCommand();
+	//System.out.println("ActionCommand="+ActionCommand);
+	int sub= (LocaleKBCT.GetString("No")+" "+LocaleKBCT.GetString("MP")+" ").length();
+    int index= (new Integer(ActionCommand.substring(sub))).intValue();
+    this.dfMP[index-1].setText("");
+    this.dfMP[index-1].setEnabled(false);
+    this.repaint();
+  }
+//------------------------------------------------------------------------------
+  private void jButtonCancel_actionPerformed() {
+    this.MP = null;
+    this.dispose();
+  }
+//------------------------------------------------------------------------------
+  private double [] ReadMP() {
+    this.result = new double[this.NOMP];
+    try {
+      int cont=0;
+      for (int n=0; n<NOL; n++) {
+    	if (this.NOMPlab[n]==1) {
+    		this.checkMP(cont, n, false);
+    	} else {
+            for (int k=0; k<2; k++) {
+            	if (k==0) {
+                    this.checkMP(cont, n, false);
+                    cont++;
+            	} else
+                    this.checkMP(cont, n, true);
+    	    }
+    	}
+    	cont++;
+      }
+    } catch (Throwable t) {
+    	//t.printStackTrace();
+        if (t.getMessage().startsWith("T1")) {
+            String tmsg= t.getMessage();
+            String p1= tmsg.substring(3, tmsg.lastIndexOf("_"));
+            String p2= tmsg.substring(tmsg.lastIndexOf("_")+1);
+            String msg= LocaleKBCT.GetString("MPmustBeIncludedIntoSupport")+"\n"
+                        +"   "+p1+" <= "+LocaleKBCT.GetString("MP")+" <= "+p2;
+            MessageKBCT.Error(this, LocaleKBCT.GetString("IncorrectModalPoints"), msg);
+        } else if (t.getMessage().equals("T2"))
+            MessageKBCT.Error(this,LocaleKBCT.GetString("IncorrectModalPoints"), LocaleKBCT.GetString("ModalPointsMustBeInRangeP"));
+        else if (t.getMessage().equals("T3"))
+            MessageKBCT.Error(this,LocaleKBCT.GetString("IncorrectModalPoints"), LocaleKBCT.GetString("InfoModalPointsSize"));
+        else if (t.getMessage().equals("T4"))
+            MessageKBCT.Error(this,LocaleKBCT.GetString("IncorrectModalPoints"), LocaleKBCT.GetString("InfoModalPointsEquals"));
+        else
+            MessageKBCT.Error(LocaleKBCT.GetString("IncorrectModalPoints"), t);
+
+        this.result= null;
+    }
+    return this.result;
+  }
+//------------------------------------------------------------------------------
+  private void checkMP(int cont, int n, boolean aux) throws Throwable {
+      if (dfMP[cont].isEnabled()) {
+          LabelKBCT et= this.input.GetLabel(n+1);
+          this.result[cont]= dfMP[cont].getValue();
+          //System.out.println("result["+cont+"]"+this.result[cont]);
+      	  if (this.NOMPlab[n]==1) {
+          	  if (n==0) {
+          	      if (! ((et.GetP2()+et.GetP3())/2 >= this.result[cont]) )
+                      throw new Throwable("T1_"+et.GetP1()+"_"+String.valueOf((et.GetP2()+et.GetP3())/2));
+              } else if (n==NOL-1) {
+          	      if (! ((et.GetP1()+et.GetP2())/2 <= this.result[cont]) )
+                      throw new Throwable("T1_"+String.valueOf((et.GetP1()+et.GetP2())/2)+"_"+et.GetP3());
+              } else if (et.GetParams().length==3) {
+                  if (! ( ((et.GetP1()+et.GetP2())/2 <= this.result[cont]) && ( (et.GetP2()+et.GetP3())/2 >= this.result[cont]) ) )
+                      throw new Throwable("T1_"+String.valueOf((et.GetP1()+et.GetP2())/2)+"_"+String.valueOf((et.GetP2()+et.GetP3())/2));
+         	  //} else {
+              //      if (! ( ((et.GetP1()+et.GetP2())/2 <= this.result[cont]) && ( (et.GetP3()+et.GetP4())/2 >= this.result[cont]) ) )
+              //        throw new Throwable("T1_"+String.valueOf((et.GetP1()+et.GetP2())/2)+"_"+String.valueOf((et.GetP3()+et.GetP4())/2));
+         	  }
+      	  } else {
+              if (!aux) {
+            	  // MP
+                  if (! ( ((et.GetP1()+et.GetP2())/2 <= this.result[cont]) && ( et.GetP3() > this.result[cont]) ) )
+                         throw new Throwable("T1_"+String.valueOf((et.GetP1()+et.GetP2())/2)+"_"+String.valueOf(et.GetP3()));
+              } else {
+            	  // MPaux
+                  if (! ( (et.GetP2() < this.result[cont]) && ( (et.GetP3()+et.GetP4())/2 >= this.result[cont]) ) )
+                      throw new Throwable("T1_"+String.valueOf(et.GetP2())+"_"+String.valueOf((et.GetP3()+et.GetP4())/2));
+            	  
+              }
+      	  }
+          if ((this.result[cont] < this.input.GetInputInterestRange()[0]) ||
+                  (this.result[cont] > this.input.GetInputInterestRange()[1]))
+                   throw new Throwable("T2");
+
+          for (int m=0; m<cont; m++) {
+                   if ( (n > 0) && (this.result[cont] != this.input.GetInputInterestRange()[0] - 1) && (this.result[cont] < this.result[m]))
+                       throw new Throwable("T3");
+                   if ( (n > 0) && (this.result[cont] != this.input.GetInputInterestRange()[0] - 1) && (this.result[cont] == this.result[m]))
+                       throw new Throwable("T4");
+          }
+      } else {
+        	if (this.NOMPlab[n]==1) {
+                if ( (! this.input.GetMP(n+1).equals("No MP")) && (!dfMP[cont].getText().equals("")) )
+            	    this.result[cont] = dfMP[cont].getValue();
+                else
+            	    this.result[cont] = this.input.GetInputInterestRange()[0] - 1;
+        	} else {
+                if (!aux) {
+        		  if ( (! this.input.GetLabel(n+1).GetMP().equals("No MP")) && (!dfMP[cont].getText().equals("")) )
+            	      this.result[cont] = dfMP[cont].getValue();
+                  else
+            	      this.result[cont] = this.input.GetInputInterestRange()[0] - 1;
+                } else {
+                  if ( (! this.input.GetMPaux(n+1).equals("No MP")) && (!dfMP[cont].getText().equals("")) )
+            	      this.result[cont] = dfMP[cont].getValue();
+                  else
+            	      this.result[cont] = this.input.GetInputInterestRange()[0] - 1;
+                }
+        	}
+        }
+  }
+//------------------------------------------------------------------------------
+  private void jButtonApply_actionPerformed() {
+    try {
+      this.MP = this.ReadMP();
+      if (this.MP != null)
+        this.dispose();
+    } catch( Exception ex ) {
+    	//ex.printStackTrace();
+        MessageKBCT.Error(this, LocaleKBCT.GetString("Error"), "Error en JModalPointsFrame en jButtonApply_actionPerformed: "+ex);
+    }
+  }
+//------------------------------------------------------------------------------
+  public double [] Show() {
+    this.setVisible(true);
+    return this.MP;
+  }
+}

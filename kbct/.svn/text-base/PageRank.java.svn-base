@@ -1,0 +1,201 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2013  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                          PageRank.java
+//
+// Original source code: 
+// Developed by Nima Goodarzi
+// Website: http://www.javadev.org
+// Email: nima@javadev.org
+//
+//**********************************************************************
+
+package kbct;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import Jama.Matrix;
+
+/**
+ * kbct.PageRank computes the google PageRank for Fingrams.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    2.1 , 04/06/13
+ */
+
+public class PageRank {
+	private final double DAMPING_FACTOR = 0.85;
+	private List params = new ArrayList();
+	private Graph g;
+	private Map map;
+
+	/*public static void main(String[] args) {
+		PageRank ranking = new PageRank();
+		System.out.print(ranking.rank("C"));
+	}*/
+
+	public PageRank(Graph gg) {
+		this.g= gg;
+		this.map = new HashMap();
+		//map.put("A", new String[] { "C" });
+		//map.put("B", new String[] { "A" });
+		//map.put("C", new String[] { "A", "B" });
+        List<Vertex> nodes= this.g.getVertexes();
+        List<Edge> edges= this.g.getEdges();
+        for (int n=0; n<nodes.size(); n++) {
+        	Vertex v= nodes.get(n);
+        	String vname= v.getName();
+        	Vector neighbors= new Vector();
+        	for (int m=0; m<edges.size(); m++) {
+        		 Edge ed= edges.get(m);
+        		 if (vname.equals(ed.getSource().getName()))
+                     neighbors.add(ed.getDestination().getName());
+        	}
+        	if (!neighbors.isEmpty()) {
+        		Object[] obj= neighbors.toArray();
+        		String[] nn= new String[obj.length];
+        	    //System.out.print(vname+" ->	");
+        		for (int m=0; m<obj.length; m++) {
+        			 nn[m]= obj[m].toString();
+             	     //System.out.print(nn[m]+"	");
+        		}
+       	        //System.out.println();
+        	    map.put(vname, nn);
+        	}
+        }
+	}
+	
+	/*
+	 * Solve the equation of ax=b, which : a is the generated matrix based on
+	 * the parameter constants. x is the page ranks matrix. b is a n*1 matrix
+	 * which all the values are equal to the damping factor.
+	 */
+	public double rank(String pageId) {
+		generateParamList(pageId);
+		Matrix a = new Matrix(generateMatrix());
+		double[][] arrB = new double[params.size()][1];
+		for (int i = 0; i < params.size(); i++) {
+			arrB[i][0] = 1 - DAMPING_FACTOR;
+		}
+		Matrix b = new Matrix(arrB);
+		// Solve the equation and get the page ranks
+		Matrix x = a.solve(b);
+		int ind = 0;
+		int cnt = 0;
+		for (Iterator it = params.iterator(); it.hasNext();) {
+			String curPage = (String) it.next();
+			if (curPage.equals(pageId))
+				ind = cnt;
+
+			cnt++;
+		}
+		return x.getArray()[ind][0];
+	}
+
+	/*
+	 * This method generates the matrix of the linear equations. The generated
+	 * matrix is a n*n matrix where n is number of the related pages.
+	 */
+	private double[][] generateMatrix() {
+		double[][] arr = new double[params.size()][params.size()];
+		for (int i = 0; i < params.size(); i++) {
+			for (int j = 0; j < params.size(); j++) {
+				arr[i][j] = getMultiFactor((String) params.get(i),
+				(String) params.get(j));
+			}
+		}
+		return arr;
+	}
+
+	/*
+	 * This method returns the constant of the given variable in the linear equation.
+	 */
+	private double getMultiFactor(String sourceId, String linkId) {
+		if (sourceId.equals(linkId))
+			return 1;
+		else {
+			String[] inc = getInboundLinks(sourceId);
+			if (inc!=null) {
+		   	  for (int i = 0; i < inc.length; i++) {
+				if (inc[i].equals(linkId)) {
+					return -1 * (DAMPING_FACTOR / getOutboundLinks(linkId).length);
+				}
+			  }
+			}
+		}
+		return 0;
+	}
+
+	/*
+	 * This method returns list of the related pages. This list is also the
+	 * parameters in the linear equation.
+	 */
+	private void generateParamList(String pageId) {
+		// Add the starting page.
+		if (!params.contains(pageId))
+			params.add(pageId);
+
+		// Get list of the inbound pages
+		String[] inc = getInboundLinks(pageId);
+
+		if (inc!=null) {
+		  // Add the inbound links to the params list and do same for inbound links
+		  for (int i = 0; i < inc.length; i++) {
+			if (!params.contains(inc[i]))
+				generateParamList(inc[i]);
+		  }
+		}
+	}
+
+	/*
+	 * Return list of the inbound links to a given page.
+	 */
+	private String[] getInboundLinks(String pageId) {
+		// This simulates a simple page collection
+		//Map map = new HashMap();
+		//map.put("A", new String[] { "C" });
+		//map.put("B", new String[] { "A" });
+		//map.put("C", new String[] { "A", "B" });
+		return (String[]) this.map.get(pageId);
+	}
+
+	/*
+	 * Returns list of the outbound links from a page.
+	 */
+	private String[] getOutboundLinks(String pageId) {
+		// This simulates a simple page collection
+		//Map<String, String[]> map = new HashMap();
+		//map.put("A", new String[] { "B", "C" });
+		//map.put("B", new String[] { "C" });
+		//map.put("C", new String[] { "A", "D", "E", "F" });
+		return (String[]) this.map.get(pageId);
+	}
+}

@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/guaje/!svn/ver/129/trunk/src/kbctAux
+END
+JFileFilter.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/JFileFilter.java
+END
+NumberFieldActionListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/NumberFieldActionListener.java
+END
+PerformanceFile.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/PerformanceFile.java
+END
+IntegerField.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/IntegerField.java
+END
+Translatable.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/Translatable.java
+END
+DoubleField.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/DoubleField.java
+END
+OntAtom.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/OntAtom.java
+END
+JDataFile.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/JDataFile.java
+END
+ParserWekaFiles.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/ParserWekaFiles.java
+END
+MessageKBCT.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/guaje/!svn/ver/227/trunk/src/kbctAux/MessageKBCT.java
+END
+JFile.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/JFile.java
+END
+SortableHeaderListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/SortableHeaderListener.java
+END
+NumberField.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/NumberField.java
+END
+OWLwriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/OWLwriter.java
+END
+JOpenFileChooser.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/JOpenFileChooser.java
+END
+DoubleFieldInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/guaje/!svn/ver/220/trunk/src/kbctAux/DoubleFieldInput.java
+END

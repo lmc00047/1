@@ -1,0 +1,5 @@
+++++++++++++++++++++++++++++++++++
+11-sep-2018 9:59:09
+Archivo de configuración= C:\GUAJE-vb3.0\examples\iris\IRIS.txt.ikb.xml
+filtro KB= C:\GUAJE-vb3.0\examples\iris\IRIS.txt.kb.xml
+El archivo de datos= C:\GUAJE-vb3.0\examples\iris\IRIS.txt.aux

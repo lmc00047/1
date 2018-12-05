@@ -1,0 +1,4 @@
+++++++++++++++++++++++++++++++++++
+ERROR: LogicalView
+24-Oct-2018 08:51:32
+espresso: ON-set and OFF-set are not orthogonal

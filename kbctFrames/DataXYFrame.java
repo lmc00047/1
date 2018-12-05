@@ -1,0 +1,439 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                              DataXYFrame.java
+//
+//
+//**********************************************************************
+
+// Contains: DataXYFrame, XYPanel
+
+package kbctFrames;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.text.DecimalFormat;
+
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+
+import kbct.JKBCT;
+import kbct.JVariable;
+import kbct.KBCTListener;
+import kbct.LocaleKBCT;
+import kbctAux.MessageKBCT;
+
+import org.freehep.util.export.ExportDialog;
+
+import print.JPrintPreview;
+import util.regression.RegressionCalculator;
+import fis.FISPlot;
+import fis.JExtendedDataFile;
+import fis.JFileListener;
+
+/**
+ * kbctFrames.DataXYFrame displays a window with data distribution of two variables
+ * in axis X and Y.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+
+//------------------------------------------------------------------------------
+public class DataXYFrame extends JChildFrame {
+    static final long serialVersionUID=0;	  
+    private JKBCT kbct_Data;
+    protected JExtendedDataFile DataFile;
+    protected int XIndex;
+    protected int YIndex;
+    private int XIndexKBCT;
+    private int YIndexKBCT;
+    protected double [] XData;
+    protected double [] YData;
+    protected XYPanel jPanelXY;
+    private JFileListener JFileListener;
+    private KBCTListener KBCTListener;
+    private JMenuItem jMenuPrint = new JMenuItem();
+    private JMenuItem jMenuExport = new JMenuItem();
+    private JMenuItem jMenuDisplayResetZoom = new JMenuItem();
+    private JMenuItem jMenuClose = new JMenuItem();
+    private JPanel jPanelXYFrame = new JPanel(new GridBagLayout());
+//------------------------------------------------------------------------------
+    public DataXYFrame( JMainFrame parent, int x_kbct, int y_kbct, JKBCT kbct, int x_index, int y_index, JExtendedDataFile data_file ) {
+	super(parent);
+	this.kbct_Data= kbct;
+	this.XIndexKBCT= x_kbct;
+	this.YIndexKBCT= y_kbct;
+	this.DataFile = data_file;
+	this.XIndex = x_index;
+	this.YIndex = y_index;
+	this.LoadData();
+        try { jbInit(); }
+        catch(Throwable t) { MessageKBCT.Error(null, t); }
+    }
+    //------------------------------------------------------------------------------
+    protected XYPanel CreateXYPanel( JVariable x_input, double [] x_data, JVariable y_input, double [] y_data ) throws Throwable {
+      return new XYPanel(x_input, x_data, y_input, y_data) {
+    	  static final long serialVersionUID=0;	
+          public String getXLabel() { return super.getXLabel() == null ? LocaleKBCT.GetString("Variable") + " " + (DataXYFrame.this.XIndex + 1) : super.getXLabel(); }
+          public String getYLabel() { return super.getYLabel() == null ? LocaleKBCT.GetString("Variable") + " " + (DataXYFrame.this.YIndex + 1) : super.getYLabel(); }
+      };
+    }
+    //------------------------------------------------------------------------------
+    private void jbInit() throws Throwable {
+        JMenuBar jmb= new JMenuBar();
+        jmb.add(this.jMenuPrint);
+        jmb.add(this.jMenuExport);
+        jmb.add(this.jMenuDisplayResetZoom);
+        jmb.add(this.jMenuClose);
+        this.setJMenuBar(jmb);
+	    this.getContentPane().setLayout(new GridBagLayout());
+        this.getContentPane().add(this.jPanelXYFrame, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+				,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        this.jPanelXY = this.CreateXYPanel(null, this.XData, null, this.YData);
+	    this.jPanelXYFrame.add(jPanelXY, new GridBagConstraints(2, 0, 1, 1, 1.0, 1.0
+				,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(10, 0, 0, 10), 0, 0));
+	// événements
+	this.JFileListener= new JFileListener() {
+		public void Closed() { DataXYFrame.this.dispose(); }
+		public void ReLoaded() { DataXYFrame.this.DataReLoaded(); }
+        };
+	this.DataFile.AddJFileListener(this.JFileListener);
+	if( this.kbct_Data != null ) {
+		this.KBCTListener = new KBCTListener() {
+			public void KBCTClosed() {}
+			public void InputReplaced( int input_number )       { DataXYFrame.this.InputChanged( input_number); }
+			public void OutputReplaced( int output_number )     { DataXYFrame.this.OutputChanged( output_number); }
+			public void InputNameChanged( int input_number )    { DataXYFrame.this.InputChanged( input_number); }
+			public void OutputNameChanged( int output_number )  { DataXYFrame.this.OutputChanged( output_number); }
+            public void InputPhysicalRangeChanged( int input_number ) { DataXYFrame.this.InputChanged( input_number); }
+            public void InputInterestRangeChanged( int input_number ) { DataXYFrame.this.InputChanged( input_number); }
+            public void OutputPhysicalRangeChanged( int output_number ) { DataXYFrame.this.OutputChanged( output_number); }
+            public void OutputInterestRangeChanged( int output_number ) { DataXYFrame.this.OutputChanged( output_number); }
+			public void MFRemovedInInput( int input_number, int mf_number )    { DataXYFrame.this.InputChanged( input_number); }
+			public void MFRemovedInOutput( int output_number, int mf_number )  { DataXYFrame.this.OutputChanged( output_number); }
+			public void MFAddedInInput( int input_number )      { DataXYFrame.this.InputChanged( input_number); }
+			public void MFAddedInOutput( int output_number )    { DataXYFrame.this.OutputChanged( output_number); }
+			public void MFReplacedInInput( int input_number )   { DataXYFrame.this.InputChanged( input_number); }
+			public void MFReplacedInOutput( int output_number ) { DataXYFrame.this.OutputChanged( output_number); }
+			public void InputActiveChanged( int input_number ) {}
+			public void OutputActiveChanged( int output_number ) {}
+			public void InputRemoved( int input_number ) {}
+			public void OutputRemoved( int output_number ) {}
+			public void InputAdded( int input_number ) {}
+			public void OutputAdded( int output_number ) {}
+            public void OutputDefaultChanged( int output_number ) {}
+			public void RulesModified() {}
+		    };
+		this.kbct_Data.AddKBCTListener(this.KBCTListener);
+	    }
+        jMenuPrint.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jMenuPrint_actionPerformed(); } });
+        jMenuExport.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jMenuExport_actionPerformed(); } });
+        this.jMenuDisplayResetZoom.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+             try {
+              DataXYFrame.this.jPanelXY.setXRange();
+              DataXYFrame.this.jPanelXY.setYRange();
+              DataXYFrame.this.jPanelXY.repaint();
+             } catch( Throwable t ) { MessageKBCT.Error(null, t); }
+           }
+         });
+         jMenuClose.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { DataXYFrame.this.dispose(); } });
+	this.InitObjectsWithInput();
+        this.Translate();
+	this.pack();
+	this.setSize(350,300);
+	this.setLocation(this.ChildPosition(this.getSize()));
+	this.setVisible(true);
+    }
+    //------------------------------------------------------------------------------
+    public void dispose() {
+	super.dispose();
+	this.DataFile.RemoveJFileListener(this.JFileListener);
+	if( this.kbct_Data != null )
+	    this.kbct_Data.RemoveKBCTListener(this.KBCTListener);
+    }
+    //------------------------------------------------------------------------------
+    protected void LoadData() {
+	this.XData= this.DataFile.VariableData(this.XIndex);
+	this.YData= this.DataFile.VariableData(this.YIndex);
+    }
+    //------------------------------------------------------------------------------
+    protected void DataReLoaded() {
+	try {
+          this.LoadData();
+          this.jPanelXY.Reload(this.XData, this.YData);
+          this.repaint();
+	} catch( Throwable t ) { MessageKBCT.Error(null, t); }
+    }
+    //------------------------------------------------------------------------------
+    private void InitObjectsWithInput() throws Throwable {
+	if( this.kbct_Data != null ) {
+		this.jPanelXY.SetXInput(this.GetInput(this.XIndexKBCT));
+		this.jPanelXY.SetYInput(this.GetInput(this.YIndexKBCT));
+        }
+        this.jPanelXY.setXLabel(this.GetXLabel());
+        this.jPanelXY.setYLabel(this.GetYLabel());
+        this.setTitle(this.GetYLabel() + " / " + this.GetXLabel());
+    }
+    //------------------------------------------------------------------------------
+    private void InputChanged( int input_number ) {
+	  try {
+          if( ((this.XIndexKBCT < this.kbct_Data.GetNbInputs()) && (input_number == this.XIndexKBCT)) ||
+	      ((this.YIndexKBCT < this.kbct_Data.GetNbInputs()) && (input_number == this.YIndexKBCT)) )
+	       this.InitObjectsWithInput();
+	  } catch( Throwable t ) {
+            MessageKBCT.Error(this, LocaleKBCT.GetString("Error"), "Error en DataXYFrame en InputChanged: "+t);
+      }
+    }
+    //------------------------------------------------------------------------------
+    private void OutputChanged( int output_number ) {
+	  try {
+          if( ((this.XIndexKBCT >= this.kbct_Data.GetNbInputs()) && ((output_number+this.kbct_Data.GetNbInputs()) == this.XIndexKBCT)) ||
+	       ((this.YIndexKBCT >= this.kbct_Data.GetNbInputs()) && ((output_number+this.kbct_Data.GetNbInputs()) == this.YIndexKBCT)) )
+	         this.InitObjectsWithInput();
+      } catch( Throwable t ) {
+            MessageKBCT.Error(this, LocaleKBCT.GetString("Error"), "Error en DataXYFrame en OutputChanged: "+t);
+      }
+    }
+    //------------------------------------------------------------------------------
+    public void Translate() throws Throwable {
+      this.jMenuPrint.setText(LocaleKBCT.GetString("Print"));
+      this.jMenuExport.setText(LocaleKBCT.GetString("Export"));
+      this.jMenuDisplayResetZoom.setText(LocaleKBCT.GetString("ResetZoom"));
+      this.jMenuClose.setText(LocaleKBCT.GetString("Close"));
+      this.repaint();
+    }
+    //------------------------------------------------------------------------------
+    private JVariable GetInput( int index ) throws Throwable {
+	if( (this.kbct_Data == null) || (index == -1) )
+	    return null;
+
+	if( index < this.kbct_Data.GetNbInputs() )
+	    return this.kbct_Data.GetInput(index+1);
+	else
+	    return this.kbct_Data.GetOutput(index-this.kbct_Data.GetNbInputs()+1);
+    }
+    //------------------------------------------------------------------------------
+    protected String GetXLabel() throws Throwable { return this.jPanelXY.getXLabel(); }
+    //------------------------------------------------------------------------------
+    protected String GetYLabel() throws Throwable { return this.jPanelXY.getYLabel(); }
+    //------------------------------------------------------------------------------
+    public XYPanel XYPanel() { return this.jPanelXY; }
+  //------------------------------------------------------------------------------
+    void jMenuPrint_actionPerformed() {
+      try {
+        Printable p= new Printable() {
+          public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            if (pageIndex >= 1)
+              return Printable.NO_SUCH_PAGE;
+            else
+              return DataXYFrame.this.print(graphics, pageFormat);
+          }
+        };
+        new JPrintPreview(this, p);
+      } catch (Exception ex) { MessageKBCT.Error(null, ex); }
+    }
+//------------------------------------------------------------------------------
+    void jMenuExport_actionPerformed() {
+      try {
+        ExportDialog export= new ExportDialog();
+        JPanel panel = new JPanel() {
+       	  static final long serialVersionUID=0;	
+          public void paint(Graphics g) {
+            DataXYFrame.this.jPanelXYFrame.paint(g);
+            g.translate(0, DataXYFrame.this.jPanelXYFrame.getHeight());
+            DataXYFrame.this.jPanelXYFrame.paint(g);
+            g.setColor(Color.gray);
+            g.drawLine(0,0,0, DataXYFrame.this.jPanelXYFrame.getHeight()-1);
+          }
+        };
+        panel.setSize(new Dimension(this.jPanelXYFrame.getWidth(), this.jPanelXYFrame.getHeight()));
+        export.showExportDialog( panel, "Export view as ...", panel, "export" );
+      } catch (Exception ex) { MessageKBCT.Error(null, ex); }
+    }
+//------------------------------------------------------------------------------
+  public int print(java.awt.Graphics g, PageFormat pageFormat) throws PrinterException {
+     java.awt.Graphics2D  g2 = ( java.awt.Graphics2D )g;
+     double scalew=1;
+     double scaleh=1;
+     double pageHeight = pageFormat.getImageableHeight();
+     // See how much we need to scale the image to fit in the page's width
+     double pageWidth = pageFormat.getImageableWidth();
+     if(  getWidth() >= pageWidth )
+       scalew =  pageWidth / getWidth();
+
+     if(  getHeight() >= pageHeight)
+       scaleh =  pageWidth / getHeight();
+
+     g2.translate( pageFormat.getImageableX(), pageFormat.getImageableY() );
+     g2.scale( scalew, scaleh );
+     this.jPanelXYFrame.print( g2 );
+     return Printable.PAGE_EXISTS;
+ }
+}
+
+
+//------------------------------------------------------------------------------
+  class XYPanel extends FISPlot {
+    static final long serialVersionUID=0;	  
+    private JVariable XInput;    // entrée associé au x
+    private JVariable YInput;    // entrée associé au y
+    private double [] x_data_range = new double[2];
+    private double [] y_data_range = new double[2];
+    private boolean ShowRegression = false;
+    private boolean ShowYX = false;
+    private RegressionCalculator regression;
+    static final int DefaultDataSet = 1;
+    //------------------------------------------------------------------------------
+    XYPanel( JVariable x_input, double [] x_data, JVariable y_input, double [] y_data ) throws Throwable {
+      this.x_data_range[0] = Double.MAX_VALUE;
+      this.y_data_range[0] = Double.MAX_VALUE;
+      this.x_data_range[1] = Double.MIN_VALUE;
+      this.y_data_range[1] = Double.MIN_VALUE;
+      this.setMarksStyle("various");
+      this.AddData(XYPanel.DefaultDataSet, x_data, y_data);
+      this.SetXInput(x_input);
+      this.SetYInput(y_input);
+    }
+    //------------------------------------------------------------------------------
+    public void SetXInput( JVariable x_input ) throws Throwable {
+      this.XInput = x_input;
+      this.setXRange();
+      this.repaint();
+    }
+    //------------------------------------------------------------------------------
+    public void SetYInput( JVariable y_input ) throws Throwable {
+      this.YInput = y_input;
+      this.setYRange();
+      this.repaint();
+    }
+    //------------------------------------------------------------------------------
+    public void setXRange() throws Throwable {
+      if( this.XInput != null )
+        super.setXRange(Math.min(this.x_data_range[0], this.XInput.GetInputInterestRange()[0]), Math.max(this.x_data_range[1], this.XInput.GetInputInterestRange()[1]));
+      else
+        super.setXRange(this.x_data_range[0], this.x_data_range[1]);
+    }
+    //------------------------------------------------------------------------------
+    public void setYRange() throws Throwable {
+      if( this.YInput != null )
+        super.setYRange(Math.min(this.y_data_range[0], this.YInput.GetInputInterestRange()[0]), Math.max(this.y_data_range[1], this.YInput.GetInputInterestRange()[1]));
+      else
+        super.setYRange(this.y_data_range[0], this.y_data_range[1]);
+    }
+    //------------------------------------------------------------------------------
+    public String getXLabel() { try { return this.XInput.GetName(); } catch(Throwable t ) { return null; } }
+    //------------------------------------------------------------------------------
+    public String getYLabel() { try { return this.YInput.GetName(); } catch(Throwable t ) { return null; } }
+    //------------------------------------------------------------------------------
+      public void AddData( int dataset, double [] x_data,  double [] y_data ) throws Throwable {
+        if( (x_data == null) || (y_data == null) ) return;
+        if( x_data.length != y_data.length ) throw new Exception("XYPanel.AddData(): x_data.length != y_data.length");
+        // recherche du min et max des datas
+        for( int i=0 ; i<x_data.length ; i++ ) {
+          this.x_data_range[0] = Math.min(this.x_data_range[0], x_data[i]);
+          this.x_data_range[1] = Math.max(this.x_data_range[1], x_data[i]);
+        }
+        for( int i=0 ; i<y_data.length ; i++ ) {
+          this.y_data_range[0] = Math.min(this.y_data_range[0], y_data[i]);
+          this.y_data_range[1] = Math.max(this.y_data_range[1], y_data[i]);
+        }
+        // affiche les data dans le Plot
+        this.clear(dataset);
+        for( int i=0 ; i<x_data.length ; i++ )
+          this.addPoint(dataset, x_data[i], y_data[i], false);
+        // calcul de la regression
+        if( dataset == XYPanel.DefaultDataSet )
+          this.regression = new RegressionCalculator(x_data, y_data);
+        // affichage
+        this.repaint();
+      }
+      //------------------------------------------------------------------------------
+      public void Reload( double []x_data, double []y_data) throws Throwable {
+        this.AddData(XYPanel.DefaultDataSet, x_data, y_data);
+      }
+      //------------------------------------------------------------------------------
+      public void paintComponent(Graphics g) {
+        try {
+          super.paintComponent(g);
+          // ajustement de la taille du rectangle plot au panel
+          FISPlot.AdjustPlotRectangleSize(g, this);
+          super.paintComponent(g);
+          this.setPlotRectangle(null);  // supprime la memorisation du setPlotRectangle
+          // affichage des bornes du domaine dee entrees
+          if( this.XInput != null ) FISPlot.DrawXInputRange(g, this, this.XInput.GetInputInterestRange(), this._xMin, this._xMax);
+          if( this.YInput != null ) this.DrawYInputRange(g, this.YInput.GetInputInterestRange());
+          // affichage de la droite de regression
+          if( (this.ShowRegression == true) && (this.regression != null) ) {
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.setColor(Color.gray);
+            BasicStroke bs = new BasicStroke((float)1);
+            g2d.setStroke(bs);
+            // calcul du min et max et affichage
+            double a = this.regression.getSlope();
+            double b = this.regression.getIntercept();
+            double y_min = a * this._xMin + b;
+            double y_max = a * this._xMax + b;
+            this._drawLine(g, 0, this.XtoPixel(this._xMin), this.YtoPixel(y_min), this.XtoPixel(this._xMax), this.YtoPixel(y_max), true, (float)1);
+            // affichage du r²
+            g2d.setColor(Color.black);
+            g2d.drawString("r²=" + DecimalFormat.getInstance().format(Math.pow(this.regression.getPearsonR(), 2)), this.XtoPixel(this._xMin + (this._xMax-this._xMin)*1/8), this.YtoPixel(this._yMin + (this._yMax-this._yMin)*7/8));
+          }
+          // affichage de la droite y=x
+          if( this.ShowYX == true ) {
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.setColor(Color.lightGray);
+            BasicStroke bs = new BasicStroke((float)1);
+            g2d.setStroke(bs);
+            // calcul du min et max et affichage
+            double min = Math.min(this._xMin, this._yMin);
+            double max = Math.max(this._xMax, this._yMax);
+            this._drawLine(g, 0, this.XtoPixel(min), this.YtoPixel(min), this.XtoPixel(max), this.YtoPixel(max), true, (float)1);
+          }
+        } catch( Throwable t ) { MessageKBCT.Error( null, t ); }
+      }
+      //------------------------------------------------------------------------------
+      public void ShowRegression( boolean show ) { this.ShowRegression = show; this.repaint(); }
+      //------------------------------------------------------------------------------
+      public void ShowYX( boolean show ) { this.ShowYX = show; this.repaint(); }
+      //------------------------------------------------------------------------------
+      public boolean ShowRegression() { return this.ShowRegression; }
+      //------------------------------------------------------------------------------
+      public boolean ShowYX() { return this.ShowYX; }
+  }

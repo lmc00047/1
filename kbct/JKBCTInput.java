@@ -1,0 +1,78 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                           JKBCTInput.java
+//
+//
+//**********************************************************************
+package kbct;
+
+import KB.variable;
+
+/**
+ * kbct.JKBCTInput is used to generate and modify an input.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+
+//------------------------------------------------------------------------------
+public class JKBCTInput extends JVariable {
+//------------------------------------------------------------------------------
+  public JKBCTInput( variable v, int ptr  ) { super(v, ptr,"Input"); }
+//------------------------------------------------------------------------------
+  public JKBCTInput( int ptr ) throws Throwable { super(ptr,"Input");}
+//------------------------------------------------------------------------------
+  /**
+   * Generate a regular grid.
+   */
+  public JKBCTInput NewRegular( JKBCT kbct, int nb_sef, double min, double max) throws Throwable {
+    v= new variable();
+    this.SetName(LocaleKBCT.GetString("Input") + " " + String.valueOf(kbct.GetNbInputs()));
+    switch (nb_sef) {
+      case 2: this.SetLabelsNumber(2);
+              break;
+      case 3: this.SetLabelsNumber(3);
+              break;
+      case 4: this.SetLabelsNumber(4);
+              break;
+      case 5: this.SetLabelsNumber(5);
+              break;
+      case 6: this.SetLabelsNumber(6);
+              break;
+      case 7: this.SetLabelsNumber(7);
+              break;
+  }
+  this.SetLabelsName();
+  this.SetLabelProperties();
+  this.SetInputInterestRange(min, max);
+  this.SetInputPhysicalRange(min, max);
+  this.input= true;
+  return this;
+  }
+//------------------------------------------------------------------------------
+  public boolean GetActive() { return jnikbct.GetInputActive( ptr ); }
+}

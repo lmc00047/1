@@ -1,0 +1,433 @@
+//***********************************************************************
+//
+//   GUAJE: Generating Understandable and Accurate Fuzzy Models in a Java Environment
+//
+//   Contact: guajefuzzy@gmail.com
+//
+//   Copyright (C) 2007 - 2015  Jose Maria Alonso Moral
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+//***********************************************************************
+
+//***********************************************************************
+//
+//
+//                              JAboutFrame.java
+//
+//
+//**********************************************************************
+
+// Contains: JAboutFrame, MultiLineLabelUI
+
+package kbctFrames;
+
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.StringTokenizer;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.plaf.basic.BasicGraphicsUtils;
+import javax.swing.plaf.basic.BasicLabelUI;
+
+import kbct.LocaleKBCT;
+import kbctAux.MessageKBCT;
+
+/**
+ * kbctFrames.JAboutFrame displays a frame with information about tool and author.
+ *
+ *@author     Jose Maria Alonso Moral
+ *@version    3.0 , 03/08/15
+ */
+//------------------------------------------------------------------------------
+public class JAboutFrame extends JDialog {
+  static final long serialVersionUID=0;	
+  private JLabel jLabelVersion1 = new JLabel();
+  private JLabel jLabelVersion2 = new JLabel();
+  private JLabel jLabelVersion3 = new JLabel();
+  private JButton jButtonOK = new JButton();
+  private JKBCTFrame Parent;
+  protected ImageIcon icon_guaje = LocaleKBCT.getIconGUAJE();
+  protected ImageIcon icon_guaje2 = LocaleKBCT.getIconGUAJE2();
+  protected JLabel jlabelguaje = new JLabel(icon_guaje2,JLabel.CENTER);
+  protected ImageIcon icon_all = LocaleKBCT.getIconALL();
+  protected JLabel jlabelall = new JLabel(icon_all,JLabel.CENTER);
+//------------------------------------------------------------------------------
+  public JAboutFrame( JKBCTFrame parent ) {
+    super(parent);
+    this.Parent = parent;
+    try { jbInit(); }
+    catch(Exception e) {
+      MessageKBCT.Error(this, LocaleKBCT.GetString("Error"), "Error in JAboutFrame 1: "+e);
+    }
+  }
+//------------------------------------------------------------------------------
+  private void jbInit() throws Exception {
+	this.setIconImage(this.icon_guaje.getImage());
+    this.getContentPane().setLayout(new GridBagLayout());
+    this.setTitle(LocaleKBCT.GetString("AboutKBCT"));
+    this.jLabelVersion1.setText("GUAJE version 3.0");
+    this.jLabelVersion2.setText("  "+LocaleKBCT.GetString("OpenSourceSoftware") + " (distributed under GPL-v3 license) \n \n       "+ LocaleKBCT.GetString("Author") + ": Jose Maria Alonso Moral"+ "\n       "+ LocaleKBCT.GetString("Collaborators") + ": " + "David P. Pancho, Luis Magdalena, and Serge Guillaume \n \n       E-mail: guajefuzzy@gmail.com \n \n       Thanks to: ECSC, ROBESAFE, DEPECA, UAH, ETSIT, UPM, ADVOCATEII, CEMAGREF       ");
+    this.jLabelVersion2.setUI(new MultiLineLabelUI());
+    this.jLabelVersion3.setText("       GUAJE was developed while Jose M. Alonso was working in (or visiting to) \n       some of the institutions cited above, but it is worthy to note that none of \n       them has directly paid anything for this free software development.");
+    this.jLabelVersion3.setUI(new MultiLineLabelUI());
+    jButtonOK.setText("OK");
+    jButtonOK.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { dispose(); } });
+
+    this.getContentPane().add(jLabelVersion1,   new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    this.getContentPane().add(jlabelguaje,   new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    this.getContentPane().add(jLabelVersion2,   new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    this.getContentPane().add(jlabelall,   new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    this.getContentPane().add(jLabelVersion3,   new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    this.getContentPane().add(jButtonOK,   new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    this.pack();
+    //this.setModal(true);
+    this.setLocation(JChildFrame.ChildPosition(this.Parent, this.getSize()));
+    this.setVisible(true);
+    this.setResizable(false);
+  }
+}
+
+class MultiLineLabelUI extends BasicLabelUI {
+    static { labelUI = new MultiLineLabelUI(); }
+
+    protected String layoutCL(
+        JLabel label,
+        FontMetrics fontMetrics,
+        String text,
+        Icon icon,
+        Rectangle viewR,
+        Rectangle iconR,
+        Rectangle textR)
+    {
+        String s = layoutCompoundLabel(
+            (JComponent) label,
+            fontMetrics,
+            splitStringByLines(text),
+            icon,
+            label.getVerticalAlignment(),
+            label.getHorizontalAlignment(),
+            label.getVerticalTextPosition(),
+            label.getHorizontalTextPosition(),
+            viewR,
+            iconR,
+            textR,
+            label.getIconTextGap());
+
+    	if( s.equals("") )
+    		return text;
+    	return s;
+    }
+
+	static final int LEADING = SwingConstants.LEADING;
+	static final int TRAILING = SwingConstants.TRAILING;
+	static final int LEFT = SwingConstants.LEFT;
+	static final int RIGHT = SwingConstants.RIGHT;
+	static final int TOP = SwingConstants.TOP;
+	static final int CENTER = SwingConstants.CENTER;
+	/**
+     * Compute and return the location of the icons origin, the
+     * location of origin of the text baseline, and a possibly clipped
+     * version of the compound labels string.  Locations are computed
+     * relative to the viewR rectangle.
+     * The JComponents orientation (LEADING/TRAILING) will also be taken
+     * into account and translated into LEFT/RIGHT values accordingly.
+     */
+    public static String layoutCompoundLabel(JComponent c,
+                                             FontMetrics fm,
+                                             String[] text,
+                                             Icon icon,
+                                             int verticalAlignment,
+                                             int horizontalAlignment,
+                                             int verticalTextPosition,
+                                             int horizontalTextPosition,
+                                             Rectangle viewR,
+                                             Rectangle iconR,
+                                             Rectangle textR,
+                                             int textIconGap)
+    {
+        boolean orientationIsLeftToRight = true;
+        int     hAlign = horizontalAlignment;
+        int     hTextPos = horizontalTextPosition;
+
+        if (c != null) {
+            if (!(c.getComponentOrientation().isLeftToRight())) {
+                orientationIsLeftToRight = false;
+            }
+        }
+        // Translate LEADING/TRAILING values in horizontalAlignment
+        // to LEFT/RIGHT values depending on the components orientation
+        switch (horizontalAlignment) {
+        case LEADING:
+            hAlign = (orientationIsLeftToRight) ? LEFT : RIGHT;
+            break;
+        case TRAILING:
+            hAlign = (orientationIsLeftToRight) ? RIGHT : LEFT;
+            break;
+        }
+        // Translate LEADING/TRAILING values in horizontalTextPosition
+        // to LEFT/RIGHT values depending on the components orientation
+        switch (horizontalTextPosition) {
+        case LEADING:
+            hTextPos = (orientationIsLeftToRight) ? LEFT : RIGHT;
+            break;
+        case TRAILING:
+            hTextPos = (orientationIsLeftToRight) ? RIGHT : LEFT;
+            break;
+        }
+        return layoutCompoundLabel(fm,
+                                   text,
+                                   icon,
+                                   verticalAlignment,
+                                   hAlign,
+                                   verticalTextPosition,
+                                   hTextPos,
+                                   viewR,
+                                   iconR,
+                                   textR,
+                                   textIconGap);
+    }
+    /**
+     * Compute and return the location of the icons origin, the
+     * location of origin of the text baseline, and a possibly clipped
+     * version of the compound labels string.  Locations are computed
+     * relative to the viewR rectangle.
+     * This layoutCompoundLabel() does not know how to handle LEADING/TRAILING
+     * values in horizontalTextPosition (they will default to RIGHT) and in
+     * horizontalAlignment (they will default to CENTER).
+     * Use the other version of layoutCompoundLabel() instead.
+     */
+    public static String layoutCompoundLabel(
+        FontMetrics fm,
+        String[] text,
+        Icon icon,
+        int verticalAlignment,
+        int horizontalAlignment,
+        int verticalTextPosition,
+        int horizontalTextPosition,
+        Rectangle viewR,
+        Rectangle iconR,
+        Rectangle textR,
+        int textIconGap)
+    {
+        /* Initialize the icon bounds rectangle iconR.
+         */
+        if (icon != null) {
+            iconR.width = icon.getIconWidth();
+            iconR.height = icon.getIconHeight();
+        }
+        else {
+            iconR.width = iconR.height = 0;
+        }
+
+        /* Initialize the text bounds rectangle textR.  If a null
+         * or and empty String was specified we substitute "" here
+         * and use 0,0,0,0 for textR.
+         */
+        // Fix for textIsEmpty sent by Paulo Santos
+        boolean textIsEmpty = (text == null) || (text.length == 0)
+			|| (text.length == 1 && ( (text[0]==null) || text[0].equals("") ));
+
+    	String rettext = "";
+        if (textIsEmpty) {
+            textR.width = textR.height = 0;
+        }
+        else {
+        	Dimension dim = computeMultiLineDimension( fm, text );
+            textR.width = dim.width;
+            textR.height = dim.height;
+        }
+
+        /* Unless both text and icon are non-null, we effectively ignore
+         * the value of textIconGap.  The code that follows uses the
+         * value of gap instead of textIconGap.
+         */
+        int gap = (textIsEmpty || (icon == null)) ? 0 : textIconGap;
+
+        if (!textIsEmpty) {
+
+            /* If the label text string is too wide to fit within the available
+             * space "..." and as many characters as will fit will be
+             * displayed instead.
+             */
+            int availTextWidth;
+            if (horizontalTextPosition == CENTER) {
+                availTextWidth = viewR.width;
+            }
+            else {
+                availTextWidth = viewR.width - (iconR.width + gap);
+            }
+
+            if (textR.width > availTextWidth && text.length == 1) {
+                String clipString = "...";
+                int totalWidth = SwingUtilities.computeStringWidth(fm,clipString);
+                int nChars;
+                for(nChars = 0; nChars < text[0].length(); nChars++) {
+                    totalWidth += fm.charWidth(text[0].charAt(nChars));
+                    if (totalWidth > availTextWidth) {
+                        break;
+                    }
+                }
+                rettext = text[0].substring(0, nChars) + clipString;
+                textR.width = SwingUtilities.computeStringWidth(fm,rettext);
+            }
+        }
+
+        /* Compute textR.x,y given the verticalTextPosition and
+         * horizontalTextPosition properties
+         */
+        if (verticalTextPosition == TOP) {
+            if (horizontalTextPosition != CENTER) {
+                textR.y = 0;
+            }
+            else {
+                textR.y = -(textR.height + gap);
+            }
+        }
+        else if (verticalTextPosition == CENTER) {
+            textR.y = (iconR.height / 2) - (textR.height / 2);
+        }
+        else { // (verticalTextPosition == BOTTOM)
+            if (horizontalTextPosition != CENTER)
+                textR.y = iconR.height - textR.height;
+            else
+                textR.y = (iconR.height + gap);
+        }
+
+        if (horizontalTextPosition == LEFT)
+            textR.x = -(textR.width + gap);
+        else if (horizontalTextPosition == CENTER)
+            textR.x = (iconR.width / 2) - (textR.width / 2);
+        else { // (horizontalTextPosition == RIGHT)
+            textR.x = (iconR.width + gap);
+        }
+
+        /* labelR is the rectangle that contains iconR and textR.
+         * Move it to its proper position given the labelAlignment
+         * properties.
+         *
+         * To avoid actually allocating a Rectangle, Rectangle.union
+         * has been inlined below.
+         */
+        int labelR_x = Math.min(iconR.x, textR.x);
+        int labelR_width = Math.max(iconR.x + iconR.width,
+                                    textR.x + textR.width) - labelR_x;
+        int labelR_y = Math.min(iconR.y, textR.y);
+        int labelR_height = Math.max(iconR.y + iconR.height,
+                                     textR.y + textR.height) - labelR_y;
+
+        int dx, dy;
+        if (verticalAlignment == TOP)
+            dy = viewR.y - labelR_y;
+        else if (verticalAlignment == CENTER)
+            dy = (viewR.y + (viewR.height / 2)) - (labelR_y + (labelR_height / 2));
+        else { // (verticalAlignment == BOTTOM)
+            dy = (viewR.y + viewR.height) - (labelR_y + labelR_height);
+        }
+
+        if (horizontalAlignment == LEFT)
+            dx = viewR.x - labelR_x;
+        else if (horizontalAlignment == RIGHT)
+            dx = (viewR.x + viewR.width) - (labelR_x + labelR_width);
+        else { // (horizontalAlignment == CENTER)
+            dx = (viewR.x + (viewR.width / 2)) -
+                 (labelR_x + (labelR_width / 2));
+        }
+
+        /* Translate textR and glypyR by dx,dy.
+         */
+        textR.x += dx;
+        textR.y += dy;
+        iconR.x += dx;
+        iconR.y += dy;
+
+        return rettext;
+    }
+
+    protected void paintEnabledText(JLabel l, Graphics g, String s, int textX, int textY) {
+        int accChar = l.getDisplayedMnemonic();
+        g.setColor(l.getForeground());
+        drawString(g, s, accChar, textX, textY);
+    }
+
+    protected void paintDisabledText(JLabel l, Graphics g, String s, int textX, int textY) {
+        int accChar = l.getDisplayedMnemonic();
+	g.setColor(l.getBackground());
+    	drawString(g, s, accChar, textX, textY);
+    }
+
+    protected void drawString( Graphics g, String s, int accChar, int textX, int textY ) {
+    	if( s.indexOf('\n') == -1 )
+			BasicGraphicsUtils.drawString(g, s, accChar, textX, textY);
+    	else {
+    		String[] strs = splitStringByLines( s );
+    		int height = g.getFontMetrics().getHeight();
+    		// Only the first line can have the accel char
+    		BasicGraphicsUtils.drawString(g, strs[0], accChar, textX, textY);
+    		for( int i = 1; i < strs.length; i++ )
+    			g.drawString( strs[i], textX, textY + (height*i) );
+    	}
+    }
+
+	public static Dimension computeMultiLineDimension( FontMetrics fm, String[] strs ) {
+		int i, c, width = 0;
+                for(i=0, c=strs.length ; i < c ; i++)
+          	   width = Math.max( width, SwingUtilities.computeStringWidth(fm,strs[i]) );
+
+		return new Dimension( width, fm.getHeight() * strs.length );
+	}
+
+	protected String str;
+	protected String[] strs;
+
+	public String[] splitStringByLines( String str ) {
+		if( str.equals(this.str) )
+			return strs;
+
+		this.str = str;
+		int lines = 1;
+		int i, c;
+               for(i=0, c=str.length() ; i < c ; i++) {
+                  if( str.charAt(i) == '\n' )
+            	     lines++;
+               }
+		strs = new String[lines];
+		StringTokenizer st = new StringTokenizer( str, "\n" );
+		int line = 0;
+		while( st.hasMoreTokens() )
+			strs[line++] = st.nextToken();
+
+		return strs;
+	}
+}

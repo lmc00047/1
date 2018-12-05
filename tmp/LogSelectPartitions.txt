@@ -1,0 +1,138 @@
+++++++++++++++++++++++++++++++++++
+23-oct-2018 9:45:59
+Archivo de configuración= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.ikb.xml
+filtro KB= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.kb.xml
+El archivo de datos= C:\GUAJE-vb3.0\quickstart\DATA\IRIS.txt.aux
+PROCEDIMIENTO DE SELECCIÓN DE PARTICIONES AUTOMÁTICO
+----------------------------------
+----  Regular
+------  2  ->  PC=0,67978  PE=0,48412  ChI=0,51525
+----  Regular
+------  3  ->  PC=0,68860  PE=0,47638  ChI=0,70441
+----  Regular
+------  4  ->  PC=0,66580  PE=0,50296  ChI=0,71473
+----  Regular
+------  5  ->  PC=0,64119  PE=0,53165  ChI=0,70331
+----  Regular
+------  6  ->  PC=0,64326  PE=0,52690  ChI=0,70314
+----  Regular
+------  7  ->  PC=0,64127  PE=0,52962  ChI=0,70560
+----  Regular
+------  8  ->  PC=0,63115  PE=0,54241  ChI=0,70146
+----  Regular
+------  9  ->  PC=0,64363  PE=0,52767  ChI=0,72070
+++++++  The best Regular:  ->  PC=0,68860 (3.0 labels)   PE=0,47638 (3.0 labels)   ChI=0,72070 (9.0 labels)
+----  HFP
+----  2  ->  PC=0,71861  PE=0,40460  ChI=0,54502
+----  HFP
+----  3  ->  PC=0,72079  PE=0,42631  ChI=0,72663
+----  HFP
+----  4  ->  PC=0,72324  PE=0,41961  ChI=0,76288
+----  HFP
+----  5  ->  PC=0,71392  PE=0,42905  ChI=0,76403
+----  HFP
+----  6  ->  PC=0,70935  PE=0,43608  ChI=0,77163
+----  HFP
+----  7  ->  PC=0,73094  PE=0,40944  ChI=0,79621
+----  HFP
+----  8  ->  PC=0,72421  PE=0,42039  ChI=0,78438
+----  HFP
+----  9  ->  PC=0,70985  PE=0,43789  ChI=0,77324
+++++++  The best HFP:  ->  PC=0,73094 (7.0 labels)   PE=0,40460 (2.0 labels)   ChI=0,79621 (7.0 labels)
+----  Kmeans
+----  2  ->  PC=0,89547  PE=0,16847  ChI=0,85893
+----  Kmeans
+----  3  ->  PC=0,81509  PE=0,29074  ChI=0,82274
+----  Kmeans
+----  4  ->  PC=0,79650  PE=0,31566  ChI=0,83258
+----  Kmeans
+----  5  ->  PC=0,74610  PE=0,38573  ChI=0,79429
+----  Kmeans
+----  6  ->  PC=0,72573  PE=0,41524  ChI=0,78637
+----  Kmeans
+----  7  ->  PC=0,71194  PE=0,43398  ChI=0,77964
+----  Kmeans
+----  8  ->  PC=0,72667  PE=0,41577  ChI=0,79624
+----  Kmeans
+----  9  ->  PC=0,68644  PE=0,47293  ChI=0,75862
+++++++  The best Kmeans:  ->  PC=0,89547 (2.0 labels)   PE=0,16847 (2.0 labels)   ChI=0,85893 (2.0 labels)
+++++++  The best partition:  ->  PC=0,89547 (2.0 labels, Kmeans)    PE=0,16847 (2.0 labels, Kmeans)    ChI=0,85893 (2.0 labels, Kmeans)
+++++++  The best partition (2 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (3 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (4 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (5 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (6 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (7 labels):  ->  PC=HFP    PE=HFP    ChI=HFP
+++++++  The best partition (8 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (9 labels):  ->  PC=HFP    PE=HFP    ChI=HFP
+Petal Length
+     Partición Kmeans
+     Número de etiquetas= 2
+*************************
+----  Regular
+------  2  ->  PC=0,70444  PE=0,44631  ChI=0,53778
+----  Regular
+------  3  ->  PC=0,74222  PE=0,40030  ChI=0,75704
+----  Regular
+------  4  ->  PC=0,67333  PE=0,49158  ChI=0,71417
+----  Regular
+------  5  ->  PC=0,69778  PE=0,45177  ChI=0,75067
+----  Regular
+------  6  ->  PC=0,66667  PE=0,49800  ChI=0,72800
+----  Regular
+------  7  ->  PC=0,67333  PE=0,47664  ChI=0,73111
+----  Regular
+------  8  ->  PC=0,66889  PE=0,49371  ChI=0,73819
+----  Regular
+------  9  ->  PC=0,69778  PE=0,43283  ChI=0,76704
+++++++  The best Regular:  ->  PC=0,74222 (3.0 labels)   PE=0,40030 (3.0 labels)   ChI=0,76704 (9.0 labels)
+----  HFP
+----  2  ->  PC=0,84578  PE=0,23395  ChI=0,77387
+----  HFP
+----  3  ->  PC=0,77766  PE=0,34119  ChI=0,78671
+----  HFP
+----  4  ->  PC=0,75713  PE=0,37043  ChI=0,79311
+----  HFP
+----  5  ->  PC=0,66838  PE=0,49429  ChI=0,71418
+----  HFP
+----  6  ->  PC=0,68435  PE=0,46715  ChI=0,74094
+----  HFP
+----  7  ->  PC=0,70110  PE=0,44224  ChI=0,75285
+----  HFP
+----  8  ->  PC=0,70470  PE=0,43814  ChI=0,75736
+----  HFP
+----  9  ->  PC=0,70789  PE=0,42956  ChI=0,75860
+++++++  The best HFP:  ->  PC=0,84578 (2.0 labels)   PE=0,23395 (2.0 labels)   ChI=0,79311 (4.0 labels)
+----  Kmeans
+----  2  ->  PC=0,86079  PE=0,21002  ChI=0,79402
+----  Kmeans
+----  3  ->  PC=0,82763  PE=0,26958  ChI=0,84190
+----  Kmeans
+----  4  ->  PC=0,78138  PE=0,33271  ChI=0,81774
+----  Kmeans
+----  5  ->  PC=0,78388  PE=0,33395  ChI=0,83296
+----  Kmeans
+----  6  ->  PC=0,77351  PE=0,33945  ChI=0,82335
+----  Kmeans
+----  7  ->  PC=0,74768  PE=0,37823  ChI=0,79343
+----  Kmeans
+----  8  ->  PC=0,71789  PE=0,43587  ChI=0,79020
+----  Kmeans
+----  9  ->  PC=0,72254  PE=0,43045  ChI=0,80278
+++++++  The best Kmeans:  ->  PC=0,86079 (2.0 labels)   PE=0,21002 (2.0 labels)   ChI=0,84190 (3.0 labels)
+++++++  The best partition:  ->  PC=0,86079 (2.0 labels, Kmeans)    PE=0,21002 (2.0 labels, Kmeans)    ChI=0,84190 (3.0 labels, Kmeans)
+++++++  The best partition (2 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (3 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (4 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (5 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (6 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (7 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (8 labels):  ->  PC=Kmeans    PE=Kmeans    ChI=Kmeans
+++++++  The best partition (9 labels):  ->  PC=Kmeans    PE=HFP    ChI=Kmeans
+Petal Width
+     Partición Kmeans
+     Número de etiquetas= 2
+*************************
+----------------------------------
+El proceso automático de selección de particiones ha terminado.
+time end -> 9:45:59
