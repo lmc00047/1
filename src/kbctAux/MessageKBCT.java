@@ -127,7 +127,9 @@ public class MessageKBCT {
    * </p>
    */
   public static int Confirm( Component parent, String message, int option, boolean simplify, boolean reduction, boolean configuration ) {
-    String opt3= null;
+	    //System.out.println("no entraaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+	  String opt3= null;
     if (simplify)
       opt3= "Cancel";
     else if (reduction)
@@ -137,32 +139,25 @@ public class MessageKBCT {
 
     Object[] options;
     if (opt3!=null) {
+
       options= new Object[3];
       options[0]= LocaleKBCT.GetString("Yes");
       options[1]= LocaleKBCT.GetString("No");
       options[2]= LocaleKBCT.GetString(opt3);
-    } else {
+    } else { //Solo entra aqui
+
       options= new Object[2];
       options[0]= LocaleKBCT.GetString("Yes");
       options[1]= LocaleKBCT.GetString("No");
+
     }
+    
     //System.out.println("option -> "+option);
     JOptionPane.setDefaultLocale(LocaleKBCT.Locale());
-    //System.out.println("confirm 2");
-    //int result= -1;
-    //try {
-    	//result= JOptionPane.showOptionDialog(parent, message, LocaleKBCT.GetString("Confirmation"),
-        //        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-        //        null, options, options[option]);
-    //} catch (java.lang.NullPointerException e) {
-    	//System.out.println("Error in MessageKBCT.Confirm");
-    	//e.printStackTrace();
-    //}
-    //System.out.println("res="+result);
-    //return result;
 	return JOptionPane.showOptionDialog(parent, message, LocaleKBCT.GetString("Confirmation"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
             null, options, options[option]);
+	
   }
 //------------------------------------------------------------------------------
   /**
@@ -176,8 +171,12 @@ public class MessageKBCT {
    * </p>
    */
   public static int Confirm( Component parent, String message, int option ) {
+	    //System.out.println("no entraaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
     JOptionPane.setDefaultLocale(LocaleKBCT.Locale());
+    
     Object[] options= {LocaleKBCT.GetString("OK"),LocaleKBCT.GetString("ENDInfer")};
+    System.out.println(options);
     return JOptionPane.showOptionDialog(parent, message, LocaleKBCT.GetString("Confirmation"),
                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                                null, options, options[option]);
@@ -215,7 +214,10 @@ public class MessageKBCT {
    * Launch a QUESTION message defined by the user.<br>
    * For example, it is used in order to ask how many variables will be used as outputs.
    */
+
   public static String DataQuestion( Component parentComponent, String message) {
+	  //System.out.println("no uyvhg entraaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
     JOptionPane.setDefaultLocale(LocaleKBCT.Locale());
     return JOptionPane.showInputDialog( parentComponent, message, LocaleKBCT.GetString("Question"), JOptionPane.QUESTION_MESSAGE);
   }
@@ -702,7 +704,7 @@ public class MessageKBCT {
    * Display a window with the list of data variables from data file
    */
   public static Object SelectDataVar( Component parentComponent, String msg, int NbData ) {
-      Object[] possibleValues = new Object[NbData];
+	  Object[] possibleValues = new Object[NbData];
       for (int n=0; n<NbData; n++)
         possibleValues[n]=new Integer(n+1);
 

@@ -155,7 +155,7 @@ public class JPanelSetToolsPathFrame extends JDialog implements Translatable {
   }
 //------------------------------------------------------------------------------
  public void jbApply_actionPerformed() throws Throwable {
-	  System.out.println("entraa");
+	 // System.out.println("entraa");
     try {
       if (this.jtfGraphvizPath.getText().equals("") == true) {
           throw new Exception("SelectAGraphvizPath");

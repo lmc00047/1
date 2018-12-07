@@ -130,14 +130,13 @@ public class JMainFrame extends JKBCTFrame {
   static final long serialVersionUID=0;	
   private boolean KB = false;
   public String IKBFile="";
-  public String KBDataFile="";
+  //public String KBDataFile="";
+  public String KBDataFile="C:/GUAJE/IRIS.txt";
   public String OrigKBDataFile="C:/GUAJE/IRIS.txt";//????
   private String SelectedVariablesDataFile="";
   private String oldIKBFile="";
-  private String oldKBExpertFile="/src/IRIS.txt.kb.xml";//aquiiiiiiiiiiiii
-  private String oldKBDataFile="/src/IRIS.txt"; //aquiiiiiiiii
-  //private String oldKBExpertFile="C:/GUAJE/IRIS.txt.kb.xml";//aquiiiiiiiiiiiii
- // private String oldKBDataFile="C:/GUAJE/IRIS.txt"; //aquiiiiiiiii
+  private String oldKBExpertFile="C:/GUAJE/IRIS.txt.kb.xml";//aquiiiiiiiiiiiii
+  private String oldKBDataFile="C:/GUAJE/IRIS.txt"; //aquiiiiiiiii
   private String oldConjunction= null;
   private String[] oldDisjunction= null;
   private String[] oldDefuzzification= null;
@@ -249,7 +248,7 @@ public class JMainFrame extends JKBCTFrame {
     
 //------------------------------------------------------------------------------
   public JMainFrame() {
-	  System.out.println("ventana bien");
+	//  System.out.println("ventana bien");
     try {
       jbInit();
       this.InitJKBCTFrameWithKBCT();
@@ -261,8 +260,8 @@ public class JMainFrame extends JKBCTFrame {
 //------------------------------------------------------------------------------
     //private void jbInit() throws Throwable {
     public void jbInit() throws Throwable {
-  	  System.out.println("ventana iniiiiiiiiiiiiii");
-
+     
+    	//AQUI ENTRA
     MainKBCT.getConfig().SetFingramsSelectedSample(LocaleKBCT.DefaultFingramsSelectedSample());
 	if (MainKBCT.getConfig().GetTESTautomatic())
 	    this.setVisible(false);
@@ -634,7 +633,7 @@ public class JMainFrame extends JKBCTFrame {
       jTFcontextNumberInputs.setEnabled(true);
       jTFcontextNumberClasses.setText(""+MainKBCT.getConfig().GetNumberOfOutputLabels());
       jTFcontextNumberClasses.setEnabled(true);
-      if (JKBCTFrame.KBExpertFile.equals("")) {
+      if (JKBCTFrame.KBExpertFile.equals("")) { //AQUIIIIIIIIIIIIIIIIIII
          this.jMenuExpertNew.setEnabled(true);
          this.jMenuExpertOpen.setEnabled(true);
          this.jMenuExpertClose.setEnabled(false);
@@ -2684,20 +2683,17 @@ public class JMainFrame extends JKBCTFrame {
       }
   }
 //------------------------------------------------------------------------------
-  void jMenuExpertOpen_actionPerformed() {
-    JOpenFileChooser file_chooser = new JOpenFileChooser(MainKBCT.getConfig().GetKBCTFilePath());
-    file_chooser.setAcceptAllFileFilterUsed(false);
-    //JFileFilter filter1 = new JFileFilter(("KB").toLowerCase(), LocaleKBCT.GetString("FilterKBFile"));
+ public void jMenuExpertOpen_actionPerformed() { //aquiiiiiiiiiii
+
     JFileFilter filter2 = new JFileFilter(("XML").toLowerCase(), LocaleKBCT.GetString("FilterKBFile"));
-    file_chooser.addChoosableFileFilter(filter2);
-    //file_chooser.addChoosableFileFilter(filter1);
-    file_chooser.setFileFilter(filter2);
-    if( file_chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ) {
-      MainKBCT.getConfig().SetKBCTFilePath(file_chooser.getSelectedFile().getParent());
+   
+    	if( true ) {
       try {
         boolean warning= false;
-        JKBCTFrame.KBExpertFile = file_chooser.getSelectedFile().getAbsolutePath();
+        JKBCTFrame.KBExpertFile =  "C:/GUAJE/IRIS.txt.kb.xml";
+        //JKBCTFrame.KBExpertFile = file_chooser.getSelectedFile().getAbsolutePath();
         //System.out.println("JKBCTFrame.KBExpertFile= "+JKBCTFrame.KBExpertFile);
+       // System.out.println("la ruta es:"+KBExpertFile);
         if (JKBCTFrame.KBExpertFile.endsWith("xml")) {
     	    XMLParser theParser = new XMLParser();
             Hashtable hsystem= (Hashtable)theParser.getXMLinfo(JKBCTFrame.KBExpertFile, "SystemInfo");
@@ -2840,13 +2836,15 @@ public class JMainFrame extends JKBCTFrame {
       }
   }
 //------------------------------------------------------------------------------
-  void jMenuDataOpen_actionPerformed() {
+  public void jMenuDataOpen_actionPerformed() { //aquiiiiiiiiiiiii
     try {
-      JOpenFileChooser file_chooser= new JOpenFileChooser(MainKBCT.getConfig().GetDataFilePath());
-      if( file_chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ) {
-        MainKBCT.getConfig().SetDataFilePath(file_chooser.getSelectedFile().getParent());
-        this.DFile= file_chooser.getSelectedFile().getPath();
-        this.OrigKBDataFile= this.DFile;
+      //JOpenFileChooser file_chooser= new JOpenFileChooser(MainKBCT.getConfig().GetDataFilePath());
+      //if( file_chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ) {
+    	  if( true ) {
+        //MainKBCT.getConfig().SetDataFilePath(file_chooser.getSelectedFile().getParent());
+        //this.DFile= file_chooser.getSelectedFile().getPath();
+        //this.OrigKBDataFile= this.DFile;
+    		  this.OrigKBDataFile="C:/GUAJE/IRIS.txt";
         this.OpenDataFile1();
       }
     } catch( Throwable t ) {
@@ -2865,6 +2863,7 @@ public class JMainFrame extends JKBCTFrame {
     	MainKBCT.getConfig().SetDataFilePath(df.getParent());
         this.DFile= df.getPath();
         this.OrigKBDataFile= this.DFile;
+        this.OrigKBDataFile="C:/GUAJE/IRIS.txt";
         this.OpenDataFile1();
     } catch( Throwable t ) {
       t.printStackTrace();
@@ -4579,8 +4578,7 @@ public class JMainFrame extends JKBCTFrame {
             if (this.jef.Temp_kbct!=null) {
               if (this.jef.Temp_kbct.GetKBCTFile()==null) {
                 if (JKBCTFrame.KBExpertFile.equals(""))
-                	JKBCTFrame.KBExpertFile= "/src/IRIS.txt.kb.xml"; //cambiaaaaaaaaaaaaaaaaaaaaaaaar
-                //JKBCTFrame.KBExpertFile= this.jTFExpertName.getText();
+                	JKBCTFrame.KBExpertFile= "C:/GUAJE/IRIS.txt.kb.xml"; //cambiaaaaaaaaaaaaaaaaaaaaaaaar
 
                 this.jef.Temp_kbct.SetKBCTFile(JKBCTFrame.KBExpertFile);
               }
@@ -4625,11 +4623,13 @@ public class JMainFrame extends JKBCTFrame {
 //------------------------------------------------------------------------------
   public void jMenuExit_actionPerformed() { this.dispose(); }
 //------------------------------------------------------------------------------
-  private void OpenDataFile1() throws Throwable {
+  private void OpenDataFile1() throws Throwable { //aquiiiiiiiiii
+	  this.DFile=this.OrigKBDataFile;
     LineNumberReader lnr= new LineNumberReader(new InputStreamReader(new FileInputStream(new File(this.DFile))));
     String line= lnr.readLine();
     String VariableNames= line;
     File file= new File(this.DFile);
+   
     if (line.startsWith("VariableNames")) {
       this.DataFileLabels= true;
       VariableNames=line.substring(14,line.length());
@@ -4669,9 +4669,11 @@ public class JMainFrame extends JKBCTFrame {
          this.VNames[k]= LocaleKBCT.GetString("Variable") + String.valueOf(k + 1);
     }
     int option=1;
-	if ( (!MainKBCT.getConfig().GetTESTautomatic()) && (!MainKBCT.getConfig().GetTutorialFlag()))
-        option= MessageKBCT.Confirm(this, LocaleKBCT.GetString("DoYouWantToSpecifyVariablesToUse")+"\n"+LocaleKBCT.GetString("DefaultAllUsed"), 1, false, false, false);
-
+	//if ( (!MainKBCT.getConfig().GetTESTautomatic()) && (!MainKBCT.getConfig().GetTutorialFlag()))
+      //  option= MessageKBCT.Confirm(this, LocaleKBCT.GetString("DoYouWantToSpecifyVariablesToUse")+"\n"+LocaleKBCT.GetString("DefaultAllUsed"), 1, false, false, false);
+	if ( true)
+        //option= MessageKBCT.Confirm(this, LocaleKBCT.GetString("DoYouWantToSpecifyVariablesToUse")+"\n"+LocaleKBCT.GetString("DefaultAllUsed"), 1, false, false, false);
+		option=1;//esto cambiadoooooo
 	if (option==0) {
       this.SelectDataFromDataFile();
     } else {
@@ -4805,6 +4807,7 @@ public class JMainFrame extends JKBCTFrame {
 //------------------------------------------------------------------------------
   private void OpenDataFile2() {
     try {
+    	//entraaaaaaaaaaaaaaaaaaaaa
     	//System.out.println("JMF: OpenDataFile2(): 1");
       JExtendedDataFile new_data_file = new JExtendedDataFile(this.DFile, true);
       this.DataNbVariables = new_data_file.VariableCount();
@@ -4828,8 +4831,8 @@ public class JMainFrame extends JKBCTFrame {
           } else {
               String aux="1";
           	 if ( (!MainKBCT.getConfig().GetTESTautomatic()) && (!MainKBCT.getConfig().GetTutorialFlag()) )
-                  aux = MessageKBCT.DataQuestion(this, LocaleKBCT.GetString("Data_file_has") + " " + this.DataNbVariables + " " + LocaleKBCT.GetString("Variables") + ".\n" + LocaleKBCT.GetString("How_many_variables"));
-
+                 // aux = MessageKBCT.DataQuestion(this, LocaleKBCT.GetString("Data_file_has") + " " + this.DataNbVariables + " " + LocaleKBCT.GetString("Variables") + ".\n" + LocaleKBCT.GetString("How_many_variables"));
+          		 aux="1";//aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
         	  if (aux != null && !aux.equals("null"))
                   NbOutputs = Integer.parseInt(aux);
               else {
@@ -4916,13 +4919,13 @@ public class JMainFrame extends JKBCTFrame {
             File f = new File(JKBCTFrame.KBExpertFile);
             if (f.exists() && !(MainKBCT.getConfig().GetTESTautomatic()) && !(MainKBCT.getConfig().GetTutorialFlag())) {
                 String message = LocaleKBCT.GetString("TheKBCTFile") + " : " + JKBCTFrame.KBExpertFile + " " + LocaleKBCT.GetString("AlreadyExist") + "\n" + LocaleKBCT.GetString("DoYouWantToReplaceIt");
-                if (MessageKBCT.Confirm(this, message, 1, false, false, false) == JOptionPane.NO_OPTION)
-                     this.jef.jMenuSaveAs_actionPerformed();
-                else
-                     this.jef.Temp_kbct.Save(JKBCTFrame.KBExpertFile, false);
-            } else
-                this.jef.Temp_kbct.Save(JKBCTFrame.KBExpertFile, false);
-
+                //if (MessageKBCT.Confirm(this, message, 1, false, false, false) == JOptionPane.NO_OPTION)
+                     //this.jef.jMenuSaveAs_actionPerformed();
+                //else
+                    // this.jef.Temp_kbct.Save(JKBCTFrame.KBExpertFile, false);
+           // } else
+                //this.jef.Temp_kbct.Save(JKBCTFrame.KBExpertFile, false);
+            }
             String[] OutputType= new String[NbOutputs];
             for (int n=0; n<NbOutputs; n++)
               OutputType[n]= this.kbct.GetOutput(n+1).GetType();
@@ -6260,7 +6263,7 @@ public class JMainFrame extends JKBCTFrame {
       this.IKBFile="";
       JKBCTFrame.KBExpertFile="";
       this.KBDataFile="";
-      this.OrigKBDataFile="";
+      this.OrigKBDataFile="C:/GUAJE/IRIS.txt"; //aquiiiiiiiiiiiiii
       this.SelectedVariablesDataFile="";
       this.DataFileLabels= false;
       this.VNames=null;

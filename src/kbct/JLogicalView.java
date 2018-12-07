@@ -213,8 +213,8 @@ public class JLogicalView {
 			  p=null;
 		  }
 	  } catch (Throwable t) {
-		  t.printStackTrace();
-		  MessageKBCT.Error(null, t);
+		 // t.printStackTrace();
+		 // MessageKBCT.Error(null, t);
 	  } 
       return auxend;
   }
@@ -495,8 +495,9 @@ public class JLogicalView {
 		  this.warningend= true;
 		  MessageKBCT.Error(null, LocaleKBCT.GetString("Error"), LocaleKBCT.GetString("errorEspresso1"));
 	  } catch (IOException e) {
-		  e.printStackTrace();
-		  MessageKBCT.Error(null, e);
+
+		 // e.printStackTrace();
+		 // MessageKBCT.Error(null, e);
 	  } finally {
 		  Thread.interrupted();
 	  }

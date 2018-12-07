@@ -52,6 +52,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
@@ -252,6 +253,8 @@ public class JExpertFrame extends JKBCTFrame {
     private JMenuItem jPopupFingramRules = new JMenuItem();
     private JMenuItem jPopupActiveRule = new JMenuItem();
     private JMenuItem jPopupInActiveRule = new JMenuItem();
+    
+    public static int aux2 = 0;
 
   private JPanel jPHeader = new JPanel(new GridBagLayout());
   // nom
@@ -339,6 +342,10 @@ public class JExpertFrame extends JKBCTFrame {
   private long firstKeyPressed= -1;
   
 //------------------------------------------------------------------------------
+  public JExpertFrame() {
+  }
+  
+  
   public JExpertFrame(JMainFrame Parent) {
     this.Parent= Parent;
     this.expertWindow= true;
@@ -1068,6 +1075,7 @@ public class JExpertFrame extends JKBCTFrame {
     //BOTON CALIDAD
     jButtonQuality.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jButtonQuality_actionPerformed(true,false); }} );
    
+    //jButtonQuality_actionPerformed(true,false);
     
     jButtonInfer.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jButtonInfer_actionPerformed(); }} );
     jButtonSummary.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { jButtonSummary_actionPerformed(); }} );
@@ -1139,6 +1147,13 @@ public class JExpertFrame extends JKBCTFrame {
     this.jTFName.setEnabled(false);
     this.jTFName.setText("");
     this.DisableAllButtons();
+    if (aux2==0)
+    {
+    	aux2=1;
+    	//jButtonQuality_actionPerformed(true,false);//aquiiiiiiiiiiiiiiiiii}
+    	AssessingInterpretability(true);
+    }
+    
   }
 //------------------------------------------------------------------------------
   protected void InitJExpertFrameWithKBCT() throws Throwable {
@@ -5428,9 +5443,8 @@ public class JExpertFrame extends JKBCTFrame {
 //------------------------------------------------------------------------------
   //aquiiiiiiiiiii este es el boton calidad
   public void jButtonQuality_actionPerformed(boolean ff, boolean vis) {
-	  //System.out.println("JEF: Quality -> htsize="+jnikbct.getHashtableSize());
-	  //System.out.println("JEF: Quality -> id="+jnikbct.getId());
-      if (MainKBCT.getConfig().GetTESTautomatic()) {
+	  
+      if (MainKBCT.getConfig().GetTESTautomatic()) { //aqui no entra
     	  File fname= new File(JKBCTFrame.KBExpertFile);
     	  String name=fname.getName();
           int ind= name.indexOf("_");
@@ -5457,14 +5471,22 @@ public class JExpertFrame extends JKBCTFrame {
           Date d= new Date(System.currentTimeMillis());
           MessageKBCT.WriteLogFile("time end -> "+DateFormat.getTimeInstance().format(d), "Quality");
           MessageKBCT.CloseLogFile("Quality");
-      } else {
+      } else { //entra aquiiii
+    	  System.out.println("holaaaaaaaaaaaaaaaaaaaaaaaaa");
+    	  System.out.println("holaa:"+Temp_kbct);
+
           boolean warnCheck= false;
+    	 // System.out.println("holaa:"+Temp_kbct.GetOutput(1));
+
           JKBCTOutput jout= this.Temp_kbct.GetOutput(1);
-          if ( (jout.GetScaleName().equals("user")) && 
+
+          
+           if ( (jout.GetScaleName().equals("user")) && 
                ( (jout.GetInputInterestRange()[0]!=1) ||
            	   (jout.GetInputInterestRange()[1]!=jout.GetLabelsNumber()) ) &&
            	   (jout.isOutput()) &&
            	   ( (jout.GetType().equals("logical")) || (jout.GetType().equals("categorical")) ) ) {
+        	 // if ( true ) {
                    warnCheck= true;
           } 
           boolean warning= false;
@@ -5615,15 +5637,36 @@ public class JExpertFrame extends JKBCTFrame {
   }
 //------------------------------------------------------------------------------
   //aquiiiiiiiiiii este es el boton interpretabilidad
-  protected double AssessingInterpretability(boolean fingFlag) {
+  public double AssessingInterpretability(boolean fingFlag) {
       // INTERPRETABILITY
       if (this.jkbif!=null) {
           JKBCTFrame.RemoveTranslatable(this.jkbif);
           this.jkbif.dispose();
       }
+      //System.out.println("iewhbfieferbf");
       this.jkbif= new JKBInterpretabilityFrame(this, this.Temp_kbct, fingFlag);
       //double ind= this.jkbif.getIntIndex();
-      return this.jkbif.getIntIndex(); //indiceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      System.out.println(jkbif.getIntIndex());
+     
+      FileWriter fichero = null;
+		try {
+
+			fichero = new FileWriter("C:/GUAJE/interpretability_index.txt");
+
+			// Escribimos linea a linea en el fichero
+			fichero.write("Interpretability index: "
+					+ ""+this.jkbif.getIntIndex());
+			
+
+			fichero.close();
+
+		} catch (Exception ex) {
+			System.out.println("Mensaje de la excepción: " + ex.getMessage());
+		}
+    
+    
+      
+          return this.jkbif.getIntIndex(); //indiceeeeeeeeeeeeeeeeeee
   }
 //------------------------------------------------------------------------------
   public void jButtonInfer_actionPerformed() { 
@@ -7645,7 +7688,7 @@ public class JExpertFrame extends JKBCTFrame {
 //------------------------------------------------------------------------------
   void jMenuOrderByNbPremisesRules_actionPerformed(boolean automatic) { this.OrderByNbPremisesRules(automatic); }
 //------------------------------------------------------------------------------
-  void jMenuSelectRules_actionPerformed() { this.RuleSelection(); }
+  public void jMenuSelectRules_actionPerformed() { this.RuleSelection(); }
 //------------------------------------------------------------------------------
   void jMenuCopyRules_actionPerformed() { this.CopyRules(); }
 //------------------------------------------------------------------------------

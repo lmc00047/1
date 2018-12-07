@@ -116,7 +116,7 @@ public class JKBCTFrame extends JFrame implements Translatable {
 	public static String KBExpertFile = "";
 	public static String OntologyFile = "";
 
-	protected JTextField jTFExpertName = new JTextField();
+	protected JTextField jTFExpertName = new JTextField("C:/GUAJE/IRIS.txt.kb.xml"); //aquiiiiiiiiiii
 	// object kbct temporal
 	public JKBCT Temp_kbct = null;
 	// coherencia

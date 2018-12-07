@@ -48,6 +48,7 @@ import com.sun.msv.datatype.xsd.StringType;
 import xml.XMLParser;
 import kbctAux.MessageKBCT;
 import kbctFrames.JBeginnerFrame;
+import kbctFrames.JExpertFrame;
 import kbctFrames.JTutorialFrame;
 import kbctFrames.JKBCTFrame;
 import kbctFrames.JMainFrame;
@@ -71,11 +72,12 @@ public class MainKBCT {
   private static JBeginnerFrame jbf;
   private static JTutorialFrame jtf;
   public static boolean flagHalt=false;
+  public static JExpertFrame je =new JExpertFrame();   //SIIIIIIIIII
 //------------------------------------------------------------------------------
   public MainKBCT(boolean visible, String[] args) throws Throwable {
 	  String path;
 	  path="C:/Program Files (x86)/Graphviz2.38/bin";
-	   System.out.println("GRAPHVIZ: "+path);
+	  // System.out.println("GRAPHVIZ: "+path);
         	if (true) { 
         	this.jbInit();
             //Frame frame = new Frame();
@@ -86,9 +88,18 @@ public class MainKBCT {
         	JPanelSetToolsPathFrame view1 = new JPanelSetToolsPathFrame();
             view1.jbApply_actionPerformed();
             JMainFrame JM = new JMainFrame();
+            
+            
             //JM.InitJKBCTFrameWithKBCT();
+           
+           JM.jMenuDataOpen_actionPerformed();
+           JM.jMenuExpertOpen_actionPerformed(); //SIIIIIIIIII
+          // JM.jExpertButton_actionPerformed();    //SIIIIIIIIII
            JM.jbInit();
-           JM.jExpertButton_actionPerformed();
+           //je.jButtonQuality_actionPerformed(true, false);
+           //je.AssessingInterpretability(true);
+           // boton datos, con variables.
+           //f.jef.jButtonQuality_actionPerformed(true,false);
    	        }
    }
 //------------------------------------------------------------------------------
@@ -141,14 +152,14 @@ public class MainKBCT {
  * @throws Throwable 
    */
   public static void main(String[] args) throws Throwable { 
-    	System.out.println("gcgcgh");
-    	System.out.println(args[3]);
+    	//System.out.println("gcgcgh");
+    	//System.out.println(args[3]);
 
 	  if (args.length==0) {
 
    	      new MainKBCT(true, null);
       } else {
-      	System.out.println("hgchgvj");
+      	//System.out.println("hgchgvj");
 
          // args[0] -> file IKB
     	 // args[i], i=1..N -> N data file for learning
@@ -159,6 +170,7 @@ public class MainKBCT {
   public void Init(String[] args) throws Throwable {
       try {
           MainKBCT.getConfig().SetTESTautomatic(true);
+          
              if (args[0].equals("FISfiles")) {
 
               System.out.println("BEGIN");
@@ -1067,8 +1079,10 @@ public class MainKBCT {
                 System.out.println("EXIT");
               }
           }
+             
       } catch (Exception e) {/*e.printStackTrace();*/}  
       MainKBCT.getConfig().SetTESTautomatic(false);
+      
       System.exit(0);
   }
 //------------------------------------------------------------------------------
@@ -1104,6 +1118,7 @@ public class MainKBCT {
     jnikbct= new jnikbct();
     jnifis= new jnifis();
     config.SetTESTautomatic(LocaleKBCT.DefaultTESTautomatic());
+    
   }
 //------------------------------------------------------------------------------
   private void readBootstrap(String file) throws Throwable {
